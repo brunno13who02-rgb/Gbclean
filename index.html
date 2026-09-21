@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CleanGestor - Gestão Inteligente para Limpeza de Estofados</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef8ff',
+                            100: '#d9f0ff',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            750: '#0369a1',
+                            900: '#0c4a6e',
+                            dark: '#0b1329',
+                            card: '#131c38',
+                            border: '#1e294b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass {
+            background: rgba(19, 28, 56, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-light {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(14, 165, 233, 0.3); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(14, 165, 233, 0.6); }
+
+        .nav-item, .mobile-nav-item {
+            position: relative;
+            z-index: 100;
+            width: 100%;
+            min-height: 48px;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        #sidebar { position: relative; z-index: 1000; }
+        #mobile-bottom-nav { position: fixed; z-index: 9999; }
+        #main-content { position: relative; z-index: 1; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- TELA DE PIN (SEGURANÇA) -->
+    <div id="pin-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 hidden">
+        <div class="glass p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl border border-sky-500/20">
+            <div class="w-16 h-16 bg-sky-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-sky-400 text-2xl">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-1">CleanGestor</h2>
+            <p class="text-slate-400 text-sm mb-6">Digite seu PIN de acesso</p>
+            <div id="pin-dots" class="flex justify-center gap-3 mb-8">
+                <div class="w-4 h-4 rounded-full border-2 border-sky-500 bg-transparent transition-all"></div>
+                <div class="w-4 h-4 rounded-full border-2 border-sky-500 bg-transparent transition-all"></div>
+                <div class="w-4 h-4 rounded-full border-2 border-sky-500 bg-transparent transition-all"></div>
+                <div class="w-4 h-4 rounded-full border-2 border-sky-500 bg-transparent transition-all"></div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 text-xl font-semibold">
+                <button onclick="pressPin('1')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">1</button>
+                <button onclick="pressPin('2')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">2</button>
+                <button onclick="pressPin('3')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">3</button>
+                <button onclick="pressPin('4')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">4</button>
+                <button onclick="pressPin('5')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">5</button>
+                <button onclick="pressPin('6')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">6</button>
+                <button onclick="pressPin('7')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">7</button>
+                <button onclick="pressPin('8')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">8</button>
+                <button onclick="pressPin('9')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">9</button>
+                <button onclick="clearPin()" class="p-4 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition text-sm">Limpar</button>
+                <button onclick="pressPin('0')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">0</button>
+                <button onclick="submitPin()" class="p-4 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition text-sm"><i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP CONTAINER -->
+    <div id="app-container" class="flex h-screen overflow-hidden">
+
+        <!-- SIDEBAR (DESKTOP) -->
+        <aside id="sidebar" class="hidden md:flex flex-col w-64 glass border-r border-slate-800/80 z-20">
+            <div class="p-6 flex items-center gap-3 border-b border-slate-800/60">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-xl shadow-lg shadow-sky-500/30">
+                    <i class="fa-solid fa-pump-soap"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-wide">CleanGestor</h1>
+                    <span class="text-xs text-sky-400 font-medium">Higienização Profissional</span>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
+                <button onclick="switchView('dashboard')" data-nav="dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn bg-sky-500/15 text-sky-400">
+                    <i class="fa-solid fa-house w-5 text-center"></i> Dashboard
+                </button>
+                <button onclick="switchView('clients')" data-nav="clients" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-users w-5 text-center"></i> Clientes
+                </button>
+                
+                <button onclick="switchView('schedule')" data-nav="schedule" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-calendar-days w-5 text-center"></i> Agenda
+                </button>
+                <button onclick="switchView('services')" data-nav="services" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-spray-can-sparkles w-5 text-center"></i> Serviços
+                </button>
+                
+                <button onclick="switchView('budget')" data-nav="budget" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i> Orçamentos
+                </button>
+                <button onclick="switchView('financial')" data-nav="financial" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-wallet w-5 text-center"></i> Financeiro
+                </button>
+                <button onclick="switchView('gallery')" data-nav="gallery" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-camera-retro w-5 text-center"></i> Antes e Depois
+                </button>
+                <button onclick="switchView('settings')" data-nav="settings" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-gear w-5 text-center"></i> Configurações
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-slate-800/60">
+                <div class="glass p-3 rounded-2xl flex items-center justify-between text-xs text-slate-400">
+                    <span>Versão 1.0.0</span>
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition" title="Alternar Tema">
+                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <div id="main-content" class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            
+            <!-- HEADER -->
+            <header class="glass border-b border-slate-800/80 px-4 md:px-8 py-3 flex items-center justify-between z-10">
+                <div class="flex items-center gap-3">
+                    <div class="md:hidden w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-lg shadow-md shadow-sky-500/20">
+                        <i class="fa-solid fa-pump-soap"></i>
+                    </div>
+                    <div>
+                        <h2 id="view-title" class="text-lg md:text-xl font-bold tracking-tight">Dashboard</h2>
+                        <p id="view-subtitle" class="text-xs text-slate-400 hidden sm:block">Visão geral do seu negócio de limpeza</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="relative hidden sm:block w-64">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-search text-xs"></i>
+                        </span>
+                        <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Pesquisar cliente, serviço..." class="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-900/60 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition">
+                        <div id="search-results" class="absolute left-0 right-0 mt-2 glass rounded-xl shadow-2xl border border-slate-700/80 max-h-80 overflow-y-auto hidden z-50 p-2"></div>
+                    </div>
+
+                    <button onclick="openQuickActionModal()" class="bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 hover:opacity-95 transition flex items-center gap-2">
+                        <i class="fa-solid fa-plus text-[10px]"></i> <span class="hidden sm:inline">Ação Rápida</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- CONTENT VIEWS -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative">
+                
+                <!-- 1. DASHBOARD VIEW -->
+                <section id="view-dashboard" class="space-y-6 view-section">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 id="welcome-msg" class="text-xl md:text-2xl font-bold">Olá, Profissional! 👋</h3>
+                            <p class="text-slate-400 text-sm">Aqui está o resumo do seu desempenho hoje.</p>
+                        </div>
+                        <div class="flex gap-2 flex-wrap">
+                            <button onclick="openModal('modal-service')" class="bg-sky-500/15 text-sky-400 border border-sky-500/30 px-3 py-2 rounded-xl text-xs font-semibold hover:bg-sky-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-plus"></i> Novo Serviço
+                            </button>
+                            <button onclick="openModal('modal-client')" class="bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 px-3 py-2 rounded-xl text-xs font-semibold hover:bg-indigo-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-user-plus"></i> Novo Cliente
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="glass p-4 rounded-2xl border border-slate-800/80 shadow-lg">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-medium">Faturamento do Mês</span>
+                                <div class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-sm"><i class="fa-solid fa-dollar-sign"></i></div>
+                            </div>
+                            <div id="stat-rev-month" class="text-xl md:text-2xl font-bold text-emerald-400">R$ 0,00</div>
+                            <div class="text-[10px] text-slate-400 mt-1">Lucro estimado: <span id="stat-profit-month" class="text-slate-200 font-semibold">R$ 0,00</span></div>
+                        </div>
+
+                        <div class="glass p-4 rounded-2xl border border-slate-800/80 shadow-lg">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-medium">Serviços Realizados</span>
+                                <div class="w-8 h-8 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center text-sm"><i class="fa-solid fa-spray-can"></i></div>
+                            </div>
+                            <div id="stat-serv-done" class="text-xl md:text-2xl font-bold">0</div>
+                            <div class="text-[10px] text-slate-400 mt-1">Agendados: <span id="stat-serv-scheduled" class="text-sky-400 font-semibold">0</span></div>
+                        </div>
+
+                        <div class="glass p-4 rounded-2xl border border-slate-800/80 shadow-lg">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-medium">Clientes Cadastrados</span>
+                                <div class="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-400 flex items-center justify-center text-sm"><i class="fa-solid fa-users"></i></div>
+                            </div>
+                            <div id="stat-clients-count" class="text-xl md:text-2xl font-bold">0</div>
+                            <div class="text-[10px] text-slate-400 mt-1">Ticket Médio: <span id="stat-ticket-medio" class="text-indigo-400 font-semibold">R$ 0,00</span></div>
+                        </div>
+
+                        <div class="glass p-4 rounded-2xl border border-slate-800/80 shadow-lg">
+                            <div class="flex items-center justify-between text-slate-400 mb-2">
+                                <span class="text-xs font-medium">A Receber / Despesas</span>
+                                <div class="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center text-sm"><i class="fa-solid fa-file-invoice"></i></div>
+                            </div>
+                            <div id="stat-receivable" class="text-lg md:text-xl font-bold text-amber-400">R$ 0,00</div>
+                            <div class="text-[10px] text-slate-400 mt-1">Despesas: <span id="stat-expenses-month" class="text-rose-400 font-semibold">R$ 0,00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="glass p-5 rounded-3xl border border-slate-800/80 shadow-lg">
+                            <h4 class="font-semibold text-sm mb-4 text-slate-300"><i class="fa-solid fa-chart-line text-sky-400 mr-2"></i>Faturamento por Mês</h4>
+                            <div class="h-64"><canvas id="chartMonth"></canvas></div>
+                        </div>
+                        <div class="glass p-5 rounded-3xl border border-slate-800/80 shadow-lg">
+                            <h4 class="font-semibold text-sm mb-4 text-slate-300"><i class="fa-solid fa-chart-pie text-indigo-400 mr-2"></i>Tipos de Serviços Mais Realizados</h4>
+                            <div class="h-64"><canvas id="chartServices"></canvas></div>
+                        </div>
+                    </div>
+
+                    <div class="glass p-5 rounded-3xl border border-slate-800/80 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-semibold text-sm text-slate-300"><i class="fa-solid fa-clock text-sky-400 mr-2"></i>Próximos Serviços Agendados</h4>
+                            <button onclick="switchView('schedule')" class="text-xs text-sky-400 hover:underline">Ver agenda completa</button>
+                        </div>
+                        <div id="upcoming-services-list" class="space-y-3"></div>
+                    </div>
+                </section>
+
+                <!-- 2. CLIENTES VIEW -->
+                <section id="view-clients" class="space-y-6 view-section hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Gerenciamento de Clientes</h3>
+                            <p class="text-slate-400 text-xs">Cadastre, consulte o histórico e envie mensagens.</p>
+                        </div>
+                        <button onclick="openModal('modal-client')" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-user-plus"></i> Novo Cliente
+                        </button>
+                    </div>
+
+                    <div class="flex gap-3 flex-wrap">
+                        <div class="flex-1 relative min-w-[220px]">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-search text-xs"></i>
+                            </span>
+                            <input type="text" id="client-search" oninput="renderClients()" placeholder="Pesquisar por nome, telefone..." class="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl bg-slate-900/60 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition">
+                        </div>
+                        <select id="client-filter" onchange="renderClients()" class="px-4 py-2.5 text-xs rounded-xl bg-slate-900/60 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition">
+                            <option value="all">Todos os clientes</option>
+                            <option value="active">Com serviços realizados</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="clients-grid"></div>
+                </section>
+
+                <!-- 3. AGENDA VIEW -->
+                <section id="view-schedule" class="space-y-6 view-section hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Agenda de Serviços</h3>
+                            <p class="text-slate-400 text-xs">Controle seus horários e status dos atendimentos.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="glass rounded-xl p-1 flex text-xs font-medium">
+                                <button onclick="setScheduleViewMode('day')" id="btn-mode-day" class="px-3 py-1.5 rounded-lg bg-sky-500 text-white transition">Dia</button>
+                                <button onclick="setScheduleViewMode('week')" id="btn-mode-week" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Semana</button>
+                                <button onclick="setScheduleViewMode('month')" id="btn-mode-month" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Mês</button>
+                            </div>
+                            <button onclick="openModal('modal-service')" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-plus"></i> Agendar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between glass p-4 rounded-2xl border border-slate-800">
+                        <button onclick="changeScheduleDate(-1)" class="p-2 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h4 id="schedule-current-date-label" class="font-bold text-sm">20 de Setembro, 2026</h4>
+                        <button onclick="changeScheduleDate(1)" class="p-2 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+
+                    <div id="schedule-container" class="space-y-3"></div>
+                </section>
+
+                <!-- 4. SERVIÇOS VIEW -->
+                <section id="view-services" class="space-y-6 view-section hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Catálogo de Estofados & Serviços</h3>
+                            
+                            <p class="text-slate-400 text-xs">Cadastre estofados, tipos de serviço, unidades e preços.</p>
+                        </div>
+                        <button
+    onclick="openModal('modal-catalog-item')"
+    class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400
+           text-white text-xs font-semibold transition
+           flex items-center gap-2 shrink-0">
+
+    <i class="fa-solid fa-plus"></i>
+    Cadastrar Estofado
+
+</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="services-catalog-grid"></div>
+                </section>
+
+                <!-- 5. ORÇAMENTOS VIEW -->
+                <section id="view-budget" class="space-y-6 view-section hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Calculadora e Orçamentos</h3>
+                            <p class="text-slate-400 text-xs">Monte orçamentos profissionais instantaneamente e envie pelo WhatsApp.</p>
+                        </div>
+                        <button onclick="openModal('modal-budget-builder')" class="bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 transition flex items-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> Novo Orçamento Rápido
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2 border-b border-slate-800 pb-2">
+                        <button onclick="switchBudgetTab('list')" id="btn-budget-list" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition">Orçamentos Salvos</button>
+                        <button onclick="switchBudgetTab('calculator')" id="btn-budget-calc" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Calculadora Expressa</button>
+                    </div>
+
+                    <div id="budget-tab-content" class="space-y-3"></div>
+                </section>
+
+                <!-- 6. FINANCEIRO VIEW -->
+                <section id="view-financial" class="space-y-6 view-section hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Módulo Financeiro</h3>
+                            <p class="text-slate-400 text-xs">Controle receitas, despesas, lucro líquido e fluxo de caixa.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="openModal('modal-transaction', 'revenue')" class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-3.5 py-2 rounded-xl text-xs font-semibold hover:bg-emerald-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-plus"></i> Receita
+                            </button>
+                            <button onclick="openModal('modal-transaction', 'expense')" class="bg-rose-500/15 text-rose-400 border border-rose-500/30 px-3.5 py-2 rounded-xl text-xs font-semibold hover:bg-rose-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-minus"></i> Despesa
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="glass p-5 rounded-3xl border border-slate-800">
+                            <span class="text-xs text-slate-400 font-medium">Receitas do Mês</span>
+                            <div id="fin-rev" class="text-2xl font-bold text-emerald-400 mt-1">R$ 0,00</div>
+                        </div>
+                        <div class="glass p-5 rounded-3xl border border-slate-800">
+                            <span class="text-xs text-slate-400 font-medium">Despesas do Mês</span>
+                            <div id="fin-exp" class="text-2xl font-bold text-rose-400 mt-1">R$ 0,00</div>
+                        </div>
+                        <div class="glass p-5 rounded-3xl border border-slate-800">
+                            <span class="text-xs text-slate-400 font-medium">Lucro Líquido</span>
+                            <div id="fin-profit" class="text-2xl font-bold text-sky-400 mt-1">R$ 0,00</div>
+                        </div>
+                    </div>
+
+                    <div class="glass p-5 rounded-3xl border border-slate-800">
+                        <h4 class="font-semibold text-sm mb-4 text-slate-300"><i class="fa-solid fa-chart-bar text-sky-400 mr-2"></i>Receitas x Despesas</h4>
+                        <div class="h-64"><canvas id="chartFinancial"></canvas></div>
+                    </div>
+
+                    <div class="glass p-5 rounded-3xl border border-slate-800">
+                        <h4 class="font-semibold text-sm mb-4 text-slate-300">Histórico de Transações</h4>
+                        <div id="transactions-list" class="space-y-2"></div>
+                    </div>
+                </section>
+
+                <!-- 7. ANTES E DEPOIS VIEW -->
+                <section id="view-gallery" class="space-y-6 view-section hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold">Galeria Antes e Depois</h3>
+                            <p class="text-slate-400 text-xs">Registre a transformação dos estofados higienizados.</p>
+                        </div>
+                        <button onclick="openModal('modal-photo')" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 transition flex items-center gap-2">
+                            <i class="fa-solid fa-camera"></i> Adicionar Fotos
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid"></div>
+                </section>
+
+                <!-- 8. CONFIGURAÇÕES VIEW -->
+                <section id="view-settings" class="space-y-6 view-section hidden">
+                    <div>
+                        <h3 class="text-xl font-bold">Configurações do Sistema</h3>
+                        <p class="text-slate-400 text-xs">Gerencie dados da empresa, PIN, backup e exportações.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="glass p-6 rounded-3xl border border-slate-800 space-y-4">
+                            <h4 class="font-semibold text-sm text-sky-400"><i class="fa-solid fa-building mr-2"></i>Dados da Empresa & Orçamento</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs text-slate-400">Nome da Empresa</label>
+                                    <input type="text" id="set-company-name" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-xs text-slate-400">CNPJ / CPF</label>
+                                        <input type="text" id="set-company-doc" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-slate-400">Telefone / WhatsApp</label>
+                                        <input type="text" id="set-company-phone" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-400">Chave Pix</label>
+                                    <input type="text" id="set-company-pix" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                </div>
+                                <button onclick="saveCompanySettings()" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition">Salvar Alterações</button>
+                            </div>
+                        </div>
+
+                        <div class="glass p-6 rounded-3xl border border-slate-800 space-y-4">
+                            <h4 class="font-semibold text-sm text-sky-400"><i class="fa-solid fa-shield-halved mr-2"></i>Segurança & PIN</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs text-slate-400">PIN de Acesso (4 a 6 dígitos)</label>
+                                    <input type="password" id="set-pin-input" maxlength="6" placeholder="Ex: 1234" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="set-pin-active" class="w-4 h-4 rounded text-sky-500 bg-slate-900 border-slate-700">
+                                    <label class="text-xs text-slate-300">Ativar proteção por PIN ao abrir o app</label>
+                                </div>
+                                <button onclick="savePinSettings()" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition">Salvar PIN</button>
+                            </div>
+                        </div>
+
+                        <div class="glass p-6 rounded-3xl border border-slate-800 space-y-4">
+                            <h4 class="font-semibold text-sm text-sky-400"><i class="fa-solid fa-database mr-2"></i>Backup e Dados</h4>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="exportBackupJSON()" class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-emerald-500/25 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-download"></i> Exportar Backup (JSON)
+                                </button>
+                                <label class="bg-sky-500/15 text-sky-400 border border-sky-500/30 px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-sky-500/25 transition flex items-center gap-2 cursor-pointer">
+                                    <i class="fa-solid fa-upload"></i> Importar Backup
+                                    <input type="file" id="import-file-input" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                                </label>
+                                <button onclick="exportClientsCSV()" class="bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-indigo-500/25 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-file-csv"></i> Exportar Clientes (CSV)
+                                </button>
+                                <button onclick="exportFinancialCSV()" class="bg-amber-500/15 text-amber-400 border border-amber-500/30 px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-amber-500/25 transition flex items-center gap-2">
+                                    <i class="fa-solid fa-file-csv"></i> Exportar Financeiro (CSV)
+                                </button>
+                            </div>
+                            <div class="pt-4 border-t border-slate-800">
+                                <button onclick="clearAllData()" class="text-rose-400 hover:underline text-xs"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Apagar todos os dados e reiniciar demonstração</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- BOTTOM NAVIGATION (MOBILE) -->
+            <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-slate-800/80 px-2 py-2 flex justify-around items-center z-[9999]">
+                <button onclick="switchView('dashboard')" data-nav="dashboard" class="flex-1 min-w-0 flex flex-col items-center justify-center text-sky-400 nav-btn text-[10px] py-2 px-1">
+                    <i class="fa-solid fa-house text-base mb-0.5"></i> Home
+                </button>
+                <button onclick="switchView('clients')" data-nav="clients" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
+                    <i class="fa-solid fa-users text-base mb-0.5"></i> Clientes
+                </button>
+                <button onclick="switchView('schedule')" data-nav="schedule" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
+                    <i class="fa-solid fa-calendar-days text-base mb-0.5"></i> Agenda
+                </button>
+                <button onclick="switchView('budget')" data-nav="budget" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
+                    <i class="fa-solid fa-file-invoice-dollar text-base mb-0.5"></i> Orçamentos
+                </button>
+                <button onclick="switchView('financial')" data-nav="financial" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
+                    <i class="fa-solid fa-wallet text-base mb-0.5"></i> Financeiro
+                </button>
+                <button onclick="switchView('settings')" data-nav="settings" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
+                    <i class="fa-solid fa-gear text-base mb-0.5"></i> Ajustes
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- MODAIS DO SISTEMA -->
+
+    <!-- Modal Novo Cliente -->
+    <div id="modal-client" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass p-6 rounded-3xl max-w-lg w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-client-title" class="font-bold text-lg">Novo Cliente</h3>
+                <button onclick="closeModal('modal-client')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="form-client" onsubmit="saveClient(event)" class="space-y-3">
+                <input type="hidden" id="client-id">
+                <div>
+                    <label class="text-xs text-slate-400">Nome Completo *</label>
+                    <input type="text" id="client-name" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400">Telefone *</label>
+                        <input type="text" id="client-phone" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">WhatsApp *</label>
+                        <input type="text" id="client-whatsapp" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">CPF (Opcional)</label>
+                    <input type="text" id="client-cpf" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="col-span-2">
+                        <label class="text-xs text-slate-400">Endereço</label>
+                        <input type="text" id="client-address" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Número</label>
+                        <input type="text" id="client-number" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400">Bairro</label>
+                        <input type="text" id="client-neighborhood" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Cidade</label>
+                        <input type="text" id="client-city" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">CEP</label>
+                        <input type="text" id="client-cep" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Observações</label>
+                    <textarea id="client-notes" rows="2" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-client')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Novo Serviço/Agendamento -->
+    <div id="modal-service" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass p-6 rounded-3xl max-w-lg w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-service-title" class="font-bold text-lg">Novo Agendamento / Serviço</h3>
+                <button onclick="closeModal('modal-service')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="form-service" onsubmit="saveAppointment(event)" class="space-y-3">
+                <input type="hidden" id="service-app-id">
+                <div>
+                    <label class="text-xs text-slate-400">Cliente *</label>
+                    <select id="app-client-id" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Serviço *</label>
+                    <select id="app-service-name" required onchange="updateAppointmentPrice()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Quantidade</label>
+                    <input type="number" id="app-quantity" min="1" value="1" oninput="updateAppointmentPrice()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400">Data *</label>
+                        <input type="date" id="app-date" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Horário *</label>
+                        <input type="time" id="app-time" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400">Valor Total (R$) *</label>
+                        <input type="number" step="0.01" id="app-price" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Forma de Pagamento</label>
+                        <select id="app-payment" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                            <option value="Pix">Pix</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="Transferência">Transferência</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Status</label>
+                    <select id="app-status" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <option value="Agendado">Agendado</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Em andamento">Em andamento</option>
+                        <option value="Concluído">Concluído</option>
+                        <option value="Cancelado">Cancelado</option>
+                        <option value="Não compareceu">Não compareceu</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Observações</label>
+                    <textarea id="app-notes" rows="2" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-service')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar Agendamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Novo Item no Catálogo de Serviços -->
+  <div id="modal-catalog-item" class="modal-overlay hidden">
+    <div class="modal-content glass rounded-3xl w-full max-w-2xl p-6 border border-slate-700 shadow-2xl">
+
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h3 class="text-xl font-bold text-white">
+                    <i class="fa-solid fa-couch text-sky-400 mr-2"></i>
+                    Cadastro de Estofado
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">
+                    Cadastre o estofado e os serviços disponíveis para ele.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                onclick="closeModal('modal-catalog-item')"
+                class="w-9 h-9 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="form-catalog" onsubmit="saveCatalogItem(event)" class="space-y-4">
+
+            <input type="hidden" id="catalog-id">
+
+            <!-- Nome + Categoria -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                        Nome do estofado *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="catalog-name"
+                        required
+                        placeholder="Ex.: Sofá 3 Lugares"
+                        class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                        Categoria *
+                    </label>
+
+                    <select
+                        id="catalog-category"
+                        required
+                        class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+
+                        <option value="Sofá">Sofá</option>
+                        <option value="Poltrona">Poltrona</option>
+                        <option value="Cadeira">Cadeira</option>
+                        <option value="Colchão">Colchão</option>
+                        <option value="Tapete">Tapete</option>
+                        <option value="Banco">Banco</option>
+                        <option value="Puff">Puff</option>
+                        <option value="Cabeceira">Cabeceira</option>
+                        <option value="Carpete">Carpete</option>
+                        <option value="Outro">Outro</option>
+
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Serviço + Unidade -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                        Tipo de serviço *
+                    </label>
+
+                    <select
+                        id="catalog-service"
+                        required
+                        class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+
+                        <option value="Limpeza">Limpeza</option>
+                        <option value="Impermeabilização">Impermeabilização</option>
+                        <option value="Limpeza + Impermeabilização">
+                            Limpeza + Impermeabilização
+                        </option>
+                        <option value="Higienização">Higienização</option>
+                        <option value="Outro">Outro</option>
+
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                        Unidade de cobrança *
+                    </label>
+
+                    <select
+                        id="catalog-unit"
+                        required
+                        class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+
+                        <option value="Unidade">Unidade</option>
+                        <option value="Módulo">Módulo</option>
+                        <option value="Lugar">Lugar</option>
+                        <option value="Metro">Metro</option>
+                        <option value="Serviço">Serviço</option>
+
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Preço + Custo + Tempo -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                        Preço de venda *
+                    </label>
+
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-slate-500 text-sm">
+                            R$
+                        </span>
+
+                        <input
+                            type="number"
+                            id="catalog-price"
+                            required
+                            min="0"
+                            step="0.01"
+                            placeholder="0,00"
+                            class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                        Custo
+                    </label>
+
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-slate-500 text-sm">
+                            R$
+                        </span>
+
+                        <input
+                            type="number"
+                            id="catalog-cost"
+                            min="0"
+                            step="0.01"
+                            placeholder="0,00"
+                            class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                        Tempo estimado
+                    </label>
+
+                    <div class="relative">
+                        <i class="fa-regular fa-clock absolute left-3 top-3.5 text-slate-500 text-sm"></i>
+
+                        <input
+                            type="text"
+                            id="catalog-duration"
+                            placeholder="Ex.: 2h 30min"
+                            class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Descrição -->
+            <div>
+                <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                    Descrição do serviço
+                </label>
+
+                <textarea
+                    id="catalog-description"
+                    rows="3"
+                    placeholder="Ex.: Higienização profunda, remoção de manchas e aplicação de produtos específicos..."
+                    class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm resize-none focus:outline-none focus:border-sky-500"></textarea>
+            </div>
+
+            <!-- Status -->
+            <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+
+                <div>
+                    <p class="text-sm font-semibold text-white">
+                        Serviço ativo
+                    </p>
+
+                    <p class="text-[11px] text-slate-400 mt-0.5">
+                        Serviços inativos não aparecem para novos agendamentos e orçamentos.
+                    </p>
+                </div>
+
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input
+                        type="checkbox"
+                        id="catalog-active"
+                        checked
+                        class="sr-only peer">
+
+                    <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:bg-sky-500 transition"></div>
+
+                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-5"></div>
+                </label>
+
+            </div>
+
+            <!-- Rodapé -->
+            <div class="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-3 border-t border-slate-800">
+
+                <button
+                    type="button"
+                    onclick="closeModal('modal-catalog-item')"
+                    class="px-5 py-3 rounded-xl bg-slate-800 text-slate-300 text-sm font-semibold hover:bg-slate-700 transition">
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="px-5 py-3 rounded-xl bg-sky-500 text-white text-sm font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
+                    <i class="fa-solid fa-floppy-disk mr-2"></i>
+                    Salvar Cadastro
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+    <!-- Modal Transação Financeira -->
+    <div id="modal-transaction" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass p-6 rounded-3xl max-w-md w-full border border-slate-700/80">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-trans-title" class="font-bold text-lg">Nova Transação</h3>
+                <button onclick="closeModal('modal-transaction')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="form-transaction" onsubmit="saveTransaction(event)" class="space-y-3">
+                <input type="hidden" id="trans-type" value="revenue">
+                <div>
+                    <label class="text-xs text-slate-400">Descrição *</label>
+                    <input type="text" id="trans-desc" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400">Valor (R$) *</label>
+                        <input type="number" step="0.01" id="trans-val" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Data *</label>
+                        <input type="date" id="trans-date" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400">Categoria</label>
+                        <select id="trans-category" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                            <option value="Serviços">Serviços</option>
+                            <option value="Produtos">Produtos</option>
+                            <option value="Combustível">Combustível</option>
+                            <option value="Equipamentos">Equipamentos</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Forma de Pagamento</label>
+                        <select id="trans-payment" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                            <option value="Pix">Pix</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Transferência">Transferência</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-transaction')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar Transação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Calculadora / Criar Orçamento -->
+    <div id="modal-budget-builder" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass p-6 rounded-3xl max-w-xl w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg">Criar Orçamento Rápido</h3>
+                <button onclick="closeModal('modal-budget-builder')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400">Cliente *</label>
+                    <select id="bud-client-id" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">Selecione os Serviços</label>
+                    <div id="bud-services-checkboxes" class="space-y-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-slate-900/60 border border-slate-800"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400">Desconto (R$)</label>
+                        <input type="number" step="0.01" id="bud-discount" value="0" oninput="calcBudgetTotal()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400">Taxa de Deslocamento (R$)</label>
+                        <input type="number" step="0.01" id="bud-shipping" value="0" oninput="calcBudgetTotal()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Validade do Orçamento (Dias)</label>
+                    <input type="number" id="bud-validity" value="7" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Observações</label>
+                    <textarea id="bud-notes" rows="2" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
+                </div>
+                <div class="glass p-3 rounded-xl flex items-center justify-between font-bold">
+                    <span>Total do Orçamento:</span>
+                    <span id="bud-total-display" class="text-sky-400 text-lg">R$ 0,00</span>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-budget-builder')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button onclick="saveBudget(event)" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar e Gerar Orçamento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Perfil do Cliente -->
+    <div id="modal-client-profile" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass p-6 rounded-3xl max-w-2xl w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg">Perfil do Cliente</h3>
+                <button onclick="closeModal('modal-client-profile')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="client-profile-content" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Foto Antes e Depois -->
+    <div id="modal-photo" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass p-6 rounded-3xl max-w-md w-full border border-slate-700/80">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg">Adicionar Foto Antes e Depois</h3>
+                <button onclick="closeModal('modal-photo')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="form-photo" onsubmit="savePhoto(event)" class="space-y-3">
+                <div>
+                    <label class="text-xs text-slate-400">Cliente *</label>
+                    <select id="photo-client-id" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">Nome do Serviço *</label>
+                    <input type="text" id="photo-service-name" required placeholder="Ex: Higienização de Sofá 3 Lugares" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">URL da Foto ANTES *</label>
+                    <input type="url" id="photo-before-url" required placeholder="https://exemplo.com/antes.jpg" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400">URL da Foto DEPOIS *</label>
+                    <input type="url" id="photo-after-url" required placeholder="https://exemplo.com/depois.jpg" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('modal-photo')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar Foto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Ação Rápida -->
+    <div id="modal-quick-action" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass p-6 rounded-3xl max-w-sm w-full border border-slate-700/80 text-center space-y-3">
+            <h3 class="font-bold text-lg mb-4">Ações Rápidas</h3>
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-client');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-user-plus text-base"></i> + Cliente
+            </button>
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-service');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-calendar-plus text-base"></i> + Serviço / Agendamento
+            </button>
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-budget-builder');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-file-invoice-dollar text-base"></i> + Orçamento
+            </button>
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-transaction', 'revenue');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-circle-plus text-base"></i> + Receita
+            </button>
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-transaction', 'expense');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-rose-400 font-semibold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-circle-minus text-base"></i> + Despesa
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-16 md:bottom-6 right-6 z-50 glass px-4 py-3 rounded-2xl shadow-2xl border border-sky-500/30 text-xs flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300">
+        <div id="toast-icon" class="text-sky-400 text-base"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+            <div id="toast-title" class="font-bold">Sucesso</div>
+            <div id="toast-msg" class="text-slate-400">Ação realizada com sucesso.</div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let appData = {
+            settings: {
+                companyName: "CleanGestor Higienização",
+                companyDoc: "00.000.000/0001-00",
+                companyPhone: "(11) 99999-9999",
+                companyPix: "suachave@cleangestor.com",
+                pin: "1234",
+                pinActive: false,
+                theme: "dark"
+            },
+            clients: [
+                { id: "c_1", name: "Maria Silva", phone: "(11) 98888-1111", whatsapp: "5511988881111", address: "Rua das Flores", number: "123", neighborhood: "Centro", city: "São Paulo", cep: "01000-000", notes: "Cliente preferencial" }
+            ],
+       servicesCatalog:[
+    {
+        id:"s_1",
+        name:"Sofá 3 Lugares",
+        category:"Sofá",
+        service:"Limpeza",
+        unit:"Unidade",
+        price:180,
+        cost:30,
+        duration:"2 horas",
+        description:"Higienização completa de sofá de 3 lugares.",
+        active:true
+    },
+    {
+        id:"s_2",
+        name:"Colchão Casal",
+        category:"Colchão",
+        service:"Limpeza + Impermeabilização",
+        unit:"Unidade",
+        price:250,
+        cost:50,
+        duration:"2h30",
+        description:"Limpeza profunda com opção de impermeabilização.",
+        active:true
+    },
+    {
+        id:"s_3",
+        name:"Cadeira de Jantar",
+        category:"Cadeira",
+        service:"Higienização",
+        unit:"Unidade",
+        price:35,
+        cost:5,
+        duration:"30 minutos",
+        description:"Higienização individual de cadeira estofada.",
+        active:true
+    }
+],
+                       appointments: [
+                { id: "a_1", clientId: "c_1", serviceName: "Sofá 3 Lugares", date: new Date().toISOString().split('T')[0], time: "14:00", price: 180.00, payment: "Pix", status: "Confirmado", notes: "" }
+            ],
+            budgets: [],
+            transactions: [
+                { id: "t_1", type: "revenue", desc: "Sofá 3 Lugares - Maria Silva", val: 180.00, date: new Date().toISOString().slice(0, 10), category: "Serviços", payment: "Pix" }
+            ],
+            gallery: []
+        };
+
+        let chartMonthInstance = null;
+        let chartServicesInstance = null;
+        let chartFinancialInstance = null;
+        let scheduleViewModeState = 'day';
+        let currentScheduleDate = new Date();
+        let budgetTabState = 'list';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLocalStorage();
+            checkPinSecurity();
+            initTheme();
+            switchView('dashboard');
+            populateSelects();
+        });
+
+        function loadLocalStorage() {
+            const saved = localStorage.getItem('cleangestor_data');
+            if (saved) {
+                try { appData = JSON.parse(saved); } catch (e) { console.error(e); }
+            }
+        }
+
+        function saveLocalStorage() {
+            localStorage.setItem('cleangestor_data', JSON.stringify(appData));
+        }
+
+        let enteredPin = "";
+        function checkPinSecurity() {
+            if (appData.settings.pinActive && appData.settings.pin) {
+                document.getElementById('pin-screen').classList.remove('hidden');
+            }
+        }
+
+        function pressPin(num) {
+            if (enteredPin.length < 6) {
+                enteredPin += num;
+                updatePinDots();
+            }
+        }
+
+        function clearPin() {
+            enteredPin = "";
+            updatePinDots();
+        }
+
+        function updatePinDots() {
+            const dots = document.querySelectorAll('#pin-dots div');
+            dots.forEach((dot, idx) => {
+                if (idx < enteredPin.length) {
+                    dot.classList.add('bg-sky-500', 'border-sky-500');
+                } else {
+                    dot.classList.remove('bg-sky-500', 'border-sky-500');
+                }
+            });
+        }
+
+        function submitPin() {
+            if (enteredPin === appData.settings.pin) {
+                document.getElementById('pin-screen').classList.add('hidden');
+                showToast("Bem-vindo de volta!", "Acesso autorizado com sucesso.");
+            } else {
+                showToast("PIN Incorreto", "Tente novamente.", "error");
+                clearPin();
+            }
+        }
+
+        function initTheme() {
+            if (appData.settings.theme === 'light') {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+            } else {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').className = 'fa-solid fa-moon';
+            }
+            document.getElementById('set-company-name').value = appData.settings.companyName || '';
+            document.getElementById('set-company-doc').value = appData.settings.companyDoc || '';
+            document.getElementById('set-company-phone').value = appData.settings.companyPhone || '';
+            document.getElementById('set-company-pix').value = appData.settings.companyPix || '';
+            document.getElementById('set-pin-input').value = appData.settings.pin || '';
+            document.getElementById('set-pin-active').checked = appData.settings.pinActive || false;
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                appData.settings.theme = 'light';
+                document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+            } else {
+                document.documentElement.classList.add('dark');
+                appData.settings.theme = 'dark';
+                document.getElementById('theme-icon').className = 'fa-solid fa-moon';
+            }
+            saveLocalStorage();
+            showToast("Tema Alterado", "Preferência salva.");
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-' + viewId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-500/15', 'text-sky-400');
+                btn.classList.add('text-slate-400');
+                if (btn.getAttribute('data-nav') === viewId) {
+                    btn.classList.add('bg-sky-500/15', 'text-sky-400');
+                    btn.classList.remove('text-slate-400');
+                }
+            });
+
+            const titles = {
+                dashboard: ["Dashboard", "Visão geral do seu negócio de limpeza"],
+                clients: ["Clientes", "Gerencie sua base de clientes"],
+                schedule: ["Agenda", "Organize seus atendimentos"],
+                services: ["Catálogo de Serviços", "Preços e tempos estimados"],
+                budget: ["Orçamentos", "Crie e gerencie propostas comerciais"],
+                financial: ["Financeiro", "Controle de receitas e despesas"],
+                gallery: ["Antes e Depois", "Galeria de resultados dos serviços"],
+                settings: ["Configurações", "Preferências e dados do sistema"]
+            };
+
+            if (titles[viewId]) {
+                document.getElementById('view-title').innerText = titles[viewId][0];
+                document.getElementById('view-subtitle').innerText = titles[viewId][1];
+            }
+
+            if (viewId === 'dashboard') renderDashboard();
+            if (viewId === 'clients') renderClients();
+            if (viewId === 'schedule') renderSchedule();
+            if (viewId === 'services') renderServicesCatalog();
+            if (viewId === 'budget') renderBudgets();
+            if (viewId === 'financial') renderFinancial();
+            if (viewId === 'gallery') renderGallery();
+        }
+
+        function showToast(title, msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = msg;
+            const icon = document.getElementById('toast-icon');
+            if (type === 'error') {
+                icon.innerHTML = '<i class="fa-solid fa-circle-exclamation text-rose-400"></i>';
+            } else {
+                icon.innerHTML = '<i class="fa-solid fa-circle-check text-sky-400"></i>';
+            }
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        function openModal(id) {
+    const modal = document.getElementById(id);
+
+    if (!modal) {
+        console.error('Modal não encontrado:', id);
+
+        showToast(
+            'Erro',
+            'O formulário de cadastro não foi encontrado.',
+            'error'
+        );
+
+        return;
+    }
+
+    modal.classList.remove('hidden');
+
+    // Pequena animação de entrada
+    requestAnimationFrame(() => {
+        modal.classList.add('modal-visible');
+    });
+
+    // Se for o cadastro de estofado, prepara o formulário
+    if (id === 'modal-catalog-item') {
+        const form = document.getElementById('form-catalog');
+
+        if (form && !document.getElementById('catalog-id').value) {
+            form.reset();
+
+            document.getElementById('catalog-id').value = '';
+
+            document.getElementById('catalog-active').checked = true;
+        }
+    }
+}
+        function closeModal(id) {
+    const modal = document.getElementById(id);
+
+    if (!modal) return;
+
+    modal.classList.remove('modal-visible');
+
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 150);
+}
+        function openQuickActionModal() {
+            openModal('modal-quick-action');
+        }
+
+        function populateSelects() {
+            const clientSelects = [document.getElementById('app-client-id'), document.getElementById('bud-client-id'), document.getElementById('photo-client-id')];
+            clientSelects.forEach(sel => {
+                if (!sel) return;
+                sel.innerHTML = '<option value="">Selecione um cliente...</option>';
+                appData.clients.forEach(c => {
+                    sel.innerHTML += `<option value="${c.id}">${c.name} (${c.phone})</option>`;
+                });
+            });
+
+            const serviceSelect = document.getElementById('app-service-name');
+            if (serviceSelect) {
+                serviceSelect.innerHTML = '<option value="">Selecione o serviço...</option>';
+                appData.servicesCatalog.filter(s => s.active).forEach(s => {
+                    serviceSelect.innerHTML += `<option value="${s.name}" data-price="${s.price}">${s.name} - R$ ${s.price.toFixed(2)}</option>`;
+                });
+            }
+
+            const budCheckboxes = document.getElementById('bud-services-checkboxes');
+            if (budCheckboxes) {
+                budCheckboxes.innerHTML = '';
+                appData.servicesCatalog.filter(s => s.active).forEach((s) => {
+                    budCheckboxes.innerHTML += `
+                        <label class="flex items-center justify-between p-2 rounded-xl bg-slate-900/50 hover:bg-slate-800/80 cursor-pointer">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" value="${s.name}" data-price="${s.price}" onchange="calcBudgetTotal()" class="bud-service-chk w-4 h-4 rounded text-sky-500 bg-slate-900 border-slate-700">
+                                <span class="text-xs font-medium">${s.name}</span>
+                            </div>
+                            <span class="text-xs text-sky-400 font-bold">R$ ${s.price.toFixed(2)}</span>
+                        </label>
+                    `;
+                });
+            }
+        }
+
+        function updateAppointmentPrice() {
+            const sel = document.getElementById('app-service-name');
+            const opt = sel.options[sel.selectedIndex];
+            const price = parseFloat(opt.getAttribute('data-price')) || 0;
+            const qty = parseInt(document.getElementById('app-quantity').value) || 1;
+            document.getElementById('app-price').value = (price * qty).toFixed(2);
+        }
+
+        function renderDashboard() {
+            const now = new Date();
+            const currentMonth = now.toISOString().slice(0, 7);
+
+            let revMonth = 0;
+            let expMonth = 0;
+            let servDone = 0;
+            let servScheduled = 0;
+            let receivable = 0;
+
+            appData.transactions.forEach(t => {
+                if (t.date.startsWith(currentMonth)) {
+                    if (t.type === 'revenue') revMonth += t.val;
+                    if (t.type === 'expense') expMonth += t.val;
+                }
+            });
+
+            appData.appointments.forEach(a => {
+                if (a.status === 'Concluído') servDone++;
+                if (a.status === 'Agendado' || a.status === 'Confirmado') servScheduled++;
+                if (a.status === 'Agendado' || a.status === 'Confirmado') receivable += a.price;
+            });
+
+            const profitMonth = revMonth - expMonth;
+            const ticketMedio = servDone > 0 ? revMonth / servDone : 0;
+
+            document.getElementById('stat-rev-month').innerText = `R$ ${revMonth.toFixed(2)}`;
+            document.getElementById('stat-profit-month').innerText = `R$ ${profitMonth.toFixed(2)}`;
+            document.getElementById('stat-serv-done').innerText = servDone;
+            document.getElementById('stat-serv-scheduled').innerText = servScheduled;
+            document.getElementById('stat-clients-count').innerText = appData.clients.length;
+            document.getElementById('stat-ticket-medio').innerText = `R$ ${ticketMedio.toFixed(2)}`;
+            document.getElementById('stat-receivable').innerText = `R$ ${receivable.toFixed(2)}`;
+            document.getElementById('stat-expenses-month').innerText = `R$ ${expMonth.toFixed(2)}`;
+
+            const upcomingList = document.getElementById('upcoming-services-list');
+            upcomingList.innerHTML = '';
+            const upcoming = appData.appointments.filter(a => a.status !== 'Concluído' && a.status !== 'Cancelado').slice(0, 4);
+            
+            if (upcoming.length === 0) {
+                upcomingList.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">Nenhum serviço agendado no momento.</div>`;
+            } else {
+                upcoming.forEach(a => {
+                    const client = appData.clients.find(c => c.id === a.clientId) || { name: 'Cliente', address: 'Endereço não informado' };
+                    upcomingList.innerHTML += `
+                        <div class="glass p-3 rounded-2xl flex items-center justify-between border border-slate-800 text-xs">
+                            <div class="space-y-1">
+                                <div class="font-bold text-sky-400 flex items-center gap-2"><i class="fa-regular fa-clock"></i> ${a.date} às ${a.time} - ${client.name}</div>
+                                <div class="text-slate-300"><i class="fa-solid fa-spray-can text-[10px] mr-1"></i> ${a.serviceName}</div>
+                                <div class="text-slate-400"><i class="fa-solid fa-location-dot text-[10px] mr-1"></i> ${client.address || ''}</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-bold text-emerald-400">R$ ${a.price.toFixed(2)}</span>
+                                <div class="mt-1"><span class="px-2 py-0.5 rounded-full text-[10px] bg-sky-500/20 text-sky-300 font-semibold">${a.status}</span></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            renderDashboardCharts();
+        }
+
+        function renderDashboardCharts() {
+            const ctx1 = document.getElementById('chartMonth').getContext('2d');
+            if (chartMonthInstance) chartMonthInstance.destroy();
+
+            const now = new Date();
+            const months = [];
+            for (let i = 3; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const monthKey = `${year}-${month}`;
+                const label = date.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
+                months.push({ key: monthKey, label: label.charAt(0).toUpperCase() + label.slice(1), value: 0 });
+            }
+
+            appData.transactions.forEach(t => {
+                if (t.type !== 'revenue') return;
+                const month = String(t.date).slice(0, 7);
+                const found = months.find(m => m.key === month);
+                if (found) found.value += Number(t.val) || 0;
+            });
+
+            chartMonthInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: months.map(m => m.label),
+                    datasets: [{
+                        label: 'Faturamento (R$)',
+                        data: months.map(m => m.value),
+                        backgroundColor: '#0ea5e9',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: value => 'R$ ' + Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 0 }) }
+                        }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('chartServices').getContext('2d');
+            if (chartServicesInstance) chartServicesInstance.destroy();
+
+            const serviceCount = {};
+            appData.appointments.filter(a => a.status === 'Concluído').forEach(a => {
+                serviceCount[a.serviceName] = (serviceCount[a.serviceName] || 0) + 1;
+            });
+
+            const serviceLabels = Object.keys(serviceCount);
+            const serviceValues = Object.values(serviceCount);
+
+            chartServicesInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: serviceLabels.length ? serviceLabels : ['Nenhum serviço realizado'],
+                    datasets: [{
+                        data: serviceValues.length ? serviceValues : [1],
+                        backgroundColor: serviceValues.length ? ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'] : ['#334155']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } } }
+            });
+        }
+
+        function renderClients() {
+            const grid = document.getElementById('clients-grid');
+            const search = document.getElementById('client-search').value.toLowerCase();
+            grid.innerHTML = '';
+
+            const filtered = appData.clients.filter(c => c.name.toLowerCase().includes(search) || c.phone.includes(search));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-xs text-slate-400">Nenhum cliente encontrado.</div>`;
+                return;
+            }
+
+            filtered.forEach(c => {
+                const clientApps = appData.appointments.filter(a => a.clientId === c.id);
+                const totalSpent = clientApps.reduce((acc, cur) => acc + (cur.status === 'Concluído' ? cur.price : 0), 0);
+
+                grid.innerHTML += `
+                    <div class="glass p-5 rounded-3xl border border-slate-800 space-y-3 shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-start justify-between">
+                                <h4 class="font-bold text-base text-white">${c.name}</h4>
+                                <button onclick="openClientProfile('${c.id}')" class="text-xs text-sky-400 hover:underline font-semibold">Ver Perfil</button>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-phone mr-1"></i> ${c.phone}</p>
+                            <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i> ${c.address || 'Endereço não informado'}, ${c.number || ''} - ${c.city || ''}</p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                            <div>Total gasto: <span class="font-bold text-emerald-400">R$ ${totalSpent.toFixed(2)}</span></div>
+                            <a href="https://wa.me/${c.whatsapp}?text=Olá%20${encodeURIComponent(c.name)},%20tudo%20bem?" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-400 font-semibold hover:bg-emerald-500/30 transition flex items-center gap-1.5">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function saveClient(e) {
+            e.preventDefault();
+            const id = document.getElementById('client-id').value || 'c_' + Date.now();
+            const name = document.getElementById('client-name').value;
+            const phone = document.getElementById('client-phone').value;
+            const whatsapp = document.getElementById('client-whatsapp').value;
+            const cpf = document.getElementById('client-cpf').value;
+            const address = document.getElementById('client-address').value;
+            const number = document.getElementById('client-number').value;
+            const neighborhood = document.getElementById('client-neighborhood').value;
+            const city = document.getElementById('client-city').value;
+            const cep = document.getElementById('client-cep').value;
+            const notes = document.getElementById('client-notes').value;
+
+            const existingIdx = appData.clients.findIndex(c => c.id === id);
+            if (existingIdx >= 0) {
+                appData.clients[existingIdx] = { id, name, phone, whatsapp, cpf, address, number, neighborhood, city, cep, notes };
+                showToast("Cliente Atualizado", "Dados salvos com sucesso.");
+            } else {
+                appData.clients.push({ id, name, phone, whatsapp, cpf, address, number, neighborhood, city, cep, notes });
+                showToast("Cliente Cadastrado", "Novo cliente adicionado com sucesso.");
+            }
+
+            saveLocalStorage();
+            closeModal('modal-client');
+            document.getElementById('form-client').reset();
+            document.getElementById('client-id').value = '';
+            populateSelects();
+            renderClients();
+        }
+
+        function openClientProfile(clientId) {
+            const c = appData.clients.find(x => x.id === clientId);
+            if (!c) return;
+
+            const clientApps = appData.appointments.filter(a => a.clientId === c.id);
+            const totalSpent = clientApps.reduce((acc, cur) => acc + (cur.status === 'Concluído' ? cur.price : 0), 0);
+            const clientPhotos = appData.gallery.filter(g => g.clientId === c.id);
+
+            let historyHTML = clientApps.map(a => `
+                <div class="glass p-2.5 rounded-xl text-xs flex justify-between items-center border border-slate-800">
+                    <div>
+                        <div class="font-bold text-sky-400">${a.date} às ${a.time} - ${a.serviceName}</div>
+                        <div class="text-slate-400">Status: ${a.status} | Pagamento: ${a.payment}</div>
+                    </div>
+                    <span class="font-bold text-emerald-400">R$ ${a.price.toFixed(2)}</span>
+                </div>
+            `).join('') || '<div class="text-xs text-slate-400">Nenhum serviço registrado.</div>';
+
+            let photosHTML = clientPhotos.map(p => `
+                <div class="glass p-2 rounded-xl text-xs space-y-1">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><span class="text-[10px] text-slate-400">Antes</span><img src="${p.before}" class="w-full h-24 object-cover rounded-lg"></div>
+                        <div><span class="text-[10px] text-slate-400">Depois</span><img src="${p.after}" class="w-full h-24 object-cover rounded-lg"></div>
+                    </div>
+                </div>
+            `).join('') || '<div class="text-xs text-slate-400">Nenhuma foto cadastrada.</div>';
+
+            const container = document.getElementById('client-profile-content');
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xl font-bold">${c.name}</h4>
+                            <p class="text-xs text-slate-400"><i class="fa-solid fa-phone mr-1"></i> ${c.phone} | <i class="fa-brands fa-whatsapp ml-2 mr-1"></i> ${c.whatsapp}</p>
+                            <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-location-dot mr-1"></i> ${c.address || ''}, ${c.number || ''} - ${c.neighborhood || ''}, ${c.city || ''}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-400">Total Gasto</div>
+                            <div class="text-lg font-bold text-emerald-400">R$ ${totalSpent.toFixed(2)}</div>
+                            <div class="text-xs text-slate-400 mt-1">${clientApps.length} serviços</div>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-800">
+                        <h5 class="font-semibold text-xs text-slate-300 mb-2">Histórico de Serviços</h5>
+                        <div class="space-y-2 max-h-40 overflow-y-auto">${historyHTML}</div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-800">
+                        <h5 class="font-semibold text-xs text-slate-300 mb-2">Fotos Antes e Depois</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-y-auto">${photosHTML}</div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                        <button onclick="editClient('${c.id}')" class="px-3 py-2 rounded-xl text-xs font-semibold bg-sky-500/15 text-sky-400 hover:bg-sky-500/25">Editar Cliente</button>
+                        <button onclick="deleteClient('${c.id}')" class="px-3 py-2 rounded-xl text-xs font-semibold bg-rose-500/15 text-rose-400 hover:bg-rose-500/25">Excluir</button>
+                    </div>
+                </div>
+            `;
+            openModal('modal-client-profile');
+        }
+
+        function editClient(id) {
+            const c = appData.clients.find(x => x.id === id);
+            if (!c) return;
+            closeModal('modal-client-profile');
+            document.getElementById('client-id').value = c.id;
+            document.getElementById('client-name').value = c.name;
+            document.getElementById('client-phone').value = c.phone;
+            document.getElementById('client-whatsapp').value = c.whatsapp;
+            document.getElementById('client-cpf').value = c.cpf || '';
+            document.getElementById('client-address').value = c.address || '';
+            document.getElementById('client-number').value = c.number || '';
+            document.getElementById('client-neighborhood').value = c.neighborhood || '';
+            document.getElementById('client-city').value = c.city || '';
+            document.getElementById('client-cep').value = c.cep || '';
+            document.getElementById('client-notes').value = c.notes || '';
+            openModal('modal-client');
+        }
+
+        function deleteClient(id) {
+            if (confirm("Tem certeza que deseja excluir este cliente?")) {
+                appData.clients = appData.clients.filter(c => c.id !== id);
+                saveLocalStorage();
+                closeModal('modal-client-profile');
+                renderClients();
+                populateSelects();
+                showToast("Cliente Excluído", "Registro removido com sucesso.");
+            }
+        }
+
+        function setScheduleViewMode(mode) {
+            scheduleViewModeState = mode;
+            ['day', 'week', 'month'].forEach(m => {
+                const btn = document.getElementById(`btn-mode-${m}`);
+                if (m === mode) {
+                    btn.className = 'px-3 py-1.5 rounded-lg bg-sky-500 text-white transition';
+                } else {
+                    btn.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
+                }
+            });
+            renderSchedule();
+        }
+
+        function changeScheduleDate(delta) {
+            if (scheduleViewModeState === 'day') {
+                currentScheduleDate.setDate(currentScheduleDate.getDate() + delta);
+            } else if (scheduleViewModeState === 'week') {
+                currentScheduleDate.setDate(currentScheduleDate.getDate() + (delta * 7));
+            } else {
+                currentScheduleDate.setMonth(currentScheduleDate.getMonth() + delta);
+            }
+            renderSchedule();
+        }
+
+        function renderSchedule() {
+            const container = document.getElementById('schedule-container');
+            const dateLabel = document.getElementById('schedule-current-date-label');
+            
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            dateLabel.innerText = currentScheduleDate.toLocaleDateString('pt-BR', options);
+
+            container.innerHTML = '';
+            const targetDateStr = currentScheduleDate.toISOString().split('T')[0];
+
+            let filtered = appData.appointments;
+            if (scheduleViewModeState === 'day') {
+                filtered = appData.appointments.filter(a => a.date === targetDateStr);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="glass p-6 rounded-3xl text-center text-slate-400 text-xs">Nenhum agendamento para este período.</div>`;
+                return;
+            }
+
+            filtered.sort((a,b) => a.time.localeCompare(b.time)).forEach(a => {
+                const client = appData.clients.find(c => c.id === a.clientId) || { name: 'Cliente não encontrado', phone: '', address: '' };
+                
+                const statusColors = {
+                    'Agendado': 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+                    'Confirmado': 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+                    'Em andamento': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+                    'Concluído': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+                    'Cancelado': 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+                    'Não compareceu': 'bg-slate-500/20 text-slate-300 border-slate-500/30'
+                };
+
+                const msg = `Olá, ${client.name}! 👋 Seu serviço de higienização (${a.serviceName}) está confirmado para ${a.date} às ${a.time}. Valor: R$ ${a.price.toFixed(2)}. Obrigado pela preferência!`;
+
+                container.innerHTML += `
+                    <div class="glass p-4 rounded-3xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusColors[a.status] || 'bg-slate-800 text-slate-300'}">${a.status}</span>
+                                <span class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i> ${a.date} às ${a.time}</span>
+                            </div>
+                            <h4 class="font-bold text-base text-white">${client.name}</h4>
+                            <p class="text-xs text-slate-300"><i class="fa-solid fa-spray-can mr-1"></i> ${a.serviceName}</p>
+                            <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i> ${client.address || ''}, ${client.number || ''} - ${client.city || ''}</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-bold text-emerald-400 text-sm">R$ ${a.price.toFixed(2)}</span>
+                            <a href="https://wa.me/${client.whatsapp}?text=${encodeURIComponent(msg)}" target="_blank" class="px-3 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/30 transition flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                            </a>
+                            <select onchange="updateAppointmentStatus('${a.id}', this.value)" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs focus:outline-none">
+                                <option value="">Alterar Status...</option>
+                                <option value="Agendado">Agendado</option>
+                                <option value="Confirmado">Confirmado</option>
+                                <option value="Em andamento">Em andamento</option>
+                                <option value="Concluído">Concluído</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                            <button onclick="deleteAppointment('${a.id}')" class="p-2 rounded-xl bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 transition"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function saveAppointment(e) {
+            e.preventDefault();
+            const id = document.getElementById('service-app-id').value || 'a_' + Date.now();
+            const clientId = document.getElementById('app-client-id').value;
+            const serviceName = document.getElementById('app-service-name').value;
+            const date = document.getElementById('app-date').value;
+            const time = document.getElementById('app-time').value;
+            const price = parseFloat(document.getElementById('app-price').value);
+            const payment = document.getElementById('app-payment').value;
+            const status = document.getElementById('app-status').value;
+            const notes = document.getElementById('app-notes').value;
+
+            const existingIdx = appData.appointments.findIndex(a => a.id === id);
+            if (existingIdx >= 0) {
+                appData.appointments[existingIdx] = { id, clientId, serviceName, date, time, price, payment, status, notes };
+                showToast("Agendamento Atualizado", "Alterações salvas com sucesso.");
+            } else {
+                appData.appointments.push({ id, clientId, serviceName, date, time, price, payment, status, notes });
+                if (status === 'Concluído') {
+                    appData.transactions.push({ id: 't_' + Date.now(), type: 'revenue', desc: `${serviceName}`, val: price, date: date, category: 'Serviços', payment: payment });
+                }
+                showToast("Agendamento Criado", "Novo serviço agendado com sucesso.");
+            }
+
+            saveLocalStorage();
+            closeModal('modal-service');
+            document.getElementById('form-service').reset();
+            document.getElementById('service-app-id').value = '';
+            renderSchedule();
+        }
+
+        function updateAppointmentStatus(id, newStatus) {
+            if (!newStatus) return;
+            const app = appData.appointments.find(a => a.id === id);
+            if (app) {
+                app.status = newStatus;
+                if (newStatus === 'Concluído') {
+                    appData.transactions.push({ id: 't_' + Date.now(), type: 'revenue', desc: `${app.serviceName}`, val: app.price, date: app.date, category: 'Serviços', payment: app.payment });
+                }
+                saveLocalStorage();
+                renderSchedule();
+                showToast("Status Atualizado", `Agendamento marcado como ${newStatus}.`);
+            }
+        }
+
+        function deleteAppointment(id) {
+            if (confirm("Deseja excluir este agendamento?")) {
+                appData.appointments = appData.appointments.filter(a => a.id !== id);
+                saveLocalStorage();
+                renderSchedule();
+                showToast("Excluído", "Agendamento removido.");
+            }
+        }
+
+function renderServicesCatalog() {
+    const grid = document.getElementById('services-catalog-grid');
+
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    if (!appData.servicesCatalog || appData.servicesCatalog.length === 0) {
+        grid.innerHTML = `
+            <div class="col-span-full glass p-8 rounded-3xl border border-slate-800 text-center">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-sky-500/10 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-couch text-3xl text-sky-400"></i>
+                </div>
+
+                <h4 class="font-semibold text-slate-200">
+                    Nenhum estofado cadastrado
+                </h4>
+
+                <p class="text-xs text-slate-500 mt-1">
+                    Cadastre seus estofados e serviços para utilizá-los
+                    em orçamentos e agendamentos.
+                </p>
+
+                <button
+                    onclick="openModal('modal-catalog-item')"
+                    class="mt-4 px-4 py-2.5 rounded-xl bg-sky-500 text-white text-xs font-semibold hover:bg-sky-400 transition">
+                    <i class="fa-solid fa-plus mr-1"></i>
+                    Cadastrar primeiro estofado
+                </button>
+            </div>
+        `;
+
+        return;
+    }
+
+    appData.servicesCatalog.forEach(s => {
+
+        const price = Number(s.price) || 0;
+        const cost = Number(s.cost) || 0;
+
+        const margin = price > 0
+            ? (((price - cost) / price) * 100)
+            : 0;
+
+        const profit = price - cost;
+
+        const category = s.category || 'Outro';
+        const duration = s.duration || 'Não informado';
+        const description = s.description || 'Sem descrição cadastrada.';
+
+        const categoryIcons = {
+            'Sofá': 'fa-couch',
+            'Poltrona': 'fa-chair',
+            'Cadeira': 'fa-chair',
+            'Colchão': 'fa-bed',
+            'Tapete': 'fa-rug',
+            'Banco': 'fa-chair',
+            'Puff': 'fa-couch',
+            'Cabeceira': 'fa-bed',
+            'Carpete': 'fa-border-all',
+            'Outro': 'fa-box'
+        };
+
+        const icon = categoryIcons[category] || 'fa-couch';
+
+        grid.innerHTML += `
+            <div class="glass p-5 rounded-3xl border border-slate-800 shadow-lg
+                        flex flex-col justify-between gap-4
+                        hover:border-slate-700 transition">
+
+                <!-- Cabeçalho -->
+                <div>
+
+                    <div class="flex items-start justify-between gap-3">
+
+                        <div class="flex items-center gap-3 min-w-0">
+
+                            <div class="w-11 h-11 rounded-2xl
+                                        bg-sky-500/10 text-sky-400
+                                        flex items-center justify-center shrink-0">
+
+                                <i class="fa-solid ${icon}"></i>
+
+                            </div>
+
+                            <div class="min-w-0">
+
+                                <h4 class="font-bold text-base text-white truncate">
+                                    ${s.name}
+                                </h4>
+
+                                <p class="text-[11px] text-slate-400 mt-0.5">
+                                    ${category}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold shrink-0
+                            ${s.active
+                                ? 'bg-emerald-500/15 text-emerald-400'
+                                : 'bg-slate-800 text-slate-400'}">
+
+                            <i class="fa-solid ${s.active ? 'fa-check' : 'fa-pause'} mr-1"></i>
+
+                            ${s.active ? 'Ativo' : 'Inativo'}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- Serviço -->
+                    <div class="mt-4 p-3 rounded-2xl bg-slate-900/60 border border-slate-800">
+
+                        <div class="flex items-center justify-between gap-2">
+
+                            <div>
+                                <p class="text-[10px] uppercase tracking-wide text-slate-500">
+                                    Serviço
+                                </p>
+
+                                <p class="text-xs font-semibold text-sky-400 mt-0.5">
+                                    <i class="fa-solid fa-spray-can-sparkles mr-1"></i>
+                                    ${s.service}
+                                </p>
+                            </div>
+
+                            <div class="text-right">
+
+                                <p class="text-[10px] uppercase tracking-wide text-slate-500">
+                                    Unidade
+                                </p>
+
+                                <p class="text-xs font-semibold text-slate-300 mt-0.5">
+                                    ${s.unit}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Informações -->
+                    <div class="grid grid-cols-2 gap-2 mt-3">
+
+                        <div class="p-3 rounded-2xl bg-slate-900/40 border border-slate-800">
+
+                            <p class="text-[10px] text-slate-500">
+                                Tempo estimado
+                            </p>
+
+                            <p class="text-xs font-semibold text-slate-300 mt-1">
+                                <i class="fa-regular fa-clock mr-1 text-sky-400"></i>
+                                ${duration}
+                            </p>
+
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-slate-900/40 border border-slate-800">
+
+                            <p class="text-[10px] text-slate-500">
+                                Lucro
+                            </p>
+
+                            <p class="text-xs font-semibold text-emerald-400 mt-1">
+                                R$ ${profit.toFixed(2)}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Descrição -->
+                    <div class="mt-3">
+
+                        <p class="text-[11px] text-slate-400 leading-relaxed">
+                            ${description}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Rodapé -->
+                <div class="pt-4 border-t border-slate-800">
+
+                    <div class="flex items-end justify-between gap-3">
+
+                        <div>
+
+                            <p class="text-[10px] text-slate-500">
+                                Preço de venda
+                            </p>
+
+                            <span class="font-bold text-xl text-emerald-400">
+                                R$ ${price.toFixed(2)}
+                            </span>
+
+                        </div>
+
+                        <div class="text-right">
+
+                            <p class="text-[10px] text-slate-500">
+                                Margem
+                            </p>
+
+                            <span class="text-xs font-bold
+                                ${margin >= 50
+                                    ? 'text-emerald-400'
+                                    : margin >= 20
+                                        ? 'text-amber-400'
+                                        : 'text-rose-400'}">
+
+                                ${margin.toFixed(0)}%
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Botões -->
+                    <div class="flex gap-2 mt-4">
+
+                        <button
+                            onclick="editCatalogItem('${s.id}')"
+                            class="flex-1 px-3 py-2.5 rounded-xl
+                                   bg-sky-500/15 text-sky-400
+                                   hover:bg-sky-500/25 transition
+                                   text-xs font-semibold">
+
+                            <i class="fa-solid fa-pen mr-1"></i>
+                            Editar
+
+                        </button>
+
+                        <button
+                            onclick="deleteCatalogItem('${s.id}')"
+                            class="px-3 py-2.5 rounded-xl
+                                   bg-rose-500/15 text-rose-400
+                                   hover:bg-rose-500/25 transition">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+    });
+}
+
+function saveCatalogItem(e) {
+    e.preventDefault();
+
+    const id = document.getElementById('catalog-id').value || 's_' + Date.now();
+
+    const name = document.getElementById('catalog-name').value.trim();
+    const category = document.getElementById('catalog-category').value;
+    const service = document.getElementById('catalog-service').value;
+    const unit = document.getElementById('catalog-unit').value;
+
+    const price =
+        parseFloat(document.getElementById('catalog-price').value) || 0;
+
+    const cost =
+        parseFloat(document.getElementById('catalog-cost').value) || 0;
+
+    const duration =
+        document.getElementById('catalog-duration').value.trim();
+
+    const description =
+        document.getElementById('catalog-description').value.trim();
+
+    const active =
+        document.getElementById('catalog-active').checked;
+
+    if (!name) {
+        showToast(
+            "Atenção",
+            "Informe o nome do estofado.",
+            "error"
+        );
+        return;
+    }
+
+    if (price <= 0) {
+        showToast(
+            "Atenção",
+            "Informe um preço de venda válido.",
+            "error"
+        );
+        return;
+    }
+
+    if (cost > price) {
+        const confirmar = confirm(
+            "O custo informado é maior que o preço de venda.\n\n" +
+            "Deseja salvar mesmo assim?"
+        );
+
+        if (!confirmar) return;
+    }
+
+    const catalogItem = {
+        id,
+        name,
+        category,
+        service,
+        unit,
+        price,
+        cost,
+        duration,
+        description,
+        active
+    };
+
+    const existingIdx =
+        appData.servicesCatalog.findIndex(s => s.id === id);
+
+    if (existingIdx >= 0) {
+
+        appData.servicesCatalog[existingIdx] = catalogItem;
+
+        showToast(
+            "Catálogo Atualizado",
+            "Cadastro alterado com sucesso."
+        );
+
+    } else {
+
+        appData.servicesCatalog.push(catalogItem);
+
+        showToast(
+            "Cadastro Realizado",
+            "Novo estofado adicionado ao catálogo."
+        );
+    }
+
+    saveLocalStorage();
+
+    closeModal('modal-catalog-item');
+
+    document.getElementById('form-catalog').reset();
+
+    document.getElementById('catalog-id').value = '';
+
+    document.getElementById('catalog-active').checked = true;
+
+    populateSelects();
+
+    renderServicesCatalog();
+}
+
+        function editCatalogItem(id) {
+    const s = appData.servicesCatalog.find(x => x.id === id);
+
+    if (!s) return;
+
+    document.getElementById('catalog-id').value = s.id;
+
+    document.getElementById('catalog-name').value =
+        s.name || '';
+
+    document.getElementById('catalog-category').value =
+        s.category || 'Outro';
+
+    document.getElementById('catalog-service').value =
+        s.service || 'Limpeza';
+
+    document.getElementById('catalog-unit').value =
+        s.unit || 'Unidade';
+
+    document.getElementById('catalog-price').value =
+        s.price ?? '';
+
+    document.getElementById('catalog-cost').value =
+        s.cost ?? '';
+
+    document.getElementById('catalog-duration').value =
+        s.duration || '';
+
+    document.getElementById('catalog-description').value =
+        s.description || '';
+
+    document.getElementById('catalog-active').checked =
+        s.active !== false;
+
+    openModal('modal-catalog-item');
+}
+     
+     function deleteCatalogItem(id) {
+    const item = appData.servicesCatalog.find(x => x.id === id);
+
+    if (!item) return;
+
+    const confirmar = confirm(
+        `Deseja realmente excluir o cadastro?\n\n` +
+        `Estofado: ${item.name}\n` +
+        `Serviço: ${item.service}\n\n` +
+        `Essa ação não poderá ser desfeita.`
+    );
+
+    if (!confirmar) return;
+
+    appData.servicesCatalog =
+        appData.servicesCatalog.filter(x => x.id !== id);
+
+    saveLocalStorage();
+
+    populateSelects();
+
+    renderServicesCatalog();
+
+    showToast(
+        "Cadastro Excluído",
+        `"${item.name}" foi removido do catálogo.`
+    );
+}
+ 
+        function switchBudgetTab(tab) {
+            budgetTabState = tab;
+            const btnList = document.getElementById('btn-budget-list');
+            const btnCalc = document.getElementById('btn-budget-calc');
+            if (tab === 'list') {
+                btnList.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition';
+                btnCalc.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition';
+                renderBudgetsList();
+            } else {
+                btnCalc.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition';
+                btnList.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition';
+                renderBudgetCalculatorTab();
+            }
+        }
+
+        function renderBudgets() {
+            renderBudgetsList();
+        }
+
+        function renderBudgetsList() {
+            const container = document.getElementById('budget-tab-content');
+            if (!container) return;
+
+            let html = `
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-semibold text-sm text-slate-300">Orçamentos Gerados</h4>
+                    <button onclick="openModal('modal-budget-builder')" class="text-xs text-sky-400 hover:underline">+ Novo Orçamento</button>
+                </div>
+            `;
+
+            if (!appData.budgets || appData.budgets.length === 0) {
+                html += `<div class="glass p-8 rounded-3xl text-center text-slate-400 text-xs">Nenhum orçamento salvo. Clique em "Novo Orçamento Rápido" para criar.</div>`;
+            } else {
+                appData.budgets.forEach(b => {
+                    const client = appData.clients.find(c => c.id === b.clientId) || { name: 'Cliente', phone: '', whatsapp: '' };
+                    const itemsText = b.items.join(', ');
+                    const waText = `Olá ${client.name}! Segue o orçamento da ${appData.settings.companyName}:\nServiços: ${itemsText}\nDeslocamento: R$ ${b.shipping.toFixed(2)}\nDesconto: R$ ${b.discount.toFixed(2)}\n*Total: R$ ${b.total.toFixed(2)}*\nValidade: ${b.validity} dias.\nChave Pix: ${appData.settings.companyPix}`;
+
+                    html += `
+                        <div class="glass p-4 rounded-3xl border border-slate-800 space-y-2 text-xs">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h5 class="font-bold text-sm text-white">${client.name}</h5>
+                                    <p class="text-sky-400 mt-0.5"><i class="fa-solid fa-spray-can mr-1"></i> ${itemsText}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-bold text-emerald-400 text-base">R$ ${b.total.toFixed(2)}</span>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">Validade: ${b.validity} dias</div>
+                                </div>
+                            </div>
+                            <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
+                                <span class="text-slate-400">Criado em ${b.date}</span>
+                                <div class="flex gap-2">
+                                    <a href="https://wa.me/${client.whatsapp}?text=${encodeURIComponent(waText)}" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-400 font-semibold hover:bg-emerald-500/30 transition flex items-center gap-1">
+                                        <i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp
+                                    </a>
+                                    <button onclick="deleteBudget('${b.id}')" class="p-2 rounded-xl bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 transition"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            container.innerHTML = html;
+        }
+
+        function renderBudgetCalculatorTab() {
+            openModal('modal-budget-builder');
+        }
+
+        function calcBudgetTotal() {
+            let total = 0;
+            const checkboxes = document.querySelectorAll('.bud-service-chk:checked');
+            checkboxes.forEach(chk => {
+                total += parseFloat(chk.getAttribute('data-price')) || 0;
+            });
+            const discount = parseFloat(document.getElementById('bud-discount').value) || 0;
+            const shipping = parseFloat(document.getElementById('bud-shipping').value) || 0;
+            total = Math.max(0, total - discount + shipping);
+            document.getElementById('bud-total-display').innerText = `R$ ${total.toFixed(2)}`;
+            return total;
+        }
+
+        function saveBudget(e) {
+            e.preventDefault();
+            const clientId = document.getElementById('bud-client-id').value;
+            if (!clientId) {
+                showToast("Atenção", "Selecione um cliente para o orçamento.", "error");
+                return;
+            }
+            const checkboxes = document.querySelectorAll('.bud-service-chk:checked');
+            if (checkboxes.length === 0) {
+                showToast("Atenção", "Selecione ao menos um serviço.", "error");
+                return;
+            }
+
+            const items = Array.from(checkboxes).map(chk => chk.value);
+            const discount = parseFloat(document.getElementById('bud-discount').value) || 0;
+            const shipping = parseFloat(document.getElementById('bud-shipping').value) || 0;
+            const validity = parseInt(document.getElementById('bud-validity').value) || 7;
+            const notes = document.getElementById('bud-notes').value;
+            const total = calcBudgetTotal();
+
+            const newBudget = {
+                id: 'b_' + Date.now(),
+                clientId,
+                items,
+                discount,
+                shipping,
+                validity,
+                notes,
+                total,
+                date: new Date().toLocaleDateString('pt-BR')
+            };
+
+            appData.budgets.push(newBudget);
+            saveLocalStorage();
+            closeModal('modal-budget-builder');
+            switchBudgetTab('list');
+            showToast("Orçamento Criado", "Proposta salva com sucesso.");
+        }
+
+        function deleteBudget(id) {
+            if (confirm("Deseja excluir este orçamento?")) {
+                appData.budgets = appData.budgets.filter(b => b.id !== id);
+                saveLocalStorage();
+                renderBudgetsList();
+                showToast("Excluído", "Orçamento removido.");
+            }
+        }
+
+        function renderFinancial() {
+            let rev = 0;
+            let exp = 0;
+
+            appData.transactions.forEach(t => {
+                if (t.type === 'revenue') rev += Number(t.val) || 0;
+                if (t.type === 'expense') exp += Number(t.val) || 0;
+            });
+
+            const profit = rev - exp;
+            document.getElementById('fin-rev').innerText = `R$ ${rev.toFixed(2)}`;
+            document.getElementById('fin-exp').innerText = `R$ ${exp.toFixed(2)}`;
+            document.getElementById('fin-profit').innerText = `R$ ${profit.toFixed(2)}`;
+
+            const list = document.getElementById('transactions-list');
+            list.innerHTML = '';
+
+            if (appData.transactions.length === 0) {
+                list.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">Nenhuma transação registrada.</div>`;
+            } else {
+                appData.transactions.slice().reverse().forEach(t => {
+                    const isRev = t.type === 'revenue';
+                    list.innerHTML += `
+                        <div class="glass p-3 rounded-2xl flex items-center justify-between text-xs border border-slate-800">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-xl ${isRev ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'} flex items-center justify-center font-bold">
+                                    <i class="fa-solid ${isRev ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-white">${t.desc}</div>
+                                    <div class="text-slate-400">${t.date} • ${t.category || 'Geral'} • ${t.payment || ''}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-sm ${isRev ? 'text-emerald-400' : 'text-rose-400'}">${isRev ? '+' : '-'} R$ ${Number(t.val).toFixed(2)}</span>
+                                <button onclick="deleteTransaction('${t.id}')" class="text-slate-500 hover:text-rose-400"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            renderFinancialChart(rev, exp);
+        }
+
+        function renderFinancialChart(rev, exp) {
+            const ctx = document.getElementById('chartFinancial').getContext('2d');
+            if (chartFinancialInstance) chartFinancialInstance.destroy();
+
+            chartFinancialInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Receitas', 'Despesas', 'Lucro Líquido'],
+                    datasets: [{
+                        data: [rev, exp, rev - exp],
+                        backgroundColor: ['#10b981', '#f43f5e', '#0ea5e9'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: value => 'R$ ' + Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 0 }) }
+                        }
+                    }
+                }
+            });
+        }
+
+        function saveTransaction(e) {
+            e.preventDefault();
+            const type = document.getElementById('trans-type').value;
+            const desc = document.getElementById('trans-desc').value;
+            const val = parseFloat(document.getElementById('trans-val').value) || 0;
+            const date = document.getElementById('trans-date').value;
+            const category = document.getElementById('trans-category').value;
+            const payment = document.getElementById('trans-payment').value;
+
+            appData.transactions.push({
+                id: 't_' + Date.now(),
+                type,
+                desc,
+                val,
+                date,
+                category,
+                payment
+            });
+
+            saveLocalStorage();
+            closeModal('modal-transaction');
+            document.getElementById('form-transaction').reset();
+            renderFinancial();
+            showToast("Transação Salva", "Registro financeiro adicionado com sucesso.");
+        }
+
+        function deleteTransaction(id) {
+            if (confirm("Deseja excluir esta transação?")) {
+                appData.transactions = appData.transactions.filter(t => t.id !== id);
+                saveLocalStorage();
+                renderFinancial();
+                showToast("Excluído", "Transação removida.");
+            }
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            if (!appData.gallery || appData.gallery.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full glass p-8 rounded-3xl border border-slate-800 text-center">
+                        <i class="fa-solid fa-camera-retro text-3xl text-slate-600 mb-3"></i>
+                        <h4 class="font-semibold text-slate-300">Nenhuma foto registrada</h4>
+                        <p class="text-xs text-slate-500 mt-1">Adicione fotos de antes e depois dos estofados higienizados.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            appData.gallery.forEach(g => {
+                const client = appData.clients.find(c => c.id === g.clientId) || { name: 'Cliente' };
+                grid.innerHTML += `
+                    <div class="glass p-4 rounded-3xl border border-slate-800 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-sm text-white">${g.serviceName}</h4>
+                            <button onclick="deletePhoto('${g.id}')" class="text-slate-500 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <p class="text-xs text-sky-400">Cliente: ${client.name}</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-[10px] text-slate-400 mb-1 block">ANTES</span>
+                                <img src="${g.before}" class="w-full h-32 object-cover rounded-xl border border-slate-700">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400 mb-1 block">DEPOIS</span>
+                                <img src="${g.after}" class="w-full h-32 object-cover rounded-xl border border-slate-700">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function savePhoto(e) {
+            e.preventDefault();
+            const clientId = document.getElementById('photo-client-id').value;
+            const serviceName = document.getElementById('photo-service-name').value;
+            const before = document.getElementById('photo-before-url').value;
+            const after = document.getElementById('photo-after-url').value;
+
+            appData.gallery.push({
+                id: 'g_' + Date.now(),
+                clientId,
+                serviceName,
+                before,
+                after
+            });
+
+            saveLocalStorage();
+            closeModal('modal-photo');
+            document.getElementById('form-photo').reset();
+            renderGallery();
+            showToast("Foto Salva", "Registro antes e depois adicionado.");
+        }
+
+        function deletePhoto(id) {
+            if (confirm("Deseja excluir esta foto?")) {
+                appData.gallery = appData.gallery.filter(g => g.id !== id);
+                saveLocalStorage();
+                renderGallery();
+                showToast("Excluído", "Registro removido.");
+            }
+        }
+
+        function saveCompanySettings() {
+            appData.settings.companyName = document.getElementById('set-company-name').value;
+            appData.settings.companyDoc = document.getElementById('set-company-doc').value;
+            appData.settings.companyPhone = document.getElementById('set-company-phone').value;
+            appData.settings.companyPix = document.getElementById('set-company-pix').value;
+            saveLocalStorage();
+            showToast("Configurações Salvas", "Dados da empresa atualizados com sucesso.");
+        }
+
+        function savePinSettings() {
+            const pin = document.getElementById('set-pin-input').value;
+            const pinActive = document.getElementById('set-pin-active').checked;
+            appData.settings.pin = pin;
+            appData.settings.pinActive = pinActive;
+            saveLocalStorage();
+            showToast("PIN Salvo", "Configurações de segurança atualizadas.");
+        }
+
+        function exportBackupJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `cleangestor_backup_${new Date().toISOString().slice(0, 10)}.json`);
+            dlAnchorElem.click();
+            showToast("Backup Exportado", "Arquivo JSON gerado com sucesso.");
+        }
+
+        function importBackupJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    appData = parsed;
+                    saveLocalStorage();
+                    initTheme();
+                    populateSelects();
+                    switchView('dashboard');
+                    showToast("Backup Importado", "Dados restaurados com sucesso.");
+                } catch (err) {
+                    showToast("Erro", "Arquivo JSON inválido.", "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportClientsCSV() {
+            let csv = "ID,Nome,Telefone,WhatsApp,CPF,Endereco,Numero,Bairro,Cidade,CEP,Notas\n";
+            appData.clients.forEach(c => {
+                csv += `"${c.id}","${c.name}","${c.phone}","${c.whatsapp}","${c.cpf || ''}","${c.address || ''}","${c.number || ''}","${c.neighborhood || ''}","${c.city || ''}","${c.cep || ''}","${c.notes || ''}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute("href", url);
+            a.setAttribute("download", "cleangestor_clientes.csv");
+            a.click();
+            showToast("Exportado", "Planilha de clientes gerada.");
+        }
+
+        function exportFinancialCSV() {
+            let csv = "ID,Tipo,Descricao,Valor,Data,Categoria,Pagamento\n";
+            appData.transactions.forEach(t => {
+                csv += `"${t.id}","${t.type}","${t.desc}","${t.val}","${t.date}","${t.category || ''}","${t.payment || ''}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute("href", url);
+            a.setAttribute("download", "cleangestor_financeiro.csv");
+            a.click();
+            showToast("Exportado", "Planilha financeira gerada.");
+        }
+
+        function clearAllData() {
+            if (confirm("ATENÇÃO: Deseja apagar todos os dados e reiniciar o sistema de demonstração? Esta ação é irreversível.")) {
+                localStorage.removeItem('cleangestor_data');
+                location.reload();
+            }
+        }
+
+        function handleGlobalSearch(query) {
+            const resultsBox = document.getElementById('search-results');
+            if (!query || query.trim().length < 2) {
+                resultsBox.classList.add('hidden');
+                resultsBox.innerHTML = '';
+                return;
+            }
+
+            const q = query.toLowerCase();
+            const matchedClients = appData.clients.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q));
+            const matchedServices = appData.servicesCatalog.filter(s => s.name.toLowerCase().includes(q));
+
+            let html = '';
+            if (matchedClients.length > 0) {
+                html += `<div class="text-[10px] font-bold text-slate-400 px-2 py-1">CLIENTES</div>`;
+                matchedClients.forEach(c => {
+                    html += `<div onclick="openClientProfile('${c.id}'); document.getElementById('search-results').classList.add('hidden');" class="p-2 hover:bg-slate-800/80 rounded-xl cursor-pointer text-xs flex justify-between"><span>${c.name}</span><span class="text-slate-400">${c.phone}</span></div>`;
+                });
+            }
+            if (matchedServices.length > 0) {
+                html += `<div class="text-[10px] font-bold text-slate-400 px-2.5 pt-2 pb-1">SERVIÇOS</div>`;
+                matchedServices.forEach(s => {
+                    html += `<div onclick="switchView('services'); document.getElementById('search-results').classList.add('hidden');" class="p-2 hover:bg-slate-800/80 rounded-xl cursor-pointer text-xs flex justify-between"><span>${s.name}</span><span class="text-emerald-400">R$ ${s.price.toFixed(2)}</span></div>`;
+                });
+            }
+
+            if (html === '') {
+                html = `<div class="p-3 text-xs text-slate-400 text-center">Nenhum resultado encontrado.</div>`;
+            }
+
+            resultsBox.innerHTML = html;
+            resultsBox.classList.frontend?.remove?.('hidden') || resultsBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
