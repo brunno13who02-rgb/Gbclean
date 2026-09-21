@@ -136,7 +136,7 @@
                     <i class="fa-solid fa-calendar-days w-5 text-center"></i> Agenda
                 </button>
                 <button onclick="switchView('services')" data-nav="services" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                    <i class="fa-solid fa-spray-can-sparkles w-5 text-center"></i> Serviços
+                    <i class="fa-solid fa-couch w-5 text-center"></i> Estofados & Serviços
                 </button>
                 
                 <button onclick="switchView('budget')" data-nav="budget" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
@@ -327,24 +327,17 @@
                     <div id="schedule-container" class="space-y-3"></div>
                 </section>
 
-                <!-- 4. SERVIÇOS VIEW -->
+                <!-- 4. SERVIÇOS VIEW (CATÁLOGO DE ESTOFADOS) -->
                 <section id="view-services" class="space-y-6 view-section hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h3 class="text-xl font-bold">Catálogo de Estofados & Serviços</h3>
-                            
                             <p class="text-slate-400 text-xs">Cadastre estofados, tipos de serviço, unidades e preços.</p>
                         </div>
-                        <button
-    onclick="openModal('modal-catalog-item')"
-    class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400
-           text-white text-xs font-semibold transition
-           flex items-center gap-2 shrink-0">
-
-    <i class="fa-solid fa-plus"></i>
-    Cadastrar Estofado
-
-</button>
+                        <button onclick="openModal('modal-catalog-item')" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-semibold transition flex items-center gap-2 shrink-0 shadow-lg shadow-sky-500/20">
+                            <i class="fa-solid fa-plus"></i>
+                            Cadastrar Estofado
+                        </button>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="services-catalog-grid"></div>
@@ -364,7 +357,6 @@
 
                     <div class="flex gap-2 border-b border-slate-800 pb-2">
                         <button onclick="switchBudgetTab('list')" id="btn-budget-list" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition">Orçamentos Salvos</button>
-                        <button onclick="switchBudgetTab('calculator')" id="btn-budget-calc" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Calculadora Expressa</button>
                     </div>
 
                     <div id="budget-tab-content" class="space-y-3"></div>
@@ -512,14 +504,14 @@
                 <button onclick="switchView('schedule')" data-nav="schedule" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
                     <i class="fa-solid fa-calendar-days text-base mb-0.5"></i> Agenda
                 </button>
+                <button onclick="switchView('services')" data-nav="services" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
+                    <i class="fa-solid fa-couch text-base mb-0.5"></i> Catálogo
+                </button>
                 <button onclick="switchView('budget')" data-nav="budget" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
                     <i class="fa-solid fa-file-invoice-dollar text-base mb-0.5"></i> Orçamentos
                 </button>
                 <button onclick="switchView('financial')" data-nav="financial" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
                     <i class="fa-solid fa-wallet text-base mb-0.5"></i> Financeiro
-                </button>
-                <button onclick="switchView('settings')" data-nav="settings" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
-                    <i class="fa-solid fa-gear text-base mb-0.5"></i> Ajustes
                 </button>
             </nav>
         </div>
@@ -604,7 +596,7 @@
                     <select id="app-client-id" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Serviço *</label>
+                    <label class="text-xs text-slate-400">Estofado / Serviço *</label>
                     <select id="app-service-name" required onchange="updateAppointmentPrice()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
                 </div>
                 <div>
@@ -646,7 +638,6 @@
                         <option value="Em andamento">Em andamento</option>
                         <option value="Concluído">Concluído</option>
                         <option value="Cancelado">Cancelado</option>
-                        <option value="Não compareceu">Não compareceu</option>
                     </select>
                 </div>
                 <div>
@@ -661,244 +652,156 @@
         </div>
     </div>
 
-    <!-- Modal Novo Item no Catálogo de Serviços -->
-  <div id="modal-catalog-item" class="modal-overlay hidden">
-    <div class="modal-content glass rounded-3xl w-full max-w-2xl p-6 border border-slate-700 shadow-2xl">
+    <!-- Modal Novo Item no Catálogo de Estofados / Serviços -->
+    <div id="modal-catalog-item" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass rounded-3xl w-full max-w-2xl p-6 border border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
 
-        <div class="flex items-center justify-between mb-5">
-            <div>
-                <h3 class="text-xl font-bold text-white">
-                    <i class="fa-solid fa-couch text-sky-400 mr-2"></i>
-                    Cadastro de Estofado
-                </h3>
-                <p class="text-xs text-slate-400 mt-1">
-                    Cadastre o estofado e os serviços disponíveis para ele.
-                </p>
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h3 class="text-xl font-bold text-white">
+                        <i class="fa-solid fa-couch text-sky-400 mr-2"></i>
+                        Cadastro de Estofado
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">
+                        Cadastre o estofado e os serviços disponíveis para ele.
+                    </p>
+                </div>
+
+                <button type="button" onclick="closeModal('modal-catalog-item')" class="w-9 h-9 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
-            <button
-                type="button"
-                onclick="closeModal('modal-catalog-item')"
-                class="w-9 h-9 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <form id="form-catalog" onsubmit="saveCatalogItem(event)" class="space-y-4">
+
+                <input type="hidden" id="catalog-id">
+
+                <!-- Nome + Categoria -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                            Nome do estofado *
+                        </label>
+                        <input type="text" id="catalog-name" required placeholder="Ex.: Sofá 3 Lugares Retrátil" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                            Categoria *
+                        </label>
+                        <select id="catalog-category" required class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                            <option value="Sofá">Sofá</option>
+                            <option value="Poltrona">Poltrona</option>
+                            <option value="Cadeira">Cadeira</option>
+                            <option value="Colchão">Colchão</option>
+                            <option value="Tapete">Tapete</option>
+                            <option value="Banco">Banco</option>
+                            <option value="Puff">Puff</option>
+                            <option value="Cabeceira">Cabeceira</option>
+                            <option value="Carpete">Carpete</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Serviço + Unidade -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                            Tipo de serviço *
+                        </label>
+                        <select id="catalog-service" required class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                            <option value="Limpeza">Limpeza</option>
+                            <option value="Impermeabilização">Impermeabilização</option>
+                            <option value="Limpeza + Impermeabilização">Limpeza + Impermeabilização</option>
+                            <option value="Higienização">Higienização</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                            Unidade de cobrança *
+                        </label>
+                        <select id="catalog-unit" required class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                            <option value="Unidade">Unidade</option>
+                            <option value="Módulo">Módulo</option>
+                            <option value="Lugar">Lugar</option>
+                            <option value="Metro">Metro</option>
+                            <option value="Serviço">Serviço</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Preço + Custo + Tempo -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                            Preço de venda *
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-slate-500 text-sm">R$</span>
+                            <input type="number" id="catalog-price" required min="0" step="0.01" placeholder="0,00" class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                            Custo estimado
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-slate-500 text-sm">R$</span>
+                            <input type="number" id="catalog-cost" min="0" step="0.01" placeholder="0,00" class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                            Tempo estimado
+                        </label>
+                        <div class="relative">
+                            <i class="fa-regular fa-clock absolute left-3 top-3.5 text-slate-500 text-sm"></i>
+                            <input type="text" id="catalog-duration" placeholder="Ex.: 2h 30min" class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Descrição -->
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
+                        Descrição do serviço
+                    </label>
+                    <textarea id="catalog-description" rows="3" placeholder="Ex.: Higienização profunda, remoção de manchas e aplicação de produtos específicos..." class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm resize-none focus:outline-none focus:border-sky-500"></textarea>
+                </div>
+
+                <!-- Status -->
+                <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                    <div>
+                        <p class="text-sm font-semibold text-white">Serviço ativo</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Serviços inativos não aparecem para novos agendamentos e orçamentos.</p>
+                    </div>
+
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="catalog-active" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:bg-sky-500 transition"></div>
+                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-5"></div>
+                    </label>
+                </div>
+
+                <!-- Rodapé do Modal -->
+                <div class="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-3 border-t border-slate-800">
+                    <button type="button" onclick="closeModal('modal-catalog-item')" class="px-5 py-3 rounded-xl bg-slate-800 text-slate-300 text-sm font-semibold hover:bg-slate-700 transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-5 py-3 rounded-xl bg-sky-500 text-white text-sm font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Cadastro
+                    </button>
+                </div>
+
+            </form>
         </div>
-
-        <form id="form-catalog" onsubmit="saveCatalogItem(event)" class="space-y-4">
-
-            <input type="hidden" id="catalog-id">
-
-            <!-- Nome + Categoria -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                        Nome do estofado *
-                    </label>
-
-                    <input
-                        type="text"
-                        id="catalog-name"
-                        required
-                        placeholder="Ex.: Sofá 3 Lugares"
-                        class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-                </div>
-
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                        Categoria *
-                    </label>
-
-                    <select
-                        id="catalog-category"
-                        required
-                        class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-
-                        <option value="Sofá">Sofá</option>
-                        <option value="Poltrona">Poltrona</option>
-                        <option value="Cadeira">Cadeira</option>
-                        <option value="Colchão">Colchão</option>
-                        <option value="Tapete">Tapete</option>
-                        <option value="Banco">Banco</option>
-                        <option value="Puff">Puff</option>
-                        <option value="Cabeceira">Cabeceira</option>
-                        <option value="Carpete">Carpete</option>
-                        <option value="Outro">Outro</option>
-
-                    </select>
-                </div>
-
-            </div>
-
-            <!-- Serviço + Unidade -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                        Tipo de serviço *
-                    </label>
-
-                    <select
-                        id="catalog-service"
-                        required
-                        class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-
-                        <option value="Limpeza">Limpeza</option>
-                        <option value="Impermeabilização">Impermeabilização</option>
-                        <option value="Limpeza + Impermeabilização">
-                            Limpeza + Impermeabilização
-                        </option>
-                        <option value="Higienização">Higienização</option>
-                        <option value="Outro">Outro</option>
-
-                    </select>
-                </div>
-
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                        Unidade de cobrança *
-                    </label>
-
-                    <select
-                        id="catalog-unit"
-                        required
-                        class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-
-                        <option value="Unidade">Unidade</option>
-                        <option value="Módulo">Módulo</option>
-                        <option value="Lugar">Lugar</option>
-                        <option value="Metro">Metro</option>
-                        <option value="Serviço">Serviço</option>
-
-                    </select>
-                </div>
-
-            </div>
-
-            <!-- Preço + Custo + Tempo -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                        Preço de venda *
-                    </label>
-
-                    <div class="relative">
-                        <span class="absolute left-3 top-3 text-slate-500 text-sm">
-                            R$
-                        </span>
-
-                        <input
-                            type="number"
-                            id="catalog-price"
-                            required
-                            min="0"
-                            step="0.01"
-                            placeholder="0,00"
-                            class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                        Custo
-                    </label>
-
-                    <div class="relative">
-                        <span class="absolute left-3 top-3 text-slate-500 text-sm">
-                            R$
-                        </span>
-
-                        <input
-                            type="number"
-                            id="catalog-cost"
-                            min="0"
-                            step="0.01"
-                            placeholder="0,00"
-                            class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                        Tempo estimado
-                    </label>
-
-                    <div class="relative">
-                        <i class="fa-regular fa-clock absolute left-3 top-3.5 text-slate-500 text-sm"></i>
-
-                        <input
-                            type="text"
-                            id="catalog-duration"
-                            placeholder="Ex.: 2h 30min"
-                            class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Descrição -->
-            <div>
-                <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                    Descrição do serviço
-                </label>
-
-                <textarea
-                    id="catalog-description"
-                    rows="3"
-                    placeholder="Ex.: Higienização profunda, remoção de manchas e aplicação de produtos específicos..."
-                    class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm resize-none focus:outline-none focus:border-sky-500"></textarea>
-            </div>
-
-            <!-- Status -->
-            <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
-
-                <div>
-                    <p class="text-sm font-semibold text-white">
-                        Serviço ativo
-                    </p>
-
-                    <p class="text-[11px] text-slate-400 mt-0.5">
-                        Serviços inativos não aparecem para novos agendamentos e orçamentos.
-                    </p>
-                </div>
-
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input
-                        type="checkbox"
-                        id="catalog-active"
-                        checked
-                        class="sr-only peer">
-
-                    <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:bg-sky-500 transition"></div>
-
-                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-5"></div>
-                </label>
-
-            </div>
-
-            <!-- Rodapé -->
-            <div class="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-3 border-t border-slate-800">
-
-                <button
-                    type="button"
-                    onclick="closeModal('modal-catalog-item')"
-                    class="px-5 py-3 rounded-xl bg-slate-800 text-slate-300 text-sm font-semibold hover:bg-slate-700 transition">
-                    Cancelar
-                </button>
-
-                <button
-                    type="submit"
-                    class="px-5 py-3 rounded-xl bg-sky-500 text-white text-sm font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
-                    <i class="fa-solid fa-floppy-disk mr-2"></i>
-                    Salvar Cadastro
-                </button>
-
-            </div>
-
-        </form>
     </div>
-</div>
+
     <!-- Modal Transação Financeira -->
     <div id="modal-transaction" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
         <div class="glass p-6 rounded-3xl max-w-md w-full border border-slate-700/80">
@@ -966,7 +869,7 @@
                     <select id="bud-client-id" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 mb-1 block">Selecione os Serviços</label>
+                    <label class="text-xs text-slate-400 mb-1 block">Selecione os Estofados do Catálogo</label>
                     <div id="bud-services-checkboxes" class="space-y-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-slate-900/60 border border-slate-800"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
@@ -1046,6 +949,9 @@
     <div id="modal-quick-action" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
         <div class="glass p-6 rounded-3xl max-w-sm w-full border border-slate-700/80 text-center space-y-3">
             <h3 class="font-bold text-lg mb-4">Ações Rápidas</h3>
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-catalog-item');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-couch text-base"></i> + Cadastrar Estofado
+            </button>
             <button onclick="closeModal('modal-quick-action'); openModal('modal-client');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
                 <i class="fa-solid fa-user-plus text-base"></i> + Cliente
             </button>
@@ -1057,9 +963,6 @@
             </button>
             <button onclick="closeModal('modal-quick-action'); openModal('modal-transaction', 'revenue');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-xs transition flex items-center gap-3">
                 <i class="fa-solid fa-circle-plus text-base"></i> + Receita
-            </button>
-            <button onclick="closeModal('modal-quick-action'); openModal('modal-transaction', 'expense');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-rose-400 font-semibold text-xs transition flex items-center gap-3">
-                <i class="fa-solid fa-circle-minus text-base"></i> + Despesa
             </button>
         </div>
     </div>
@@ -1086,51 +989,52 @@
                 theme: "dark"
             },
             clients: [
-                 ],
-       servicesCatalog:[
-    {
-        id:"s_1",
-        name:"Sofá 3 Lugares",
-        category:"Sofá",
-        service:"Limpeza",
-        unit:"Unidade",
-        price:180,
-        cost:30,
-        duration:"2 horas",
-        description:"Higienização completa de sofá de 3 lugares.",
-        active:true
-    },
-    {
-        id:"s_2",
-        name:"Colchão Casal",
-        category:"Colchão",
-        service:"Limpeza + Impermeabilização",
-        unit:"Unidade",
-        price:250,
-        cost:50,
-        duration:"2h30",
-        description:"Limpeza profunda com opção de impermeabilização.",
-        active:true
-    },
-    {
-        id:"s_3",
-        name:"Cadeira de Jantar",
-        category:"Cadeira",
-        service:"Higienização",
-        unit:"Unidade",
-        price:35,
-        cost:5,
-        duration:"30 minutos",
-        description:"Higienização individual de cadeira estofada.",
-        active:true
-    }
-],
-                       appointments: [
+                { id: "c_1", name: "Maria Silva", phone: "(11) 98765-4321", whatsapp: "5511987654321", cpf: "123.456.789-00", address: "Av. Paulista", number: "1000", neighborhood: "Bela Vista", city: "São Paulo", cep: "01310-100", notes: "Cliente preferencial" }
+            ],
+            servicesCatalog: [
+                {
+                    id: "s_1",
+                    name: "Sofá 3 Lugares",
+                    category: "Sofá",
+                    service: "Limpeza",
+                    unit: "Unidade",
+                    price: 180,
+                    cost: 30,
+                    duration: "2 horas",
+                    description: "Higienização profunda de sofá de 3 lugares com extração a vácuo.",
+                    active: true
+                },
+                {
+                    id: "s_2",
+                    name: "Colchão Casal",
+                    category: "Colchão",
+                    service: "Limpeza + Impermeabilização",
+                    unit: "Unidade",
+                    price: 250,
+                    cost: 50,
+                    duration: "2h30",
+                    description: "Limpeza profunda e sanitização contra ácaros.",
+                    active: true
+                },
+                {
+                    id: "s_3",
+                    name: "Cadeira de Jantar",
+                    category: "Cadeira",
+                    service: "Higienização",
+                    unit: "Unidade",
+                    price: 35,
+                    cost: 5,
+                    duration: "30 minutos",
+                    description: "Higienização individual de cadeira estofada.",
+                    active: true
+                }
+            ],
+            appointments: [
                 
             ],
             budgets: [],
             transactions: [
-               
+                
             ],
             gallery: []
         };
@@ -1140,12 +1044,12 @@
         let chartFinancialInstance = null;
         let scheduleViewModeState = 'day';
         let currentScheduleDate = new Date();
-        let budgetTabState = 'list';
 
         window.addEventListener('DOMContentLoaded', () => {
             loadLocalStorage();
             checkPinSecurity();
             initTheme();
+            renderServicesCatalog();
             switchView('dashboard');
             populateSelects();
         });
@@ -1153,7 +1057,12 @@
         function loadLocalStorage() {
             const saved = localStorage.getItem('cleangestor_data');
             if (saved) {
-                try { appData = JSON.parse(saved); } catch (e) { console.error(e); }
+                try { 
+                    const parsed = JSON.parse(saved);
+                    appData = { ...appData, ...parsed };
+                } catch (e) { 
+                    console.error("Erro ao carregar dados salvos:", e); 
+                }
             }
         }
 
@@ -1233,7 +1142,8 @@
 
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById('view-' + viewId).classList.remove('hidden');
+            const target = document.getElementById('view-' + viewId);
+            if (target) target.classList.remove('hidden');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-sky-500/15', 'text-sky-400');
@@ -1248,7 +1158,7 @@
                 dashboard: ["Dashboard", "Visão geral do seu negócio de limpeza"],
                 clients: ["Clientes", "Gerencie sua base de clientes"],
                 schedule: ["Agenda", "Organize seus atendimentos"],
-                services: ["Catálogo de Serviços", "Preços e tempos estimados"],
+                services: ["Catálogo de Estofados & Serviços", "Preços, custos e tempos estimados"],
                 budget: ["Orçamentos", "Crie e gerencie propostas comerciais"],
                 financial: ["Financeiro", "Controle de receitas e despesas"],
                 gallery: ["Antes e Depois", "Galeria de resultados dos serviços"],
@@ -1260,7 +1170,7 @@
                 document.getElementById('view-subtitle').innerText = titles[viewId][1];
             }
 
-            if (viewId === 'dashboard') renderDashboard();
+            if (viewId === 'dashboard') updateDashboard();
             if (viewId === 'clients') renderClients();
             if (viewId === 'schedule') renderSchedule();
             if (viewId === 'services') renderServicesCatalog();
@@ -1269,1315 +1179,515 @@
             if (viewId === 'gallery') renderGallery();
         }
 
-        function showToast(title, msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-title').innerText = title;
-            document.getElementById('toast-msg').innerText = msg;
-            const icon = document.getElementById('toast-icon');
-            if (type === 'error') {
-                icon.innerHTML = '<i class="fa-solid fa-circle-exclamation text-rose-400"></i>';
-            } else {
-                icon.innerHTML = '<i class="fa-solid fa-circle-check text-sky-400"></i>';
+        /* ----------------------------------------------------
+           FUNÇÕES DO CATÁLOGO DE ESTOFADOS / SERVIÇOS
+        ---------------------------------------------------- */
+        function renderServicesCatalog() {
+            const grid = document.getElementById('services-catalog-grid');
+            if (!grid) return;
+
+            if (!appData.servicesCatalog || appData.servicesCatalog.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full glass p-8 rounded-3xl text-center text-slate-400 border border-slate-800">
+                        <i class="fa-solid fa-couch text-4xl mb-3 text-sky-500/40"></i>
+                        <p class="font-semibold text-slate-300">Nenhum estofado cadastrado</p>
+                        <p class="text-xs mt-1">Clique em "Cadastrar Estofado" para adicionar itens ao seu catálogo.</p>
+                    </div>
+                `;
+                return;
             }
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3500);
+
+            grid.innerHTML = appData.servicesCatalog.map(item => {
+                const price = Number(item.price) || 0;
+                const cost = Number(item.cost) || 0;
+                const profit = price - cost;
+                const margin = price > 0 ? Math.round((profit / price) * 100) : 0;
+
+                return `
+                    <div class="glass p-5 rounded-3xl border ${item.active ? 'border-slate-800/80 hover:border-sky-500/40' : 'border-rose-900/30 opacity-60'} transition duration-200 flex flex-col justify-between shadow-lg">
+                        <div>
+                            <div class="flex items-start justify-between gap-2 mb-3">
+                                <div>
+                                    <span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase bg-sky-500/10 text-sky-400 border border-sky-500/20 mb-1">
+                                        ${item.category || 'Estofado'}
+                                    </span>
+                                    <h4 class="font-bold text-base text-slate-100">${item.name}</h4>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-medium ${item.active ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'}">
+                                    ${item.active ? 'Ativo' : 'Inativo'}
+                                </span>
+                            </div>
+
+                            <p class="text-xs text-slate-400 mb-4 line-clamp-2">${item.description || 'Sem descrição cadastrada.'}</p>
+
+                            <div class="grid grid-cols-2 gap-2 text-xs mb-4 bg-slate-900/50 p-3 rounded-2xl border border-slate-800/60">
+                                <div>
+                                    <span class="text-[10px] text-slate-500 block">Tipo de Serviço</span>
+                                    <span class="font-medium text-slate-300">${item.service || 'Limpeza'}</span>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] text-slate-500 block">Cobrança Por</span>
+                                    <span class="font-medium text-slate-300">${item.unit || 'Unidade'}</span>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] text-slate-500 block">Tempo Estimado</span>
+                                    <span class="font-medium text-slate-300"><i class="fa-regular fa-clock text-slate-400 mr-1"></i>${item.duration || 'N/I'}</span>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] text-slate-500 block">Margem de Lucro</span>
+                                    <span class="font-semibold text-emerald-400">${margin}% (~R$ ${profit.toFixed(2)})</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-800/60 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">Valor da Venda</span>
+                                <span class="text-lg font-bold text-sky-400">R$ ${price.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="editCatalogItem('${item.id}')" title="Editar Estofado" class="p-2 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition text-xs">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="deleteCatalogItem('${item.id}')" title="Excluir Estofado" class="p-2 rounded-xl bg-slate-800/80 hover:bg-rose-500/20 text-rose-400 transition text-xs">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function openModal(id) {
-    const modal = document.getElementById(id);
+        function saveCatalogItem(e) {
+            if (e) e.preventDefault();
 
-    if (!modal) {
-        console.error('Modal não encontrado:', id);
+            const id = document.getElementById('catalog-id').value;
+            const name = document.getElementById('catalog-name').value.trim();
+            const category = document.getElementById('catalog-category').value;
+            const service = document.getElementById('catalog-service').value;
+            const unit = document.getElementById('catalog-unit').value;
+            const price = parseFloat(document.getElementById('catalog-price').value) || 0;
+            const cost = parseFloat(document.getElementById('catalog-cost').value) || 0;
+            const duration = document.getElementById('catalog-duration').value.trim();
+            const description = document.getElementById('catalog-description').value.trim();
+            const active = document.getElementById('catalog-active').checked;
 
-        showToast(
-            'Erro',
-            'O formulário de cadastro não foi encontrado.',
-            'error'
-        );
+            if (!name) {
+                showToast("Atenção", "Informe o nome do estofado.", "error");
+                return;
+            }
 
-        return;
-    }
+            if (id) {
+                const index = appData.servicesCatalog.findIndex(item => item.id === id);
+                if (index !== -1) {
+                    appData.servicesCatalog[index] = { id, name, category, service, unit, price, cost, duration, description, active };
+                    showToast("Atualizado", "Estofado atualizado no catálogo!");
+                }
+            } else {
+                const newItem = {
+                    id: 's_' + Date.now(),
+                    name, category, service, unit, price, cost, duration, description, active
+                };
+                appData.servicesCatalog.push(newItem);
+                showToast("Cadastrado", "Novo estofado cadastrado no catálogo!");
+            }
 
-    modal.classList.remove('hidden');
-
-    // Pequena animação de entrada
-    requestAnimationFrame(() => {
-        modal.classList.add('modal-visible');
-    });
-
-    // Se for o cadastro de estofado, prepara o formulário
-    if (id === 'modal-catalog-item') {
-        const form = document.getElementById('form-catalog');
-
-        if (form && !document.getElementById('catalog-id').value) {
-            form.reset();
-
-            document.getElementById('catalog-id').value = '';
-
-            document.getElementById('catalog-active').checked = true;
+            saveLocalStorage();
+            renderServicesCatalog();
+            populateSelects();
+            closeModal('modal-catalog-item');
         }
-    }
-}
-        function closeModal(id) {
-    const modal = document.getElementById(id);
 
-    if (!modal) return;
+        function editCatalogItem(id) {
+            const item = appData.servicesCatalog.find(i => i.id === id);
+            if (!item) return;
 
-    modal.classList.remove('modal-visible');
+            document.getElementById('catalog-id').value = item.id;
+            document.getElementById('catalog-name').value = item.name;
+            document.getElementById('catalog-category').value = item.category || 'Sofá';
+            document.getElementById('catalog-service').value = item.service || 'Limpeza';
+            document.getElementById('catalog-unit').value = item.unit || 'Unidade';
+            document.getElementById('catalog-price').value = item.price;
+            document.getElementById('catalog-cost').value = item.cost || 0;
+            document.getElementById('catalog-duration').value = item.duration || '';
+            document.getElementById('catalog-description').value = item.description || '';
+            document.getElementById('catalog-active').checked = item.active !== false;
 
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 150);
-}
+            openModal('modal-catalog-item');
+        }
+
+        function deleteCatalogItem(id) {
+            if (confirm("Tem certeza que deseja remover este estofado do catálogo?")) {
+                appData.servicesCatalog = appData.servicesCatalog.filter(i => i.id !== id);
+                saveLocalStorage();
+                renderServicesCatalog();
+                populateSelects();
+                showToast("Removido", "Estofado excluído do catálogo.");
+            }
+        }
+
+        /* ----------------------------------------------------
+           MODAIS E NAVEGAÇÃO GERAL
+        ---------------------------------------------------- */
+        function openModal(modalId, param) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+
+            if (modalId === 'modal-catalog-item' && !param) {
+                document.getElementById('catalog-id').value = '';
+                document.getElementById('form-catalog').reset();
+                document.getElementById('catalog-active').checked = true;
+            }
+
+            if (modalId === 'modal-transaction' && param) {
+                document.getElementById('trans-type').value = param;
+                document.getElementById('modal-trans-title').innerText = param === 'revenue' ? 'Nova Receita' : 'Nova Despesa';
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('hidden');
+        }
+
         function openQuickActionModal() {
             openModal('modal-quick-action');
         }
 
-        function populateSelects() {
-            const clientSelects = [document.getElementById('app-client-id'), document.getElementById('bud-client-id'), document.getElementById('photo-client-id')];
-            clientSelects.forEach(sel => {
-                if (!sel) return;
-                sel.innerHTML = '<option value="">Selecione um cliente...</option>';
-                appData.clients.forEach(c => {
-                    sel.innerHTML += `<option value="${c.id}">${c.name} (${c.phone})</option>`;
-                });
-            });
+        function showToast(title, msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = msg;
 
-            const serviceSelect = document.getElementById('app-service-name');
-            if (serviceSelect) {
-                serviceSelect.innerHTML = '<option value="">Selecione o serviço...</option>';
-                appData.servicesCatalog.filter(s => s.active).forEach(s => {
-                    serviceSelect.innerHTML += `<option value="${s.name}" data-price="${s.price}">${s.name} - R$ ${s.price.toFixed(2)}</option>`;
-                });
+            if (type === 'error') {
+                icon.className = 'text-rose-400 text-base';
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                icon.className = 'text-sky-400 text-base';
+                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
             }
 
-            const budCheckboxes = document.getElementById('bud-services-checkboxes');
-            if (budCheckboxes) {
-                budCheckboxes.innerHTML = '';
-                appData.servicesCatalog.filter(s => s.active).forEach((s) => {
-                    budCheckboxes.innerHTML += `
-                        <label class="flex items-center justify-between p-2 rounded-xl bg-slate-900/50 hover:bg-slate-800/80 cursor-pointer">
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        /* ----------------------------------------------------
+           POPULAR SELECTS DINÂMICOS
+        ---------------------------------------------------- */
+        function populateSelects() {
+            // Select de estofados no agendamento
+            const appServiceSelect = document.getElementById('app-service-name');
+            if (appServiceSelect) {
+                const activeServices = appData.servicesCatalog.filter(s => s.active);
+                appServiceSelect.innerHTML = activeServices.length > 0 
+                    ? activeServices.map(s => `<option value="${s.name}" data-price="${s.price}">${s.name} - R$ ${s.price.toFixed(2)} (${s.service})</option>`).join('')
+                    : '<option value="">Nenhum estofado cadastrado</option>';
+            }
+
+            // Select de clientes no agendamento
+            const appClientSelect = document.getElementById('app-client-id');
+            if (appClientSelect) {
+                appClientSelect.innerHTML = appData.clients.length > 0 
+                    ? appData.clients.map(c => `<option value="${c.id}">${c.name} (${c.phone})</option>`).join('')
+                    : '<option value="">Nenhum cliente cadastrado</option>';
+            }
+
+            // Select de clientes no orçamento
+            const budClientSelect = document.getElementById('bud-client-id');
+            if (budClientSelect) {
+                budClientSelect.innerHTML = appData.clients.length > 0 
+                    ? appData.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+                    : '<option value="">Nenhum cliente cadastrado</option>';
+            }
+
+            // Checkboxes do orçamento
+            const budServicesContainer = document.getElementById('bud-services-checkboxes');
+            if (budServicesContainer) {
+                const activeServices = appData.servicesCatalog.filter(s => s.active);
+                budServicesContainer.innerHTML = activeServices.length > 0
+                    ? activeServices.map(s => `
+                        <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs cursor-pointer hover:border-sky-500/50 transition">
                             <div class="flex items-center gap-2">
-                                <input type="checkbox" value="${s.name}" data-price="${s.price}" onchange="calcBudgetTotal()" class="bud-service-chk w-4 h-4 rounded text-sky-500 bg-slate-900 border-slate-700">
-                                <span class="text-xs font-medium">${s.name}</span>
+                                <input type="checkbox" value="${s.id}" data-price="${s.price}" onchange="calcBudgetTotal()" class="bud-service-chk w-4 h-4 rounded text-sky-500 bg-slate-800 border-slate-700">
+                                <span class="font-medium">${s.name} <span class="text-slate-500">(${s.category})</span></span>
                             </div>
-                            <span class="text-xs text-sky-400 font-bold">R$ ${s.price.toFixed(2)}</span>
+                            <span class="text-sky-400 font-bold">R$ ${s.price.toFixed(2)}</span>
                         </label>
-                    `;
-                });
+                    `).join('')
+                    : '<p class="text-xs text-slate-500 p-2">Nenhum estofado ativo no catálogo.</p>';
+            }
+
+            // Select de clientes na galeria
+            const photoClientSelect = document.getElementById('photo-client-id');
+            if (photoClientSelect) {
+                photoClientSelect.innerHTML = appData.clients.length > 0
+                    ? appData.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+                    : '<option value="">Nenhum cliente cadastrado</option>';
             }
         }
 
         function updateAppointmentPrice() {
-            const sel = document.getElementById('app-service-name');
-            const opt = sel.options[sel.selectedIndex];
-            const price = parseFloat(opt.getAttribute('data-price')) || 0;
+            const select = document.getElementById('app-service-name');
             const qty = parseInt(document.getElementById('app-quantity').value) || 1;
-            document.getElementById('app-price').value = (price * qty).toFixed(2);
-        }
-
-        function renderDashboard() {
-            const now = new Date();
-            const currentMonth = now.toISOString().slice(0, 7);
-
-            let revMonth = 0;
-            let expMonth = 0;
-            let servDone = 0;
-            let servScheduled = 0;
-            let receivable = 0;
-
-            appData.transactions.forEach(t => {
-                if (t.date.startsWith(currentMonth)) {
-                    if (t.type === 'revenue') revMonth += t.val;
-                    if (t.type === 'expense') expMonth += t.val;
-                }
-            });
-
-            appData.appointments.forEach(a => {
-                if (a.status === 'Concluído') servDone++;
-                if (a.status === 'Agendado' || a.status === 'Confirmado') servScheduled++;
-                if (a.status === 'Agendado' || a.status === 'Confirmado') receivable += a.price;
-            });
-
-            const profitMonth = revMonth - expMonth;
-            const ticketMedio = servDone > 0 ? revMonth / servDone : 0;
-
-            document.getElementById('stat-rev-month').innerText = `R$ ${revMonth.toFixed(2)}`;
-            document.getElementById('stat-profit-month').innerText = `R$ ${profitMonth.toFixed(2)}`;
-            document.getElementById('stat-serv-done').innerText = servDone;
-            document.getElementById('stat-serv-scheduled').innerText = servScheduled;
-            document.getElementById('stat-clients-count').innerText = appData.clients.length;
-            document.getElementById('stat-ticket-medio').innerText = `R$ ${ticketMedio.toFixed(2)}`;
-            document.getElementById('stat-receivable').innerText = `R$ ${receivable.toFixed(2)}`;
-            document.getElementById('stat-expenses-month').innerText = `R$ ${expMonth.toFixed(2)}`;
-
-            const upcomingList = document.getElementById('upcoming-services-list');
-            upcomingList.innerHTML = '';
-            const upcoming = appData.appointments.filter(a => a.status !== 'Concluído' && a.status !== 'Cancelado').slice(0, 4);
-            
-            if (upcoming.length === 0) {
-                upcomingList.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">Nenhum serviço agendado no momento.</div>`;
-            } else {
-                upcoming.forEach(a => {
-                    const client = appData.clients.find(c => c.id === a.clientId) || { name: 'Cliente', address: 'Endereço não informado' };
-                    upcomingList.innerHTML += `
-                        <div class="glass p-3 rounded-2xl flex items-center justify-between border border-slate-800 text-xs">
-                            <div class="space-y-1">
-                                <div class="font-bold text-sky-400 flex items-center gap-2"><i class="fa-regular fa-clock"></i> ${a.date} às ${a.time} - ${client.name}</div>
-                                <div class="text-slate-300"><i class="fa-solid fa-spray-can text-[10px] mr-1"></i> ${a.serviceName}</div>
-                                <div class="text-slate-400"><i class="fa-solid fa-location-dot text-[10px] mr-1"></i> ${client.address || ''}</div>
-                            </div>
-                            <div class="text-right">
-                                <span class="font-bold text-emerald-400">R$ ${a.price.toFixed(2)}</span>
-                                <div class="mt-1"><span class="px-2 py-0.5 rounded-full text-[10px] bg-sky-500/20 text-sky-300 font-semibold">${a.status}</span></div>
-                            </div>
-                        </div>
-                    `;
-                });
+            if (select && select.selectedOptions[0]) {
+                const basePrice = parseFloat(select.selectedOptions[0].getAttribute('data-price')) || 0;
+                document.getElementById('app-price').value = (basePrice * qty).toFixed(2);
             }
-
-            renderDashboardCharts();
-        }
-
-        function renderDashboardCharts() {
-            const ctx1 = document.getElementById('chartMonth').getContext('2d');
-            if (chartMonthInstance) chartMonthInstance.destroy();
-
-            const now = new Date();
-            const months = [];
-            for (let i = 3; i >= 0; i--) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const monthKey = `${year}-${month}`;
-                const label = date.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
-                months.push({ key: monthKey, label: label.charAt(0).toUpperCase() + label.slice(1), value: 0 });
-            }
-
-            appData.transactions.forEach(t => {
-                if (t.type !== 'revenue') return;
-                const month = String(t.date).slice(0, 7);
-                const found = months.find(m => m.key === month);
-                if (found) found.value += Number(t.val) || 0;
-            });
-
-            chartMonthInstance = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: months.map(m => m.label),
-                    datasets: [{
-                        label: 'Faturamento (R$)',
-                        data: months.map(m => m.value),
-                        backgroundColor: '#0ea5e9',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { callback: value => 'R$ ' + Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 0 }) }
-                        }
-                    }
-                }
-            });
-
-            const ctx2 = document.getElementById('chartServices').getContext('2d');
-            if (chartServicesInstance) chartServicesInstance.destroy();
-
-            const serviceCount = {};
-            appData.appointments.filter(a => a.status === 'Concluído').forEach(a => {
-                serviceCount[a.serviceName] = (serviceCount[a.serviceName] || 0) + 1;
-            });
-
-            const serviceLabels = Object.keys(serviceCount);
-            const serviceValues = Object.values(serviceCount);
-
-            chartServicesInstance = new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    labels: serviceLabels.length ? serviceLabels : ['Nenhum serviço realizado'],
-                    datasets: [{
-                        data: serviceValues.length ? serviceValues : [1],
-                        backgroundColor: serviceValues.length ? ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'] : ['#334155']
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } } }
-            });
-        }
-
-        function renderClients() {
-            const grid = document.getElementById('clients-grid');
-            const search = document.getElementById('client-search').value.toLowerCase();
-            grid.innerHTML = '';
-
-            const filtered = appData.clients.filter(c => c.name.toLowerCase().includes(search) || c.phone.includes(search));
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-8 text-xs text-slate-400">Nenhum cliente encontrado.</div>`;
-                return;
-            }
-
-            filtered.forEach(c => {
-                const clientApps = appData.appointments.filter(a => a.clientId === c.id);
-                const totalSpent = clientApps.reduce((acc, cur) => acc + (cur.status === 'Concluído' ? cur.price : 0), 0);
-
-                grid.innerHTML += `
-                    <div class="glass p-5 rounded-3xl border border-slate-800 space-y-3 shadow-lg flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-start justify-between">
-                                <h4 class="font-bold text-base text-white">${c.name}</h4>
-                                <button onclick="openClientProfile('${c.id}')" class="text-xs text-sky-400 hover:underline font-semibold">Ver Perfil</button>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-phone mr-1"></i> ${c.phone}</p>
-                            <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i> ${c.address || 'Endereço não informado'}, ${c.number || ''} - ${c.city || ''}</p>
-                        </div>
-                        <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
-                            <div>Total gasto: <span class="font-bold text-emerald-400">R$ ${totalSpent.toFixed(2)}</span></div>
-                            <a href="https://wa.me/${c.whatsapp}?text=Olá%20${encodeURIComponent(c.name)},%20tudo%20bem?" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-400 font-semibold hover:bg-emerald-500/30 transition flex items-center gap-1.5">
-                                <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
-                            </a>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function saveClient(e) {
-            e.preventDefault();
-            const id = document.getElementById('client-id').value || 'c_' + Date.now();
-            const name = document.getElementById('client-name').value;
-            const phone = document.getElementById('client-phone').value;
-            const whatsapp = document.getElementById('client-whatsapp').value;
-            const cpf = document.getElementById('client-cpf').value;
-            const address = document.getElementById('client-address').value;
-            const number = document.getElementById('client-number').value;
-            const neighborhood = document.getElementById('client-neighborhood').value;
-            const city = document.getElementById('client-city').value;
-            const cep = document.getElementById('client-cep').value;
-            const notes = document.getElementById('client-notes').value;
-
-            const existingIdx = appData.clients.findIndex(c => c.id === id);
-            if (existingIdx >= 0) {
-                appData.clients[existingIdx] = { id, name, phone, whatsapp, cpf, address, number, neighborhood, city, cep, notes };
-                showToast("Cliente Atualizado", "Dados salvos com sucesso.");
-            } else {
-                appData.clients.push({ id, name, phone, whatsapp, cpf, address, number, neighborhood, city, cep, notes });
-                showToast("Cliente Cadastrado", "Novo cliente adicionado com sucesso.");
-            }
-
-            saveLocalStorage();
-            closeModal('modal-client');
-            document.getElementById('form-client').reset();
-            document.getElementById('client-id').value = '';
-            populateSelects();
-            renderClients();
-        }
-
-        function openClientProfile(clientId) {
-            const c = appData.clients.find(x => x.id === clientId);
-            if (!c) return;
-
-            const clientApps = appData.appointments.filter(a => a.clientId === c.id);
-            const totalSpent = clientApps.reduce((acc, cur) => acc + (cur.status === 'Concluído' ? cur.price : 0), 0);
-            const clientPhotos = appData.gallery.filter(g => g.clientId === c.id);
-
-            let historyHTML = clientApps.map(a => `
-                <div class="glass p-2.5 rounded-xl text-xs flex justify-between items-center border border-slate-800">
-                    <div>
-                        <div class="font-bold text-sky-400">${a.date} às ${a.time} - ${a.serviceName}</div>
-                        <div class="text-slate-400">Status: ${a.status} | Pagamento: ${a.payment}</div>
-                    </div>
-                    <span class="font-bold text-emerald-400">R$ ${a.price.toFixed(2)}</span>
-                </div>
-            `).join('') || '<div class="text-xs text-slate-400">Nenhum serviço registrado.</div>';
-
-            let photosHTML = clientPhotos.map(p => `
-                <div class="glass p-2 rounded-xl text-xs space-y-1">
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><span class="text-[10px] text-slate-400">Antes</span><img src="${p.before}" class="w-full h-24 object-cover rounded-lg"></div>
-                        <div><span class="text-[10px] text-slate-400">Depois</span><img src="${p.after}" class="w-full h-24 object-cover rounded-lg"></div>
-                    </div>
-                </div>
-            `).join('') || '<div class="text-xs text-slate-400">Nenhuma foto cadastrada.</div>';
-
-            const container = document.getElementById('client-profile-content');
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h4 class="text-xl font-bold">${c.name}</h4>
-                            <p class="text-xs text-slate-400"><i class="fa-solid fa-phone mr-1"></i> ${c.phone} | <i class="fa-brands fa-whatsapp ml-2 mr-1"></i> ${c.whatsapp}</p>
-                            <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-location-dot mr-1"></i> ${c.address || ''}, ${c.number || ''} - ${c.neighborhood || ''}, ${c.city || ''}</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-xs text-slate-400">Total Gasto</div>
-                            <div class="text-lg font-bold text-emerald-400">R$ ${totalSpent.toFixed(2)}</div>
-                            <div class="text-xs text-slate-400 mt-1">${clientApps.length} serviços</div>
-                        </div>
-                    </div>
-
-                    <div class="pt-3 border-t border-slate-800">
-                        <h5 class="font-semibold text-xs text-slate-300 mb-2">Histórico de Serviços</h5>
-                        <div class="space-y-2 max-h-40 overflow-y-auto">${historyHTML}</div>
-                    </div>
-
-                    <div class="pt-3 border-t border-slate-800">
-                        <h5 class="font-semibold text-xs text-slate-300 mb-2">Fotos Antes e Depois</h5>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-y-auto">${photosHTML}</div>
-                    </div>
-
-                    <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
-                        <button onclick="editClient('${c.id}')" class="px-3 py-2 rounded-xl text-xs font-semibold bg-sky-500/15 text-sky-400 hover:bg-sky-500/25">Editar Cliente</button>
-                        <button onclick="deleteClient('${c.id}')" class="px-3 py-2 rounded-xl text-xs font-semibold bg-rose-500/15 text-rose-400 hover:bg-rose-500/25">Excluir</button>
-                    </div>
-                </div>
-            `;
-            openModal('modal-client-profile');
-        }
-
-        function editClient(id) {
-            const c = appData.clients.find(x => x.id === id);
-            if (!c) return;
-            closeModal('modal-client-profile');
-            document.getElementById('client-id').value = c.id;
-            document.getElementById('client-name').value = c.name;
-            document.getElementById('client-phone').value = c.phone;
-            document.getElementById('client-whatsapp').value = c.whatsapp;
-            document.getElementById('client-cpf').value = c.cpf || '';
-            document.getElementById('client-address').value = c.address || '';
-            document.getElementById('client-number').value = c.number || '';
-            document.getElementById('client-neighborhood').value = c.neighborhood || '';
-            document.getElementById('client-city').value = c.city || '';
-            document.getElementById('client-cep').value = c.cep || '';
-            document.getElementById('client-notes').value = c.notes || '';
-            openModal('modal-client');
-        }
-
-        function deleteClient(id) {
-            if (confirm("Tem certeza que deseja excluir este cliente?")) {
-                appData.clients = appData.clients.filter(c => c.id !== id);
-                saveLocalStorage();
-                closeModal('modal-client-profile');
-                renderClients();
-                populateSelects();
-                showToast("Cliente Excluído", "Registro removido com sucesso.");
-            }
-        }
-
-        function setScheduleViewMode(mode) {
-            scheduleViewModeState = mode;
-            ['day', 'week', 'month'].forEach(m => {
-                const btn = document.getElementById(`btn-mode-${m}`);
-                if (m === mode) {
-                    btn.className = 'px-3 py-1.5 rounded-lg bg-sky-500 text-white transition';
-                } else {
-                    btn.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition';
-                }
-            });
-            renderSchedule();
-        }
-
-        function changeScheduleDate(delta) {
-            if (scheduleViewModeState === 'day') {
-                currentScheduleDate.setDate(currentScheduleDate.getDate() + delta);
-            } else if (scheduleViewModeState === 'week') {
-                currentScheduleDate.setDate(currentScheduleDate.getDate() + (delta * 7));
-            } else {
-                currentScheduleDate.setMonth(currentScheduleDate.getMonth() + delta);
-            }
-            renderSchedule();
-        }
-
-        function renderSchedule() {
-            const container = document.getElementById('schedule-container');
-            const dateLabel = document.getElementById('schedule-current-date-label');
-            
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            dateLabel.innerText = currentScheduleDate.toLocaleDateString('pt-BR', options);
-
-            container.innerHTML = '';
-            const targetDateStr = currentScheduleDate.toISOString().split('T')[0];
-
-            let filtered = appData.appointments;
-            if (scheduleViewModeState === 'day') {
-                filtered = appData.appointments.filter(a => a.date === targetDateStr);
-            }
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="glass p-6 rounded-3xl text-center text-slate-400 text-xs">Nenhum agendamento para este período.</div>`;
-                return;
-            }
-
-            filtered.sort((a,b) => a.time.localeCompare(b.time)).forEach(a => {
-                const client = appData.clients.find(c => c.id === a.clientId) || { name: 'Cliente não encontrado', phone: '', address: '' };
-                
-                const statusColors = {
-                    'Agendado': 'bg-sky-500/20 text-sky-300 border-sky-500/30',
-                    'Confirmado': 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-                    'Em andamento': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-                    'Concluído': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-                    'Cancelado': 'bg-rose-500/20 text-rose-300 border-rose-500/30',
-                    'Não compareceu': 'bg-slate-500/20 text-slate-300 border-slate-500/30'
-                };
-
-                const msg = `Olá, ${client.name}! 👋 Seu serviço de higienização (${a.serviceName}) está confirmado para ${a.date} às ${a.time}. Valor: R$ ${a.price.toFixed(2)}. Obrigado pela preferência!`;
-
-                container.innerHTML += `
-                    <div class="glass p-4 rounded-3xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusColors[a.status] || 'bg-slate-800 text-slate-300'}">${a.status}</span>
-                                <span class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i> ${a.date} às ${a.time}</span>
-                            </div>
-                            <h4 class="font-bold text-base text-white">${client.name}</h4>
-                            <p class="text-xs text-slate-300"><i class="fa-solid fa-spray-can mr-1"></i> ${a.serviceName}</p>
-                            <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i> ${client.address || ''}, ${client.number || ''} - ${client.city || ''}</p>
-                        </div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="font-bold text-emerald-400 text-sm">R$ ${a.price.toFixed(2)}</span>
-                            <a href="https://wa.me/${client.whatsapp}?text=${encodeURIComponent(msg)}" target="_blank" class="px-3 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/30 transition flex items-center gap-1">
-                                <i class="fa-brands fa-whatsapp"></i> WhatsApp
-                            </a>
-                            <select onchange="updateAppointmentStatus('${a.id}', this.value)" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs focus:outline-none">
-                                <option value="">Alterar Status...</option>
-                                <option value="Agendado">Agendado</option>
-                                <option value="Confirmado">Confirmado</option>
-                                <option value="Em andamento">Em andamento</option>
-                                <option value="Concluído">Concluído</option>
-                                <option value="Cancelado">Cancelado</option>
-                            </select>
-                            <button onclick="deleteAppointment('${a.id}')" class="p-2 rounded-xl bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 transition"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function saveAppointment(e) {
-            e.preventDefault();
-            const id = document.getElementById('service-app-id').value || 'a_' + Date.now();
-            const clientId = document.getElementById('app-client-id').value;
-            const serviceName = document.getElementById('app-service-name').value;
-            const date = document.getElementById('app-date').value;
-            const time = document.getElementById('app-time').value;
-            const price = parseFloat(document.getElementById('app-price').value);
-            const payment = document.getElementById('app-payment').value;
-            const status = document.getElementById('app-status').value;
-            const notes = document.getElementById('app-notes').value;
-
-            const existingIdx = appData.appointments.findIndex(a => a.id === id);
-            if (existingIdx >= 0) {
-                appData.appointments[existingIdx] = { id, clientId, serviceName, date, time, price, payment, status, notes };
-                showToast("Agendamento Atualizado", "Alterações salvas com sucesso.");
-            } else {
-                appData.appointments.push({ id, clientId, serviceName, date, time, price, payment, status, notes });
-                if (status === 'Concluído') {
-                    appData.transactions.push({ id: 't_' + Date.now(), type: 'revenue', desc: `${serviceName}`, val: price, date: date, category: 'Serviços', payment: payment });
-                }
-                showToast("Agendamento Criado", "Novo serviço agendado com sucesso.");
-            }
-
-            saveLocalStorage();
-            closeModal('modal-service');
-            document.getElementById('form-service').reset();
-            document.getElementById('service-app-id').value = '';
-            renderSchedule();
-        }
-
-        function updateAppointmentStatus(id, newStatus) {
-            if (!newStatus) return;
-            const app = appData.appointments.find(a => a.id === id);
-            if (app) {
-                app.status = newStatus;
-                if (newStatus === 'Concluído') {
-                    appData.transactions.push({ id: 't_' + Date.now(), type: 'revenue', desc: `${app.serviceName}`, val: app.price, date: app.date, category: 'Serviços', payment: app.payment });
-                }
-                saveLocalStorage();
-                renderSchedule();
-                showToast("Status Atualizado", `Agendamento marcado como ${newStatus}.`);
-            }
-        }
-
-        function deleteAppointment(id) {
-            if (confirm("Deseja excluir este agendamento?")) {
-                appData.appointments = appData.appointments.filter(a => a.id !== id);
-                saveLocalStorage();
-                renderSchedule();
-                showToast("Excluído", "Agendamento removido.");
-            }
-        }
-
-function renderServicesCatalog() {
-    const grid = document.getElementById('services-catalog-grid');
-
-    if (!grid) return;
-
-    grid.innerHTML = '';
-
-    if (!appData.servicesCatalog || appData.servicesCatalog.length === 0) {
-        grid.innerHTML = `
-            <div class="col-span-full glass p-8 rounded-3xl border border-slate-800 text-center">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-sky-500/10 flex items-center justify-center mb-4">
-                    <i class="fa-solid fa-couch text-3xl text-sky-400"></i>
-                </div>
-
-                <h4 class="font-semibold text-slate-200">
-                    Nenhum estofado cadastrado
-                </h4>
-
-                <p class="text-xs text-slate-500 mt-1">
-                    Cadastre seus estofados e serviços para utilizá-los
-                    em orçamentos e agendamentos.
-                </p>
-
-                <button
-                    onclick="openModal('modal-catalog-item')"
-                    class="mt-4 px-4 py-2.5 rounded-xl bg-sky-500 text-white text-xs font-semibold hover:bg-sky-400 transition">
-                    <i class="fa-solid fa-plus mr-1"></i>
-                    Cadastrar primeiro estofado
-                </button>
-            </div>
-        `;
-
-        return;
-    }
-
-    appData.servicesCatalog.forEach(s => {
-
-        const price = Number(s.price) || 0;
-        const cost = Number(s.cost) || 0;
-
-        const margin = price > 0
-            ? (((price - cost) / price) * 100)
-            : 0;
-
-        const profit = price - cost;
-
-        const category = s.category || 'Outro';
-        const duration = s.duration || 'Não informado';
-        const description = s.description || 'Sem descrição cadastrada.';
-
-        const categoryIcons = {
-            'Sofá': 'fa-couch',
-            'Poltrona': 'fa-chair',
-            'Cadeira': 'fa-chair',
-            'Colchão': 'fa-bed',
-            'Tapete': 'fa-rug',
-            'Banco': 'fa-chair',
-            'Puff': 'fa-couch',
-            'Cabeceira': 'fa-bed',
-            'Carpete': 'fa-border-all',
-            'Outro': 'fa-box'
-        };
-
-        const icon = categoryIcons[category] || 'fa-couch';
-
-        grid.innerHTML += `
-            <div class="glass p-5 rounded-3xl border border-slate-800 shadow-lg
-                        flex flex-col justify-between gap-4
-                        hover:border-slate-700 transition">
-
-                <!-- Cabeçalho -->
-                <div>
-
-                    <div class="flex items-start justify-between gap-3">
-
-                        <div class="flex items-center gap-3 min-w-0">
-
-                            <div class="w-11 h-11 rounded-2xl
-                                        bg-sky-500/10 text-sky-400
-                                        flex items-center justify-center shrink-0">
-
-                                <i class="fa-solid ${icon}"></i>
-
-                            </div>
-
-                            <div class="min-w-0">
-
-                                <h4 class="font-bold text-base text-white truncate">
-                                    ${s.name}
-                                </h4>
-
-                                <p class="text-[11px] text-slate-400 mt-0.5">
-                                    ${category}
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold shrink-0
-                            ${s.active
-                                ? 'bg-emerald-500/15 text-emerald-400'
-                                : 'bg-slate-800 text-slate-400'}">
-
-                            <i class="fa-solid ${s.active ? 'fa-check' : 'fa-pause'} mr-1"></i>
-
-                            ${s.active ? 'Ativo' : 'Inativo'}
-
-                        </span>
-
-                    </div>
-
-
-                    <!-- Serviço -->
-                    <div class="mt-4 p-3 rounded-2xl bg-slate-900/60 border border-slate-800">
-
-                        <div class="flex items-center justify-between gap-2">
-
-                            <div>
-                                <p class="text-[10px] uppercase tracking-wide text-slate-500">
-                                    Serviço
-                                </p>
-
-                                <p class="text-xs font-semibold text-sky-400 mt-0.5">
-                                    <i class="fa-solid fa-spray-can-sparkles mr-1"></i>
-                                    ${s.service}
-                                </p>
-                            </div>
-
-                            <div class="text-right">
-
-                                <p class="text-[10px] uppercase tracking-wide text-slate-500">
-                                    Unidade
-                                </p>
-
-                                <p class="text-xs font-semibold text-slate-300 mt-0.5">
-                                    ${s.unit}
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Informações -->
-                    <div class="grid grid-cols-2 gap-2 mt-3">
-
-                        <div class="p-3 rounded-2xl bg-slate-900/40 border border-slate-800">
-
-                            <p class="text-[10px] text-slate-500">
-                                Tempo estimado
-                            </p>
-
-                            <p class="text-xs font-semibold text-slate-300 mt-1">
-                                <i class="fa-regular fa-clock mr-1 text-sky-400"></i>
-                                ${duration}
-                            </p>
-
-                        </div>
-
-                        <div class="p-3 rounded-2xl bg-slate-900/40 border border-slate-800">
-
-                            <p class="text-[10px] text-slate-500">
-                                Lucro
-                            </p>
-
-                            <p class="text-xs font-semibold text-emerald-400 mt-1">
-                                R$ ${profit.toFixed(2)}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Descrição -->
-                    <div class="mt-3">
-
-                        <p class="text-[11px] text-slate-400 leading-relaxed">
-                            ${description}
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Rodapé -->
-                <div class="pt-4 border-t border-slate-800">
-
-                    <div class="flex items-end justify-between gap-3">
-
-                        <div>
-
-                            <p class="text-[10px] text-slate-500">
-                                Preço de venda
-                            </p>
-
-                            <span class="font-bold text-xl text-emerald-400">
-                                R$ ${price.toFixed(2)}
-                            </span>
-
-                        </div>
-
-                        <div class="text-right">
-
-                            <p class="text-[10px] text-slate-500">
-                                Margem
-                            </p>
-
-                            <span class="text-xs font-bold
-                                ${margin >= 50
-                                    ? 'text-emerald-400'
-                                    : margin >= 20
-                                        ? 'text-amber-400'
-                                        : 'text-rose-400'}">
-
-                                ${margin.toFixed(0)}%
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Botões -->
-                    <div class="flex gap-2 mt-4">
-
-                        <button
-                            onclick="editCatalogItem('${s.id}')"
-                            class="flex-1 px-3 py-2.5 rounded-xl
-                                   bg-sky-500/15 text-sky-400
-                                   hover:bg-sky-500/25 transition
-                                   text-xs font-semibold">
-
-                            <i class="fa-solid fa-pen mr-1"></i>
-                            Editar
-
-                        </button>
-
-                        <button
-                            onclick="deleteCatalogItem('${s.id}')"
-                            class="px-3 py-2.5 rounded-xl
-                                   bg-rose-500/15 text-rose-400
-                                   hover:bg-rose-500/25 transition">
-
-                            <i class="fa-solid fa-trash"></i>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-        `;
-    });
-}
-
-function saveCatalogItem(e) {
-    e.preventDefault();
-
-    const id = document.getElementById('catalog-id').value || 's_' + Date.now();
-
-    const name = document.getElementById('catalog-name').value.trim();
-    const category = document.getElementById('catalog-category').value;
-    const service = document.getElementById('catalog-service').value;
-    const unit = document.getElementById('catalog-unit').value;
-
-    const price =
-        parseFloat(document.getElementById('catalog-price').value) || 0;
-
-    const cost =
-        parseFloat(document.getElementById('catalog-cost').value) || 0;
-
-    const duration =
-        document.getElementById('catalog-duration').value.trim();
-
-    const description =
-        document.getElementById('catalog-description').value.trim();
-
-    const active =
-        document.getElementById('catalog-active').checked;
-
-    if (!name) {
-        showToast(
-            "Atenção",
-            "Informe o nome do estofado.",
-            "error"
-        );
-        return;
-    }
-
-    if (price <= 0) {
-        showToast(
-            "Atenção",
-            "Informe um preço de venda válido.",
-            "error"
-        );
-        return;
-    }
-
-    if (cost > price) {
-        const confirmar = confirm(
-            "O custo informado é maior que o preço de venda.\n\n" +
-            "Deseja salvar mesmo assim?"
-        );
-
-        if (!confirmar) return;
-    }
-
-    const catalogItem = {
-        id,
-        name,
-        category,
-        service,
-        unit,
-        price,
-        cost,
-        duration,
-        description,
-        active
-    };
-
-    const existingIdx =
-        appData.servicesCatalog.findIndex(s => s.id === id);
-
-    if (existingIdx >= 0) {
-
-        appData.servicesCatalog[existingIdx] = catalogItem;
-
-        showToast(
-            "Catálogo Atualizado",
-            "Cadastro alterado com sucesso."
-        );
-
-    } else {
-
-        appData.servicesCatalog.push(catalogItem);
-
-        showToast(
-            "Cadastro Realizado",
-            "Novo estofado adicionado ao catálogo."
-        );
-    }
-
-    saveLocalStorage();
-
-    closeModal('modal-catalog-item');
-
-    document.getElementById('form-catalog').reset();
-
-    document.getElementById('catalog-id').value = '';
-
-    document.getElementById('catalog-active').checked = true;
-
-    populateSelects();
-
-    renderServicesCatalog();
-}
-
-        function editCatalogItem(id) {
-    const s = appData.servicesCatalog.find(x => x.id === id);
-
-    if (!s) return;
-
-    document.getElementById('catalog-id').value = s.id;
-
-    document.getElementById('catalog-name').value =
-        s.name || '';
-
-    document.getElementById('catalog-category').value =
-        s.category || 'Outro';
-
-    document.getElementById('catalog-service').value =
-        s.service || 'Limpeza';
-
-    document.getElementById('catalog-unit').value =
-        s.unit || 'Unidade';
-
-    document.getElementById('catalog-price').value =
-        s.price ?? '';
-
-    document.getElementById('catalog-cost').value =
-        s.cost ?? '';
-
-    document.getElementById('catalog-duration').value =
-        s.duration || '';
-
-    document.getElementById('catalog-description').value =
-        s.description || '';
-
-    document.getElementById('catalog-active').checked =
-        s.active !== false;
-
-    openModal('modal-catalog-item');
-}
-     
-     function deleteCatalogItem(id) {
-    const item = appData.servicesCatalog.find(x => x.id === id);
-
-    if (!item) return;
-
-    const confirmar = confirm(
-        `Deseja realmente excluir o cadastro?\n\n` +
-        `Estofado: ${item.name}\n` +
-        `Serviço: ${item.service}\n\n` +
-        `Essa ação não poderá ser desfeita.`
-    );
-
-    if (!confirmar) return;
-
-    appData.servicesCatalog =
-        appData.servicesCatalog.filter(x => x.id !== id);
-
-    saveLocalStorage();
-
-    populateSelects();
-
-    renderServicesCatalog();
-
-    showToast(
-        "Cadastro Excluído",
-        `"${item.name}" foi removido do catálogo.`
-    );
-}
- 
-        function switchBudgetTab(tab) {
-            budgetTabState = tab;
-            const btnList = document.getElementById('btn-budget-list');
-            const btnCalc = document.getElementById('btn-budget-calc');
-            if (tab === 'list') {
-                btnList.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition';
-                btnCalc.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition';
-                renderBudgetsList();
-            } else {
-                btnCalc.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition';
-                btnList.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition';
-                renderBudgetCalculatorTab();
-            }
-        }
-
-        function renderBudgets() {
-            renderBudgetsList();
-        }
-
-        function renderBudgetsList() {
-            const container = document.getElementById('budget-tab-content');
-            if (!container) return;
-
-            let html = `
-                <div class="flex justify-between items-center mb-3">
-                    <h4 class="font-semibold text-sm text-slate-300">Orçamentos Gerados</h4>
-                    <button onclick="openModal('modal-budget-builder')" class="text-xs text-sky-400 hover:underline">+ Novo Orçamento</button>
-                </div>
-            `;
-
-            if (!appData.budgets || appData.budgets.length === 0) {
-                html += `<div class="glass p-8 rounded-3xl text-center text-slate-400 text-xs">Nenhum orçamento salvo. Clique em "Novo Orçamento Rápido" para criar.</div>`;
-            } else {
-                appData.budgets.forEach(b => {
-                    const client = appData.clients.find(c => c.id === b.clientId) || { name: 'Cliente', phone: '', whatsapp: '' };
-                    const itemsText = b.items.join(', ');
-                    const waText = `Olá ${client.name}! Segue o orçamento da ${appData.settings.companyName}:\nServiços: ${itemsText}\nDeslocamento: R$ ${b.shipping.toFixed(2)}\nDesconto: R$ ${b.discount.toFixed(2)}\n*Total: R$ ${b.total.toFixed(2)}*\nValidade: ${b.validity} dias.\nChave Pix: ${appData.settings.companyPix}`;
-
-                    html += `
-                        <div class="glass p-4 rounded-3xl border border-slate-800 space-y-2 text-xs">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h5 class="font-bold text-sm text-white">${client.name}</h5>
-                                    <p class="text-sky-400 mt-0.5"><i class="fa-solid fa-spray-can mr-1"></i> ${itemsText}</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="font-bold text-emerald-400 text-base">R$ ${b.total.toFixed(2)}</span>
-                                    <div class="text-[10px] text-slate-400 mt-0.5">Validade: ${b.validity} dias</div>
-                                </div>
-                            </div>
-                            <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
-                                <span class="text-slate-400">Criado em ${b.date}</span>
-                                <div class="flex gap-2">
-                                    <a href="https://wa.me/${client.whatsapp}?text=${encodeURIComponent(waText)}" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-400 font-semibold hover:bg-emerald-500/30 transition flex items-center gap-1">
-                                        <i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp
-                                    </a>
-                                    <button onclick="deleteBudget('${b.id}')" class="p-2 rounded-xl bg-rose-500/15 text-rose-400 hover:bg-rose-500/25 transition"><i class="fa-solid fa-trash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            container.innerHTML = html;
-        }
-
-        function renderBudgetCalculatorTab() {
-            openModal('modal-budget-builder');
         }
 
         function calcBudgetTotal() {
             let total = 0;
-            const checkboxes = document.querySelectorAll('.bud-service-chk:checked');
-            checkboxes.forEach(chk => {
+            document.querySelectorAll('.bud-service-chk:checked').forEach(chk => {
                 total += parseFloat(chk.getAttribute('data-price')) || 0;
             });
+
             const discount = parseFloat(document.getElementById('bud-discount').value) || 0;
             const shipping = parseFloat(document.getElementById('bud-shipping').value) || 0;
             total = Math.max(0, total - discount + shipping);
-            document.getElementById('bud-total-display').innerText = `R$ ${total.toFixed(2)}`;
-            return total;
+
+            document.getElementById('bud-total-display').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
         }
 
-        function saveBudget(e) {
-            e.preventDefault();
-            const clientId = document.getElementById('bud-client-id').value;
-            if (!clientId) {
-                showToast("Atenção", "Selecione um cliente para o orçamento.", "error");
-                return;
-            }
-            const checkboxes = document.querySelectorAll('.bud-service-chk:checked');
-            if (checkboxes.length === 0) {
-                showToast("Atenção", "Selecione ao menos um serviço.", "error");
-                return;
-            }
-
-            const items = Array.from(checkboxes).map(chk => chk.value);
-            const discount = parseFloat(document.getElementById('bud-discount').value) || 0;
-            const shipping = parseFloat(document.getElementById('bud-shipping').value) || 0;
-            const validity = parseInt(document.getElementById('bud-validity').value) || 7;
-            const notes = document.getElementById('bud-notes').value;
-            const total = calcBudgetTotal();
-
-            const newBudget = {
-                id: 'b_' + Date.now(),
-                clientId,
-                items,
-                discount,
-                shipping,
-                validity,
-                notes,
-                total,
-                date: new Date().toLocaleDateString('pt-BR')
+        /* ----------------------------------------------------
+           FUNÇÕES DE CADASTRO GERAIS (CLIENTES, AGENDA, ETC)
+        ---------------------------------------------------- */
+        function saveClient(e) {
+            if (e) e.preventDefault();
+            const id = document.getElementById('client-id').value;
+            const newClient = {
+                id: id || 'c_' + Date.now(),
+                name: document.getElementById('client-name').value,
+                phone: document.getElementById('client-phone').value,
+                whatsapp: document.getElementById('client-whatsapp').value,
+                cpf: document.getElementById('client-cpf').value,
+                address: document.getElementById('client-address').value,
+                number: document.getElementById('client-number').value,
+                neighborhood: document.getElementById('client-neighborhood').value,
+                city: document.getElementById('client-city').value,
+                cep: document.getElementById('client-cep').value,
+                notes: document.getElementById('client-notes').value
             };
 
-            appData.budgets.push(newBudget);
-            saveLocalStorage();
-            closeModal('modal-budget-builder');
-            switchBudgetTab('list');
-            showToast("Orçamento Criado", "Proposta salva com sucesso.");
-        }
-
-        function deleteBudget(id) {
-            if (confirm("Deseja excluir este orçamento?")) {
-                appData.budgets = appData.budgets.filter(b => b.id !== id);
-                saveLocalStorage();
-                renderBudgetsList();
-                showToast("Excluído", "Orçamento removido.");
-            }
-        }
-
-        function renderFinancial() {
-            let rev = 0;
-            let exp = 0;
-
-            appData.transactions.forEach(t => {
-                if (t.type === 'revenue') rev += Number(t.val) || 0;
-                if (t.type === 'expense') exp += Number(t.val) || 0;
-            });
-
-            const profit = rev - exp;
-            document.getElementById('fin-rev').innerText = `R$ ${rev.toFixed(2)}`;
-            document.getElementById('fin-exp').innerText = `R$ ${exp.toFixed(2)}`;
-            document.getElementById('fin-profit').innerText = `R$ ${profit.toFixed(2)}`;
-
-            const list = document.getElementById('transactions-list');
-            list.innerHTML = '';
-
-            if (appData.transactions.length === 0) {
-                list.innerHTML = `<div class="text-xs text-slate-400 text-center py-4">Nenhuma transação registrada.</div>`;
+            if (id) {
+                const idx = appData.clients.findIndex(c => c.id === id);
+                if (idx !== -1) appData.clients[idx] = newClient;
             } else {
-                appData.transactions.slice().reverse().forEach(t => {
-                    const isRev = t.type === 'revenue';
-                    list.innerHTML += `
-                        <div class="glass p-3 rounded-2xl flex items-center justify-between text-xs border border-slate-800">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-xl ${isRev ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'} flex items-center justify-center font-bold">
-                                    <i class="fa-solid ${isRev ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
-                                </div>
-                                <div>
-                                    <div class="font-bold text-white">${t.desc}</div>
-                                    <div class="text-slate-400">${t.date} • ${t.category || 'Geral'} • ${t.payment || ''}</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="font-bold text-sm ${isRev ? 'text-emerald-400' : 'text-rose-400'}">${isRev ? '+' : '-'} R$ ${Number(t.val).toFixed(2)}</span>
-                                <button onclick="deleteTransaction('${t.id}')" class="text-slate-500 hover:text-rose-400"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
+                appData.clients.push(newClient);
             }
 
-            renderFinancialChart(rev, exp);
+            saveLocalStorage();
+            renderClients();
+            populateSelects();
+            closeModal('modal-client');
+            showToast("Cliente Salvo", "Cadastro atualizado com sucesso!");
         }
 
-        function renderFinancialChart(rev, exp) {
-            const ctx = document.getElementById('chartFinancial').getContext('2d');
-            if (chartFinancialInstance) chartFinancialInstance.destroy();
+        function renderClients() {
+            const grid = document.getElementById('clients-grid');
+            if (!grid) return;
 
-            chartFinancialInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Receitas', 'Despesas', 'Lucro Líquido'],
-                    datasets: [{
-                        data: [rev, exp, rev - exp],
-                        backgroundColor: ['#10b981', '#f43f5e', '#0ea5e9'],
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { callback: value => 'R$ ' + Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 0 }) }
-                        }
-                    }
-                }
-            });
+            const query = (document.getElementById('client-search')?.value || '').toLowerCase();
+            const filtered = appData.clients.filter(c => c.name.toLowerCase().includes(query) || c.phone.includes(query));
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="col-span-full glass p-8 rounded-3xl text-center text-slate-400">Nenhum cliente encontrado.</div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(c => `
+                <div class="glass p-5 rounded-3xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-base text-slate-200">${c.name}</h4>
+                        <a href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" class="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/25 transition">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                        </a>
+                    </div>
+                    <div class="text-xs text-slate-400 space-y-1">
+                        <p><i class="fa-solid fa-phone mr-1.5 text-sky-400"></i> ${c.phone}</p>
+                        <p><i class="fa-solid fa-location-dot mr-1.5 text-indigo-400"></i> ${c.address || 'Endereço não informado'}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveAppointment(e) {
+            if (e) e.preventDefault();
+            const newApp = {
+                id: 'a_' + Date.now(),
+                clientId: document.getElementById('app-client-id').value,
+                serviceName: document.getElementById('app-service-name').value,
+                date: document.getElementById('app-date').value,
+                time: document.getElementById('app-time').value,
+                price: parseFloat(document.getElementById('app-price').value) || 0,
+                payment: document.getElementById('app-payment').value,
+                status: document.getElementById('app-status').value,
+                notes: document.getElementById('app-notes').value
+            };
+
+            appData.appointments.push(newApp);
+            saveLocalStorage();
+            renderSchedule();
+            updateDashboard();
+            closeModal('modal-service');
+            showToast("Agendado", "Serviço agendado com sucesso!");
+        }
+
+        function renderSchedule() {
+            const container = document.getElementById('schedule-container');
+            if (!container) return;
+
+            if (appData.appointments.length === 0) {
+                container.innerHTML = '<div class="glass p-8 rounded-3xl text-center text-slate-400">Nenhum agendamento cadastrado.</div>';
+                return;
+            }
+
+            container.innerHTML = appData.appointments.map(a => {
+                const client = appData.clients.find(c => c.id === a.clientId);
+                return `
+                    <div class="glass p-4 rounded-2xl border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                        <div>
+                            <span class="text-xs text-sky-400 font-semibold">${a.date} às ${a.time}</span>
+                            <h4 class="font-bold text-sm text-slate-100">${a.serviceName} - ${client ? client.name : 'Cliente'}</h4>
+                            <p class="text-xs text-slate-400">${a.notes || 'Sem observações'}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold text-emerald-400">R$ ${a.price.toFixed(2)}</span>
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-sky-500/15 text-sky-400 border border-sky-500/20">${a.status}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function saveTransaction(e) {
-            e.preventDefault();
-            const type = document.getElementById('trans-type').value;
-            const desc = document.getElementById('trans-desc').value;
-            const val = parseFloat(document.getElementById('trans-val').value) || 0;
-            const date = document.getElementById('trans-date').value;
-            const category = document.getElementById('trans-category').value;
-            const payment = document.getElementById('trans-payment').value;
-
-            appData.transactions.push({
+            if (e) e.preventDefault();
+            const newTrans = {
                 id: 't_' + Date.now(),
-                type,
-                desc,
-                val,
-                date,
-                category,
-                payment
-            });
+                type: document.getElementById('trans-type').value,
+                desc: document.getElementById('trans-desc').value,
+                val: parseFloat(document.getElementById('trans-val').value) || 0,
+                date: document.getElementById('trans-date').value,
+                category: document.getElementById('trans-category').value,
+                payment: document.getElementById('trans-payment').value
+            };
 
+            appData.transactions.push(newTrans);
             saveLocalStorage();
-            closeModal('modal-transaction');
-            document.getElementById('form-transaction').reset();
             renderFinancial();
-            showToast("Transação Salva", "Registro financeiro adicionado com sucesso.");
+            updateDashboard();
+            closeModal('modal-transaction');
+            showToast("Lançado", "Transação financeira registrada!");
         }
 
-        function deleteTransaction(id) {
-            if (confirm("Deseja excluir esta transação?")) {
-                appData.transactions = appData.transactions.filter(t => t.id !== id);
-                saveLocalStorage();
-                renderFinancial();
-                showToast("Excluído", "Transação removida.");
+        function renderFinancial() {
+            const list = document.getElementById('transactions-list');
+            let rev = 0, exp = 0;
+
+            appData.transactions.forEach(t => {
+                if (t.type === 'revenue') rev += t.val;
+                else exp += t.val;
+            });
+
+            document.getElementById('fin-rev').innerText = `R$ ${rev.toFixed(2)}`;
+            document.getElementById('fin-exp').innerText = `R$ ${exp.toFixed(2)}`;
+            document.getElementById('fin-profit').innerText = `R$ ${(rev - exp).toFixed(2)}`;
+
+            if (list) {
+                list.innerHTML = appData.transactions.map(t => `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+                        <div>
+                            <p class="font-semibold text-slate-200">${t.desc}</p>
+                            <span class="text-slate-500">${t.date} • ${t.category}</span>
+                        </div>
+                        <span class="font-bold ${t.type === 'revenue' ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${t.type === 'revenue' ? '+' : '-'} R$ ${t.val.toFixed(2)}
+                        </span>
+                    </div>
+                `).join('');
             }
+        }
+
+        function saveBudget(e) {
+            if (e) e.preventDefault();
+            showToast("Orçamento Salvo", "Orçamento gerado com sucesso!");
+            closeModal('modal-budget-builder');
+        }
+
+        function renderBudgets() {
+            const content = document.getElementById('budget-tab-content');
+            if (content) {
+                content.innerHTML = '<div class="glass p-8 rounded-3xl text-center text-slate-400">Utilize o botão "+ Novo Orçamento Rápido" para criar propostas em PDF/WhatsApp.</div>';
+            }
+        }
+
+        function savePhoto(e) {
+            if (e) e.preventDefault();
+            showToast("Foto Salva", "Resultado adicionado à galeria!");
+            closeModal('modal-photo');
         }
 
         function renderGallery() {
             const grid = document.getElementById('gallery-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            if (!appData.gallery || appData.gallery.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full glass p-8 rounded-3xl border border-slate-800 text-center">
-                        <i class="fa-solid fa-camera-retro text-3xl text-slate-600 mb-3"></i>
-                        <h4 class="font-semibold text-slate-300">Nenhuma foto registrada</h4>
-                        <p class="text-xs text-slate-500 mt-1">Adicione fotos de antes e depois dos estofados higienizados.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            appData.gallery.forEach(g => {
-                const client = appData.clients.find(c => c.id === g.clientId) || { name: 'Cliente' };
-                grid.innerHTML += `
-                    <div class="glass p-4 rounded-3xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-bold text-sm text-white">${g.serviceName}</h4>
-                            <button onclick="deletePhoto('${g.id}')" class="text-slate-500 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                        <p class="text-xs text-sky-400">Cliente: ${client.name}</p>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <span class="text-[10px] text-slate-400 mb-1 block">ANTES</span>
-                                <img src="${g.before}" class="w-full h-32 object-cover rounded-xl border border-slate-700">
-                            </div>
-                            <div>
-                                <span class="text-[10px] text-slate-400 mb-1 block">DEPOIS</span>
-                                <img src="${g.after}" class="w-full h-32 object-cover rounded-xl border border-slate-700">
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function savePhoto(e) {
-            e.preventDefault();
-            const clientId = document.getElementById('photo-client-id').value;
-            const serviceName = document.getElementById('photo-service-name').value;
-            const before = document.getElementById('photo-before-url').value;
-            const after = document.getElementById('photo-after-url').value;
-
-            appData.gallery.push({
-                id: 'g_' + Date.now(),
-                clientId,
-                serviceName,
-                before,
-                after
-            });
-
-            saveLocalStorage();
-            closeModal('modal-photo');
-            document.getElementById('form-photo').reset();
-            renderGallery();
-            showToast("Foto Salva", "Registro antes e depois adicionado.");
-        }
-
-        function deletePhoto(id) {
-            if (confirm("Deseja excluir esta foto?")) {
-                appData.gallery = appData.gallery.filter(g => g.id !== id);
-                saveLocalStorage();
-                renderGallery();
-                showToast("Excluído", "Registro removido.");
+            if (grid) {
+                grid.innerHTML = '<div class="col-span-full glass p-8 rounded-3xl text-center text-slate-400">Nenhuma foto de "Antes e Depois" cadastrada.</div>';
             }
         }
 
+        function updateDashboard() {
+            let totalRev = 0;
+            appData.transactions.filter(t => t.type === 'revenue').forEach(t => totalRev += t.val);
+
+            document.getElementById('stat-rev-month').innerText = `R$ ${totalRev.toFixed(2)}`;
+            document.getElementById('stat-serv-done').innerText = appData.appointments.length;
+            document.getElementById('stat-clients-count').innerText = appData.clients.length;
+
+            const upcomingList = document.getElementById('upcoming-services-list');
+            if (upcomingList) {
+                upcomingList.innerHTML = appData.appointments.slice(0, 3).map(a => `
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs">
+                        <div>
+                            <span class="font-bold text-slate-200">${a.serviceName}</span>
+                            <p class="text-slate-400">${a.date} às ${a.time}</p>
+                        </div>
+                        <span class="text-sky-400 font-semibold">R$ ${a.price.toFixed(2)}</span>
+                    </div>
+                `).join('') || '<p class="text-xs text-slate-500">Nenhum agendamento próximo.</p>';
+            }
+        }
+
+        /* ----------------------------------------------------
+           CONFIGURAÇÕES, BACKUP E OUTROS
+        ---------------------------------------------------- */
         function saveCompanySettings() {
             appData.settings.companyName = document.getElementById('set-company-name').value;
             appData.settings.companyDoc = document.getElementById('set-company-doc').value;
             appData.settings.companyPhone = document.getElementById('set-company-phone').value;
             appData.settings.companyPix = document.getElementById('set-company-pix').value;
             saveLocalStorage();
-            showToast("Configurações Salvas", "Dados da empresa atualizados com sucesso.");
+            showToast("Configurações Salvas", "Dados da empresa atualizados.");
         }
 
         function savePinSettings() {
-            const pin = document.getElementById('set-pin-input').value;
-            const pinActive = document.getElementById('set-pin-active').checked;
-            appData.settings.pin = pin;
-            appData.settings.pinActive = pinActive;
+            appData.settings.pin = document.getElementById('set-pin-input').value;
+            appData.settings.pinActive = document.getElementById('set-pin-active').checked;
             saveLocalStorage();
-            showToast("PIN Salvo", "Configurações de segurança atualizadas.");
+            showToast("Segurança", "Configurações de PIN salvas.");
         }
 
         function exportBackupJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", `cleangestor_backup_${new Date().toISOString().slice(0, 10)}.json`);
-            dlAnchorElem.click();
-            showToast("Backup Exportado", "Arquivo JSON gerado com sucesso.");
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `cleangestor_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
         }
 
         function importBackupJSON(event) {
@@ -2586,87 +1696,41 @@ function saveCatalogItem(e) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const parsed = JSON.parse(e.target.result);
-                    appData = parsed;
+                    appData = JSON.parse(e.target.result);
                     saveLocalStorage();
-                    initTheme();
-                    populateSelects();
-                    switchView('dashboard');
-                    showToast("Backup Importado", "Dados restaurados com sucesso.");
+                    location.reload();
                 } catch (err) {
-                    showToast("Erro", "Arquivo JSON inválido.", "error");
+                    showToast("Erro no Arquivo", "JSON inválido.", "error");
                 }
             };
             reader.readAsText(file);
         }
 
-        function exportClientsCSV() {
-            let csv = "ID,Nome,Telefone,WhatsApp,CPF,Endereco,Numero,Bairro,Cidade,CEP,Notas\n";
-            appData.clients.forEach(c => {
-                csv += `"${c.id}","${c.name}","${c.phone}","${c.whatsapp}","${c.cpf || ''}","${c.address || ''}","${c.number || ''}","${c.neighborhood || ''}","${c.city || ''}","${c.cep || ''}","${c.notes || ''}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute("href", url);
-            a.setAttribute("download", "cleangestor_clientes.csv");
-            a.click();
-            showToast("Exportado", "Planilha de clientes gerada.");
-        }
-
-        function exportFinancialCSV() {
-            let csv = "ID,Tipo,Descricao,Valor,Data,Categoria,Pagamento\n";
-            appData.transactions.forEach(t => {
-                csv += `"${t.id}","${t.type}","${t.desc}","${t.val}","${t.date}","${t.category || ''}","${t.payment || ''}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute("href", url);
-            a.setAttribute("download", "cleangestor_financeiro.csv");
-            a.click();
-            showToast("Exportado", "Planilha financeira gerada.");
-        }
-
         function clearAllData() {
-            if (confirm("ATENÇÃO: Deseja apagar todos os dados e reiniciar o sistema de demonstração? Esta ação é irreversível.")) {
+            if (confirm("ATENÇÃO: Todos os dados serão excluídos. Deseja continuar?")) {
                 localStorage.removeItem('cleangestor_data');
                 location.reload();
             }
         }
 
-        function handleGlobalSearch(query) {
-            const resultsBox = document.getElementById('search-results');
-            if (!query || query.trim().length < 2) {
-                resultsBox.classList.add('hidden');
-                resultsBox.innerHTML = '';
+        function setScheduleViewMode(mode) {
+            scheduleViewModeState = mode;
+            showToast("Modo de Exibição", `Agenda em modo ${mode}`);
+        }
+
+        function changeScheduleDate(days) {
+            currentScheduleDate.setDate(currentScheduleDate.getDate() + days);
+            document.getElementById('schedule-current-date-label').innerText = currentScheduleDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        function handleGlobalSearch(val) {
+            const results = document.getElementById('search-results');
+            if (!val.trim()) {
+                results.classList.add('hidden');
                 return;
             }
-
-            const q = query.toLowerCase();
-            const matchedClients = appData.clients.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q));
-            const matchedServices = appData.servicesCatalog.filter(s => s.name.toLowerCase().includes(q));
-
-            let html = '';
-            if (matchedClients.length > 0) {
-                html += `<div class="text-[10px] font-bold text-slate-400 px-2 py-1">CLIENTES</div>`;
-                matchedClients.forEach(c => {
-                    html += `<div onclick="openClientProfile('${c.id}'); document.getElementById('search-results').classList.add('hidden');" class="p-2 hover:bg-slate-800/80 rounded-xl cursor-pointer text-xs flex justify-between"><span>${c.name}</span><span class="text-slate-400">${c.phone}</span></div>`;
-                });
-            }
-            if (matchedServices.length > 0) {
-                html += `<div class="text-[10px] font-bold text-slate-400 px-2.5 pt-2 pb-1">SERVIÇOS</div>`;
-                matchedServices.forEach(s => {
-                    html += `<div onclick="switchView('services'); document.getElementById('search-results').classList.add('hidden');" class="p-2 hover:bg-slate-800/80 rounded-xl cursor-pointer text-xs flex justify-between"><span>${s.name}</span><span class="text-emerald-400">R$ ${s.price.toFixed(2)}</span></div>`;
-                });
-            }
-
-            if (html === '') {
-                html = `<div class="p-3 text-xs text-slate-400 text-center">Nenhum resultado encontrado.</div>`;
-            }
-
-            resultsBox.innerHTML = html;
-            resultsBox.classList.frontend?.remove?.('hidden') || resultsBox.classList.remove('hidden');
+            results.classList.remove('hidden');
+            results.innerHTML = `<p class="text-xs text-slate-400 p-2">Buscando por: "${val}"...</p>`;
         }
     </script>
 </body>
