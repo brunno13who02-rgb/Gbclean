@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CleanGestor - Gestão Inteligente para Limpeza de Estofados</title>
+    <title>CleanGestor Pro - Gestão Inteligente para Higienização de Estofados</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,19 +14,21 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#eef8ff',
-                            100: '#d9f0ff',
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
                             500: '#0ea5e9',
                             600: '#0284c7',
-                            750: '#0369a1',
+                            700: '#0369a1',
+                            800: '#075985',
                             900: '#0c4a6e',
-                            dark: '#0b1329',
-                            card: '#131c38',
-                            border: '#1e294b'
+                            dark: '#080e1e',
+                            card: '#0f172a',
+                            border: '#1e293b'
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif']
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
                     }
                 }
             }
@@ -34,77 +36,105 @@
     </script>
     
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #060b17;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
         .glass {
-            background: rgba(19, 28, 56, 0.75);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
-        .glass-light {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-        }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(14, 165, 233, 0.3); border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(14, 165, 233, 0.6); }
 
-        .nav-item, .mobile-nav-item {
-            position: relative;
-            z-index: 100;
-            width: 100%;
-            min-height: 48px;
-            cursor: pointer;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
+        .glass-card:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+            box-shadow: 0 15px 35px -10px rgba(14, 165, 233, 0.15);
         }
-        #sidebar { position: relative; z-index: 1000; }
-        #mobile-bottom-nav { position: fixed; z-index: 9999; }
+
+        .glass-glow-sky {
+            box-shadow: 0 0 25px -5px rgba(14, 165, 233, 0.25);
+        }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+        ::-webkit-scrollbar-thumb { background: rgba(14, 165, 233, 0.4); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(14, 165, 233, 0.8); }
+
+        .nav-item {
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .active-nav-glow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 3px;
+            background: #0ea5e9;
+            border-radius: 4px 0 0 4px;
+            box-shadow: 0 0 10px #0ea5e9;
+        }
+
+        #sidebar { z-index: 40; }
+        #mobile-bottom-nav { position: fixed; z-index: 40; }
         #main-content { position: relative; z-index: 1; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
+<body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
 
     <!-- TELA DE PIN (SEGURANÇA) -->
-    <div id="pin-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 hidden">
-        <div class="glass p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl border border-sky-500/20">
-            <div class="w-16 h-16 bg-sky-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-sky-400 text-2xl">
+    <div id="pin-screen" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 hidden">
+        <div class="glass-card p-8 rounded-3xl max-w-sm w-full text-center border border-sky-500/20 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl"></div>
+            <div class="w-16 h-16 bg-gradient-to-tr from-sky-500/20 to-indigo-500/20 rounded-2xl border border-sky-500/30 flex items-center justify-center mx-auto mb-4 text-sky-400 text-2xl shadow-lg shadow-sky-500/10">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
-            <h2 class="text-2xl font-bold mb-1">CleanGestor</h2>
-            <p class="text-slate-400 text-sm mb-6">Digite seu PIN de acesso</p>
+            <h2 class="text-2xl font-extrabold tracking-tight mb-1 text-white">CleanGestor <span class="text-sky-400">Pro</span></h2>
+            <p class="text-slate-400 text-xs mb-6">Digite seu PIN de segurança para acessar</p>
             <div id="pin-dots" class="flex justify-center gap-3 mb-8">
-                <div class="w-4 h-4 rounded-full border-2 border-sky-500 bg-transparent transition-all"></div>
-                <div class="w-4 h-4 rounded-full border-2 border-sky-500 bg-transparent transition-all"></div>
-                <div class="w-4 h-4 rounded-full border-2 border-sky-500 bg-transparent transition-all"></div>
-                <div class="w-4 h-4 rounded-full border-2 border-sky-500 bg-transparent transition-all"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-sky-500 bg-transparent transition-all duration-200"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-sky-500 bg-transparent transition-all duration-200"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-sky-500 bg-transparent transition-all duration-200"></div>
+                <div class="w-3.5 h-3.5 rounded-full border-2 border-sky-500 bg-transparent transition-all duration-200"></div>
             </div>
-            <div class="grid grid-cols-3 gap-3 text-xl font-semibold">
-                <button onclick="pressPin('1')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">1</button>
-                <button onclick="pressPin('2')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">2</button>
-                <button onclick="pressPin('3')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">3</button>
-                <button onclick="pressPin('4')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">4</button>
-                <button onclick="pressPin('5')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">5</button>
-                <button onclick="pressPin('6')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">6</button>
-                <button onclick="pressPin('7')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">7</button>
-                <button onclick="pressPin('8')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">8</button>
-                <button onclick="pressPin('9')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">9</button>
-                <button onclick="clearPin()" class="p-4 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition text-sm">Limpar</button>
-                <button onclick="pressPin('0')" class="p-4 rounded-xl bg-slate-900/50 hover:bg-sky-500/20 transition">0</button>
-                <button onclick="submitPin()" class="p-4 rounded-xl bg-sky-500 text-white hover:bg-sky-600 transition text-sm"><i class="fa-solid fa-check"></i></button>
+            <div class="grid grid-cols-3 gap-3 text-lg font-bold">
+                <button onclick="pressPin('1')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">1</button>
+                <button onclick="pressPin('2')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">2</button>
+                <button onclick="pressPin('3')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">3</button>
+                <button onclick="pressPin('4')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">4</button>
+                <button onclick="pressPin('5')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">5</button>
+                <button onclick="pressPin('6')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">6</button>
+                <button onclick="pressPin('7')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">7</button>
+                <button onclick="pressPin('8')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">8</button>
+                <button onclick="pressPin('9')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">9</button>
+                <button onclick="clearPin()" class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition text-xs font-semibold">Limpar</button>
+                <button onclick="pressPin('0')" class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:bg-sky-500/20 hover:border-sky-500/40 active:scale-95 transition">0</button>
+                <button onclick="submitPin()" class="p-4 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white hover:opacity-90 active:scale-95 transition text-sm shadow-lg shadow-sky-500/20"><i class="fa-solid fa-check"></i></button>
             </div>
         </div>
     </div>
@@ -113,51 +143,52 @@
     <div id="app-container" class="flex h-screen overflow-hidden">
 
         <!-- SIDEBAR (DESKTOP) -->
-        <aside id="sidebar" class="hidden md:flex flex-col w-64 glass border-r border-slate-800/80 z-20">
-            <div class="p-6 flex items-center gap-3 border-b border-slate-800/60">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-xl shadow-lg shadow-sky-500/30">
-                    <i class="fa-solid fa-pump-soap"></i>
+        <aside id="sidebar" class="hidden md:flex flex-col w-64 glass border-r border-slate-800/80 relative">
+            <div class="p-6 flex items-center gap-3.5 border-b border-slate-800/60">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-blue-600 flex items-center justify-center text-white text-lg shadow-lg shadow-sky-500/30 ring-1 ring-white/20">
+                    <i class="fa-solid fa-soap"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight tracking-wide">CleanGestor</h1>
-                    <span class="text-xs text-sky-400 font-medium">Higienização Profissional</span>
+                    <h1 class="font-bold text-base leading-none tracking-wide text-white">CleanGestor <span class="text-sky-400 font-extrabold text-xs px-1.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 ml-1">PRO</span></h1>
+                    <span class="text-[11px] text-slate-400 font-medium">Gestão de Estofados</span>
                 </div>
             </div>
 
-            <nav class="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
-                <button onclick="switchView('dashboard')" data-nav="dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn bg-sky-500/15 text-sky-400">
-                    <i class="fa-solid fa-house w-5 text-center"></i> Dashboard
+            <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+                <button onclick="switchView('dashboard')" data-nav="dashboard" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-xs transition nav-btn bg-sky-500/15 text-sky-400 active-nav-glow">
+                    <i class="fa-solid fa-chart-pie w-4 text-center text-sm"></i> Dashboard
                 </button>
-                <button onclick="switchView('clients')" data-nav="clients" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                    <i class="fa-solid fa-users w-5 text-center"></i> Clientes
+                <button onclick="switchView('clients')" data-nav="clients" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-xs transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-users w-4 text-center text-sm"></i> Clientes
                 </button>
-                
-                <button onclick="switchView('schedule')" data-nav="schedule" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                    <i class="fa-solid fa-calendar-days w-5 text-center"></i> Agenda
+                <button onclick="switchView('schedule')" data-nav="schedule" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-xs transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-calendar-days w-4 text-center text-sm"></i> Agenda & Serviços
                 </button>
-                <button onclick="switchView('services')" data-nav="services" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                    <i class="fa-solid fa-couch w-5 text-center"></i> Estofados & Serviços
+                <button onclick="switchView('services')" data-nav="services" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-xs transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-couch w-4 text-center text-sm"></i> Catálogo de Serviços
                 </button>
-                
-                <button onclick="switchView('budget')" data-nav="budget" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                    <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i> Orçamentos
+                <button onclick="switchView('budget')" data-nav="budget" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-xs transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-calculator w-4 text-center text-sm"></i> Orçamentos
                 </button>
-                <button onclick="switchView('financial')" data-nav="financial" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                    <i class="fa-solid fa-wallet w-5 text-center"></i> Financeiro
+                <button onclick="switchView('financial')" data-nav="financial" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-xs transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-wallet w-4 text-center text-sm"></i> Financeiro
                 </button>
-                <button onclick="switchView('gallery')" data-nav="gallery" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                    <i class="fa-solid fa-camera-retro w-5 text-center"></i> Antes e Depois
+                <button onclick="switchView('gallery')" data-nav="gallery" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-xs transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-images w-4 text-center text-sm"></i> Antes e Depois
                 </button>
-                <button onclick="switchView('settings')" data-nav="settings" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
-                    <i class="fa-solid fa-gear w-5 text-center"></i> Configurações
+                <button onclick="switchView('settings')" data-nav="settings" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-xs transition nav-btn text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-sliders w-4 text-center text-sm"></i> Configurações
                 </button>
             </nav>
 
             <div class="p-4 border-t border-slate-800/60">
                 <div class="glass p-3 rounded-2xl flex items-center justify-between text-xs text-slate-400">
-                    <span>Versão 1.0.0</span>
-                    <button onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition" title="Alternar Tema">
-                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="font-semibold text-slate-300">v1.0.0 Pro</span>
+                    </div>
+                    <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition" title="Alternar Modo de Cor">
+                        <i id="theme-icon" class="fa-solid fa-moon text-xs"></i>
                     </button>
                 </div>
             </div>
@@ -167,28 +198,28 @@
         <div id="main-content" class="flex-1 flex flex-col min-w-0 overflow-hidden">
             
             <!-- HEADER -->
-            <header class="glass border-b border-slate-800/80 px-4 md:px-8 py-3 flex items-center justify-between z-10">
+            <header class="glass border-b border-slate-800/80 px-4 md:px-8 py-3.5 flex items-center justify-between z-10">
                 <div class="flex items-center gap-3">
-                    <div class="md:hidden w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-lg shadow-md shadow-sky-500/20">
-                        <i class="fa-solid fa-pump-soap"></i>
+                    <div class="md:hidden w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-base shadow-md shadow-sky-500/20">
+                        <i class="fa-solid fa-soap"></i>
                     </div>
                     <div>
-                        <h2 id="view-title" class="text-lg md:text-xl font-bold tracking-tight">Dashboard</h2>
-                        <p id="view-subtitle" class="text-xs text-slate-400 hidden sm:block">Visão geral do seu negócio de limpeza</p>
+                        <h2 id="view-title" class="text-base md:text-lg font-bold tracking-tight text-white">Dashboard</h2>
+                        <p id="view-subtitle" class="text-[11px] text-slate-400 hidden sm:block">Visão geral e desempenho do negócio</p>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
                     <div class="relative hidden sm:block w-64">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-search text-xs"></i>
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
                         </span>
-                        <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Pesquisar cliente, serviço..." class="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-900/60 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition">
-                        <div id="search-results" class="absolute left-0 right-0 mt-2 glass rounded-xl shadow-2xl border border-slate-700/80 max-h-80 overflow-y-auto hidden z-50 p-2"></div>
+                        <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Pesquisar cliente, serviço..." class="w-full pl-9 pr-4 py-2 text-xs rounded-2xl bg-slate-900/80 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition placeholder:text-slate-500">
+                        <div id="search-results" class="absolute left-0 right-0 mt-2 glass-card rounded-2xl shadow-2xl border border-slate-700/80 max-h-80 overflow-y-auto hidden z-50 p-2"></div>
                     </div>
 
-                    <button onclick="openQuickActionModal()" class="bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 hover:opacity-95 transition flex items-center gap-2">
-                        <i class="fa-solid fa-plus text-[10px]"></i> <span class="hidden sm:inline">Ação Rápida</span>
+                    <button onclick="openQuickActionModal()" class="bg-gradient-to-r from-sky-500 via-indigo-500 to-indigo-600 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg shadow-sky-500/20 hover:brightness-110 active:scale-95 transition flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-xs"></i> <span class="hidden sm:inline">Ação Rápida</span>
                     </button>
                 </div>
             </header>
@@ -200,72 +231,78 @@
                 <section id="view-dashboard" class="space-y-6 view-section">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h3 id="welcome-msg" class="text-xl md:text-2xl font-bold">Olá, Profissional! 👋</h3>
-                            <p class="text-slate-400 text-sm">Aqui está o resumo do seu desempenho hoje.</p>
+                            <h3 id="welcome-msg" class="text-xl md:text-2xl font-extrabold tracking-tight">Olá, Especialista! 👋</h3>
+                            <p class="text-slate-400 text-xs mt-0.5">Aqui estão as estatísticas do seu negócio de higienização.</p>
                         </div>
                         <div class="flex gap-2 flex-wrap">
-                            <button onclick="openModal('modal-service')" class="bg-sky-500/15 text-sky-400 border border-sky-500/30 px-3 py-2 rounded-xl text-xs font-semibold hover:bg-sky-500/25 transition flex items-center gap-2">
-                                <i class="fa-solid fa-calendar-plus"></i> Novo Serviço
+                            <button onclick="openModal('modal-service')" class="bg-sky-500/15 text-sky-400 border border-sky-500/30 px-3.5 py-2.5 rounded-2xl text-xs font-semibold hover:bg-sky-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-plus text-xs"></i> Novo Agendamento
                             </button>
-                            <button onclick="openModal('modal-client')" class="bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 px-3 py-2 rounded-xl text-xs font-semibold hover:bg-indigo-500/25 transition flex items-center gap-2">
-                                <i class="fa-solid fa-user-plus"></i> Novo Cliente
+                            <button onclick="openModal('modal-client')" class="bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 px-3.5 py-2.5 rounded-2xl text-xs font-semibold hover:bg-indigo-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-user-plus text-xs"></i> Novo Cliente
                             </button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="glass p-4 rounded-2xl border border-slate-800/80 shadow-lg">
+                        <div class="glass-card p-4 rounded-3xl relative overflow-hidden group">
                             <div class="flex items-center justify-between text-slate-400 mb-2">
-                                <span class="text-xs font-medium">Faturamento do Mês</span>
-                                <div class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-sm"><i class="fa-solid fa-dollar-sign"></i></div>
+                                <span class="text-xs font-semibold">Faturamento Mês</span>
+                                <div class="w-9 h-9 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center text-xs"><i class="fa-solid fa-dollar-sign"></i></div>
                             </div>
-                            <div id="stat-rev-month" class="text-xl md:text-2xl font-bold text-emerald-400">R$ 0,00</div>
-                            <div class="text-[10px] text-slate-400 mt-1">Lucro estimado: <span id="stat-profit-month" class="text-slate-200 font-semibold">R$ 0,00</span></div>
+                            <div id="stat-rev-month" class="text-xl md:text-2xl font-extrabold text-emerald-400 tracking-tight">R$ 0,00</div>
+                            <div class="text-[11px] text-slate-400 mt-1">Lucro Estimado: <span id="stat-profit-month" class="text-slate-200 font-bold">R$ 0,00</span></div>
                         </div>
 
-                        <div class="glass p-4 rounded-2xl border border-slate-800/80 shadow-lg">
+                        <div class="glass-card p-4 rounded-3xl relative overflow-hidden group">
                             <div class="flex items-center justify-between text-slate-400 mb-2">
-                                <span class="text-xs font-medium">Serviços Realizados</span>
-                                <div class="w-8 h-8 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center text-sm"><i class="fa-solid fa-spray-can"></i></div>
+                                <span class="text-xs font-semibold">Serviços Concluídos</span>
+                                <div class="w-9 h-9 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center text-xs"><i class="fa-solid fa-circle-check"></i></div>
                             </div>
-                            <div id="stat-serv-done" class="text-xl md:text-2xl font-bold">0</div>
-                            <div class="text-[10px] text-slate-400 mt-1">Agendados: <span id="stat-serv-scheduled" class="text-sky-400 font-semibold">0</span></div>
+                            <div id="stat-serv-done" class="text-xl md:text-2xl font-extrabold text-white tracking-tight">0</div>
+                            <div class="text-[11px] text-slate-400 mt-1">Agendados: <span id="stat-serv-scheduled" class="text-sky-400 font-bold">0</span></div>
                         </div>
 
-                        <div class="glass p-4 rounded-2xl border border-slate-800/80 shadow-lg">
+                        <div class="glass-card p-4 rounded-3xl relative overflow-hidden group">
                             <div class="flex items-center justify-between text-slate-400 mb-2">
-                                <span class="text-xs font-medium">Clientes Cadastrados</span>
-                                <div class="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-400 flex items-center justify-center text-sm"><i class="fa-solid fa-users"></i></div>
+                                <span class="text-xs font-semibold">Base de Clientes</span>
+                                <div class="w-9 h-9 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center text-xs"><i class="fa-solid fa-users"></i></div>
                             </div>
-                            <div id="stat-clients-count" class="text-xl md:text-2xl font-bold">0</div>
-                            <div class="text-[10px] text-slate-400 mt-1">Ticket Médio: <span id="stat-ticket-medio" class="text-indigo-400 font-semibold">R$ 0,00</span></div>
+                            <div id="stat-clients-count" class="text-xl md:text-2xl font-extrabold text-white tracking-tight">0</div>
+                            <div class="text-[11px] text-slate-400 mt-1">Ticket Médio: <span id="stat-ticket-medio" class="text-indigo-400 font-bold">R$ 0,00</span></div>
                         </div>
 
-                        <div class="glass p-4 rounded-2xl border border-slate-800/80 shadow-lg">
+                        <div class="glass-card p-4 rounded-3xl relative overflow-hidden group">
                             <div class="flex items-center justify-between text-slate-400 mb-2">
-                                <span class="text-xs font-medium">A Receber / Despesas</span>
-                                <div class="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center text-sm"><i class="fa-solid fa-file-invoice"></i></div>
+                                <span class="text-xs font-semibold">Pendentes / Despesas</span>
+                                <div class="w-9 h-9 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div>
                             </div>
-                            <div id="stat-receivable" class="text-lg md:text-xl font-bold text-amber-400">R$ 0,00</div>
-                            <div class="text-[10px] text-slate-400 mt-1">Despesas: <span id="stat-expenses-month" class="text-rose-400 font-semibold">R$ 0,00</span></div>
+                            <div id="stat-receivable" class="text-lg md:text-xl font-extrabold text-amber-400 tracking-tight">R$ 0,00</div>
+                            <div class="text-[11px] text-slate-400 mt-1">Despesas Mês: <span id="stat-expenses-month" class="text-rose-400 font-bold">R$ 0,00</span></div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="glass p-5 rounded-3xl border border-slate-800/80 shadow-lg">
-                            <h4 class="font-semibold text-sm mb-4 text-slate-300"><i class="fa-solid fa-chart-line text-sky-400 mr-2"></i>Faturamento por Mês</h4>
+                        <div class="glass-card p-5 rounded-3xl">
+                            <h4 class="font-bold text-xs uppercase tracking-wider mb-4 text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-line text-sky-400"></i> Desempenho Mensal
+                            </h4>
                             <div class="h-64"><canvas id="chartMonth"></canvas></div>
                         </div>
-                        <div class="glass p-5 rounded-3xl border border-slate-800/80 shadow-lg">
-                            <h4 class="font-semibold text-sm mb-4 text-slate-300"><i class="fa-solid fa-chart-pie text-indigo-400 mr-2"></i>Tipos de Serviços Mais Realizados</h4>
+                        <div class="glass-card p-5 rounded-3xl">
+                            <h4 class="font-bold text-xs uppercase tracking-wider mb-4 text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-indigo-400"></i> Distribuição por Estofados
+                            </h4>
                             <div class="h-64"><canvas id="chartServices"></canvas></div>
                         </div>
                     </div>
 
-                    <div class="glass p-5 rounded-3xl border border-slate-800/80 shadow-lg">
+                    <div class="glass-card p-5 rounded-3xl">
                         <div class="flex items-center justify-between mb-4">
-                            <h4 class="font-semibold text-sm text-slate-300"><i class="fa-solid fa-clock text-sky-400 mr-2"></i>Próximos Serviços Agendados</h4>
-                            <button onclick="switchView('schedule')" class="text-xs text-sky-400 hover:underline">Ver agenda completa</button>
+                            <h4 class="font-bold text-xs uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-clock text-sky-400"></i> Próximos Atendimentos
+                            </h4>
+                            <button onclick="switchView('schedule')" class="text-xs text-sky-400 hover:text-sky-300 font-semibold transition">Ver agenda completa &rarr;</button>
                         </div>
                         <div id="upcoming-services-list" class="space-y-3"></div>
                     </div>
@@ -275,24 +312,24 @@
                 <section id="view-clients" class="space-y-6 view-section hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h3 class="text-xl font-bold">Gerenciamento de Clientes</h3>
-                            <p class="text-slate-400 text-xs">Cadastre, consulte o histórico e envie mensagens.</p>
+                            <h3 class="text-xl font-bold text-white">Gerenciamento de Clientes</h3>
+                            <p class="text-slate-400 text-xs">Consulte o histórico, adicione novos contatos e envie orçamentos.</p>
                         </div>
-                        <button onclick="openModal('modal-client')" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 transition flex items-center justify-center gap-2">
+                        <button onclick="openModal('modal-client')" class="bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg shadow-sky-500/20 hover:brightness-110 transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-user-plus"></i> Novo Cliente
                         </button>
                     </div>
 
                     <div class="flex gap-3 flex-wrap">
                         <div class="flex-1 relative min-w-[220px]">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                                <i class="fa-solid fa-search text-xs"></i>
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                                <i class="fa-solid fa-magnifying-glass text-xs"></i>
                             </span>
-                            <input type="text" id="client-search" oninput="renderClients()" placeholder="Pesquisar por nome, telefone..." class="w-full pl-9 pr-4 py-2.5 text-xs rounded-xl bg-slate-900/60 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition">
+                            <input type="text" id="client-search" oninput="renderClients()" placeholder="Pesquisar cliente por nome, telefone..." class="w-full pl-9 pr-4 py-2.5 text-xs rounded-2xl bg-slate-900/80 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition">
                         </div>
-                        <select id="client-filter" onchange="renderClients()" class="px-4 py-2.5 text-xs rounded-xl bg-slate-900/60 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition">
-                            <option value="all">Todos os clientes</option>
-                            <option value="active">Com serviços realizados</option>
+                        <select id="client-filter" onchange="renderClients()" class="px-4 py-2.5 text-xs rounded-2xl bg-slate-900/80 border border-slate-700/60 focus:border-sky-500 focus:outline-none transition text-slate-300">
+                            <option value="all">Todos os Clientes</option>
+                            <option value="active">Com Serviços Concluídos</option>
                         </select>
                     </div>
 
@@ -303,25 +340,25 @@
                 <section id="view-schedule" class="space-y-6 view-section hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h3 class="text-xl font-bold">Agenda de Serviços</h3>
-                            <p class="text-slate-400 text-xs">Controle seus horários e status dos atendimentos.</p>
+                            <h3 class="text-xl font-bold text-white">Agenda & Agendamentos</h3>
+                            <p class="text-slate-400 text-xs">Organize seus horários, rotas e acompanhe o status dos serviços.</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <div class="glass rounded-xl p-1 flex text-xs font-medium">
-                                <button onclick="setScheduleViewMode('day')" id="btn-mode-day" class="px-3 py-1.5 rounded-lg bg-sky-500 text-white transition">Dia</button>
-                                <button onclick="setScheduleViewMode('week')" id="btn-mode-week" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Semana</button>
-                                <button onclick="setScheduleViewMode('month')" id="btn-mode-month" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Mês</button>
+                            <div class="glass-card rounded-2xl p-1 flex text-xs font-semibold">
+                                <button onclick="setScheduleViewMode('day')" id="btn-mode-day" class="px-3.5 py-1.5 rounded-xl bg-sky-500 text-white transition">Dia</button>
+                                <button onclick="setScheduleViewMode('week')" id="btn-mode-week" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition">Semana</button>
+                                <button onclick="setScheduleViewMode('month')" id="btn-mode-month" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition">Mês</button>
                             </div>
-                            <button onclick="openModal('modal-service')" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 transition flex items-center gap-2">
+                            <button onclick="openModal('modal-service')" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg shadow-sky-500/20 transition flex items-center gap-2">
                                 <i class="fa-solid fa-plus"></i> Agendar
                             </button>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between glass p-4 rounded-2xl border border-slate-800">
-                        <button onclick="changeScheduleDate(-1)" class="p-2 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-chevron-left"></i></button>
-                        <h4 id="schedule-current-date-label" class="font-bold text-sm">20 de Setembro, 2026</h4>
-                        <button onclick="changeScheduleDate(1)" class="p-2 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="flex items-center justify-between glass-card p-4 rounded-2xl">
+                        <button onclick="changeScheduleDate(-1)" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <h4 id="schedule-current-date-label" class="font-bold text-sm text-slate-200">Segunda-feira, 21 de Setembro, 2026</h4>
+                        <button onclick="changeScheduleDate(1)" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
 
                     <div id="schedule-container" class="space-y-3"></div>
@@ -331,12 +368,11 @@
                 <section id="view-services" class="space-y-6 view-section hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h3 class="text-xl font-bold">Catálogo de Estofados & Serviços</h3>
-                            <p class="text-slate-400 text-xs">Cadastre estofados, tipos de serviço, unidades e preços.</p>
+                            <h3 class="text-xl font-bold text-white">Catálogo de Estofados & Serviços</h3>
+                            <p class="text-slate-400 text-xs">Cadastre tipos de estofados, valores de venda, custos e tempo estimado.</p>
                         </div>
-                        <button onclick="openModal('modal-catalog-item')" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-semibold transition flex items-center gap-2 shrink-0 shadow-lg shadow-sky-500/20">
-                            <i class="fa-solid fa-plus"></i>
-                            Cadastrar Estofado
+                        <button onclick="openModal('modal-catalog-item')" class="bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg shadow-sky-500/20 hover:brightness-110 transition flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Novo Item
                         </button>
                     </div>
 
@@ -347,16 +383,16 @@
                 <section id="view-budget" class="space-y-6 view-section hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h3 class="text-xl font-bold">Calculadora e Orçamentos</h3>
-                            <p class="text-slate-400 text-xs">Monte orçamentos profissionais instantaneamente e envie pelo WhatsApp.</p>
+                            <h3 class="text-xl font-bold text-white">Criador de Orçamentos</h3>
+                            <p class="text-slate-400 text-xs">Calcule valores, aplique descontos e envie orçamentos via WhatsApp.</p>
                         </div>
-                        <button onclick="openModal('modal-budget-builder')" class="bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 transition flex items-center gap-2">
-                            <i class="fa-solid fa-calculator"></i> Novo Orçamento Rápido
+                        <button onclick="openModal('modal-budget-builder')" class="bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg shadow-sky-500/20 transition flex items-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> Novo Orçamento
                         </button>
                     </div>
 
-                    <div class="flex gap-2 border-b border-slate-800 pb-2">
-                        <button onclick="switchBudgetTab('list')" id="btn-budget-list" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition">Orçamentos Salvos</button>
+                    <div class="flex gap-2 border-b border-slate-800/80 pb-2">
+                        <button onclick="switchBudgetTab('list')" id="btn-budget-list" class="px-4 py-2 rounded-xl text-xs font-bold bg-sky-500 text-white transition">Orçamentos Salvos</button>
                     </div>
 
                     <div id="budget-tab-content" class="space-y-3"></div>
@@ -366,41 +402,43 @@
                 <section id="view-financial" class="space-y-6 view-section hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h3 class="text-xl font-bold">Módulo Financeiro</h3>
-                            <p class="text-slate-400 text-xs">Controle receitas, despesas, lucro líquido e fluxo de caixa.</p>
+                            <h3 class="text-xl font-bold text-white">Módulo Financeiro</h3>
+                            <p class="text-slate-400 text-xs">Acompanhe entradas, saídas, margem e resultado financeiro.</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="openModal('modal-transaction', 'revenue')" class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-3.5 py-2 rounded-xl text-xs font-semibold hover:bg-emerald-500/25 transition flex items-center gap-2">
-                                <i class="fa-solid fa-plus"></i> Receita
+                            <button onclick="openModal('modal-transaction', 'revenue')" class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-3.5 py-2.5 rounded-2xl text-xs font-bold hover:bg-emerald-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-plus text-xs"></i> Receita
                             </button>
-                            <button onclick="openModal('modal-transaction', 'expense')" class="bg-rose-500/15 text-rose-400 border border-rose-500/30 px-3.5 py-2 rounded-xl text-xs font-semibold hover:bg-rose-500/25 transition flex items-center gap-2">
-                                <i class="fa-solid fa-minus"></i> Despesa
+                            <button onclick="openModal('modal-transaction', 'expense')" class="bg-rose-500/15 text-rose-400 border border-rose-500/30 px-3.5 py-2.5 rounded-2xl text-xs font-bold hover:bg-rose-500/25 transition flex items-center gap-2">
+                                <i class="fa-solid fa-minus text-xs"></i> Despesa
                             </button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="glass p-5 rounded-3xl border border-slate-800">
-                            <span class="text-xs text-slate-400 font-medium">Receitas do Mês</span>
-                            <div id="fin-rev" class="text-2xl font-bold text-emerald-400 mt-1">R$ 0,00</div>
+                        <div class="glass-card p-5 rounded-3xl">
+                            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Receitas do Mês</span>
+                            <div id="fin-rev" class="text-2xl font-extrabold text-emerald-400 mt-1">R$ 0,00</div>
                         </div>
-                        <div class="glass p-5 rounded-3xl border border-slate-800">
-                            <span class="text-xs text-slate-400 font-medium">Despesas do Mês</span>
-                            <div id="fin-exp" class="text-2xl font-bold text-rose-400 mt-1">R$ 0,00</div>
+                        <div class="glass-card p-5 rounded-3xl">
+                            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Despesas do Mês</span>
+                            <div id="fin-exp" class="text-2xl font-extrabold text-rose-400 mt-1">R$ 0,00</div>
                         </div>
-                        <div class="glass p-5 rounded-3xl border border-slate-800">
-                            <span class="text-xs text-slate-400 font-medium">Lucro Líquido</span>
-                            <div id="fin-profit" class="text-2xl font-bold text-sky-400 mt-1">R$ 0,00</div>
+                        <div class="glass-card p-5 rounded-3xl">
+                            <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Lucro Líquido</span>
+                            <div id="fin-profit" class="text-2xl font-extrabold text-sky-400 mt-1">R$ 0,00</div>
                         </div>
                     </div>
 
-                    <div class="glass p-5 rounded-3xl border border-slate-800">
-                        <h4 class="font-semibold text-sm mb-4 text-slate-300"><i class="fa-solid fa-chart-bar text-sky-400 mr-2"></i>Receitas x Despesas</h4>
+                    <div class="glass-card p-5 rounded-3xl">
+                        <h4 class="font-bold text-xs uppercase tracking-wider mb-4 text-slate-300 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-bar text-sky-400"></i> Comparativo de Entradas e Saídas
+                        </h4>
                         <div class="h-64"><canvas id="chartFinancial"></canvas></div>
                     </div>
 
-                    <div class="glass p-5 rounded-3xl border border-slate-800">
-                        <h4 class="font-semibold text-sm mb-4 text-slate-300">Histórico de Transações</h4>
+                    <div class="glass-card p-5 rounded-3xl">
+                        <h4 class="font-bold text-xs uppercase tracking-wider mb-4 text-slate-300">Histórico de Transações</h4>
                         <div id="transactions-list" class="space-y-2"></div>
                     </div>
                 </section>
@@ -409,11 +447,11 @@
                 <section id="view-gallery" class="space-y-6 view-section hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h3 class="text-xl font-bold">Galeria Antes e Depois</h3>
-                            <p class="text-slate-400 text-xs">Registre a transformação dos estofados higienizados.</p>
+                            <h3 class="text-xl font-bold text-white">Galeria Antes & Depois</h3>
+                            <p class="text-slate-400 text-xs">Exiba os resultados dos seus atendimentos de higienização.</p>
                         </div>
-                        <button onclick="openModal('modal-photo')" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-sky-500/25 transition flex items-center gap-2">
-                            <i class="fa-solid fa-camera"></i> Adicionar Fotos
+                        <button onclick="openModal('modal-photo')" class="bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg shadow-sky-500/20 hover:brightness-110 transition flex items-center gap-2">
+                            <i class="fa-solid fa-camera"></i> Adicionar Foto
                         </button>
                     </div>
 
@@ -423,70 +461,76 @@
                 <!-- 8. CONFIGURAÇÕES VIEW -->
                 <section id="view-settings" class="space-y-6 view-section hidden">
                     <div>
-                        <h3 class="text-xl font-bold">Configurações do Sistema</h3>
-                        <p class="text-slate-400 text-xs">Gerencie dados da empresa, PIN, backup e exportações.</p>
+                        <h3 class="text-xl font-bold text-white">Configurações do Sistema</h3>
+                        <p class="text-slate-400 text-xs">Personalize informações comerciais, segurança por PIN e dados.</p>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="glass p-6 rounded-3xl border border-slate-800 space-y-4">
-                            <h4 class="font-semibold text-sm text-sky-400"><i class="fa-solid fa-building mr-2"></i>Dados da Empresa & Orçamento</h4>
+                        <div class="glass-card p-6 rounded-3xl space-y-4">
+                            <h4 class="font-bold text-sm text-sky-400 flex items-center gap-2">
+                                <i class="fa-solid fa-building"></i> Empresa & Chave Pix
+                            </h4>
                             <div class="space-y-3">
                                 <div>
-                                    <label class="text-xs text-slate-400">Nome da Empresa</label>
-                                    <input type="text" id="set-company-name" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                    <label class="text-xs text-slate-400 font-medium">Nome Comercial da Empresa</label>
+                                    <input type="text" id="set-company-name" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900/90 border border-slate-700/80 focus:border-sky-500 focus:outline-none">
                                 </div>
                                 <div class="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label class="text-xs text-slate-400">CNPJ / CPF</label>
-                                        <input type="text" id="set-company-doc" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                        <label class="text-xs text-slate-400 font-medium">CNPJ / CPF</label>
+                                        <input type="text" id="set-company-doc" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900/90 border border-slate-700/80 focus:border-sky-500 focus:outline-none">
                                     </div>
                                     <div>
-                                        <label class="text-xs text-slate-400">Telefone / WhatsApp</label>
-                                        <input type="text" id="set-company-phone" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                        <label class="text-xs text-slate-400 font-medium">Telefone / WhatsApp</label>
+                                        <input type="text" id="set-company-phone" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900/90 border border-slate-700/80 focus:border-sky-500 focus:outline-none">
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="text-xs text-slate-400">Chave Pix</label>
-                                    <input type="text" id="set-company-pix" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                    <label class="text-xs text-slate-400 font-medium">Chave Pix para Recebimentos</label>
+                                    <input type="text" id="set-company-pix" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900/90 border border-slate-700/80 focus:border-sky-500 focus:outline-none">
                                 </div>
-                                <button onclick="saveCompanySettings()" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition">Salvar Alterações</button>
+                                <button onclick="saveCompanySettings()" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition">Salvar Informações</button>
                             </div>
                         </div>
 
-                        <div class="glass p-6 rounded-3xl border border-slate-800 space-y-4">
-                            <h4 class="font-semibold text-sm text-sky-400"><i class="fa-solid fa-shield-halved mr-2"></i>Segurança & PIN</h4>
+                        <div class="glass-card p-6 rounded-3xl space-y-4">
+                            <h4 class="font-bold text-sm text-sky-400 flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved"></i> Segurança e Bloqueio PIN
+                            </h4>
                             <div class="space-y-3">
                                 <div>
-                                    <label class="text-xs text-slate-400">PIN de Acesso (4 a 6 dígitos)</label>
-                                    <input type="password" id="set-pin-input" maxlength="6" placeholder="Ex: 1234" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700">
+                                    <label class="text-xs text-slate-400 font-medium">PIN de Acesso (4 a 6 dígitos)</label>
+                                    <input type="password" id="set-pin-input" maxlength="6" placeholder="Ex: 1234" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900/90 border border-slate-700/80 focus:border-sky-500 focus:outline-none">
                                 </div>
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-3 py-1">
                                     <input type="checkbox" id="set-pin-active" class="w-4 h-4 rounded text-sky-500 bg-slate-900 border-slate-700">
-                                    <label class="text-xs text-slate-300">Ativar proteção por PIN ao abrir o app</label>
+                                    <label for="set-pin-active" class="text-xs text-slate-300 font-medium">Exigir PIN para abrir a aplicação</label>
                                 </div>
-                                <button onclick="savePinSettings()" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-semibold transition">Salvar PIN</button>
+                                <button onclick="savePinSettings()" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition">Salvar Segurança</button>
                             </div>
                         </div>
 
-                        <div class="glass p-6 rounded-3xl border border-slate-800 space-y-4">
-                            <h4 class="font-semibold text-sm text-sky-400"><i class="fa-solid fa-database mr-2"></i>Backup e Dados</h4>
+                        <div class="glass-card p-6 rounded-3xl space-y-4 lg:col-span-2">
+                            <h4 class="font-bold text-sm text-sky-400 flex items-center gap-2">
+                                <i class="fa-solid fa-database"></i> Backup & Exportação de Dados
+                            </h4>
                             <div class="flex flex-wrap gap-3">
-                                <button onclick="exportBackupJSON()" class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-emerald-500/25 transition flex items-center gap-2">
+                                <button onclick="exportBackupJSON()" class="bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-emerald-500/25 transition flex items-center gap-2">
                                     <i class="fa-solid fa-download"></i> Exportar Backup (JSON)
                                 </button>
-                                <label class="bg-sky-500/15 text-sky-400 border border-sky-500/30 px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-sky-500/25 transition flex items-center gap-2 cursor-pointer">
+                                <label class="bg-sky-500/15 text-sky-400 border border-sky-500/30 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-sky-500/25 transition flex items-center gap-2 cursor-pointer">
                                     <i class="fa-solid fa-upload"></i> Importar Backup
                                     <input type="file" id="import-file-input" accept=".json" onchange="importBackupJSON(event)" class="hidden">
                                 </label>
-                                <button onclick="exportClientsCSV()" class="bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-indigo-500/25 transition flex items-center gap-2">
+                                <button onclick="exportClientsCSV()" class="bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-500/25 transition flex items-center gap-2">
                                     <i class="fa-solid fa-file-csv"></i> Exportar Clientes (CSV)
                                 </button>
-                                <button onclick="exportFinancialCSV()" class="bg-amber-500/15 text-amber-400 border border-amber-500/30 px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-amber-500/25 transition flex items-center gap-2">
+                                <button onclick="exportFinancialCSV()" class="bg-amber-500/15 text-amber-400 border border-amber-500/30 px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-amber-500/25 transition flex items-center gap-2">
                                     <i class="fa-solid fa-file-csv"></i> Exportar Financeiro (CSV)
                                 </button>
                             </div>
                             <div class="pt-4 border-t border-slate-800">
-                                <button onclick="clearAllData()" class="text-rose-400 hover:underline text-xs"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Apagar todos os dados e reiniciar demonstração</button>
+                                <button onclick="clearAllData()" class="text-rose-400 hover:underline text-xs font-semibold flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation"></i> Resetar dados e restaurar demonstração</button>
                             </div>
                         </div>
                     </div>
@@ -494,24 +538,21 @@
             </main>
 
             <!-- BOTTOM NAVIGATION (MOBILE) -->
-            <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-slate-800/80 px-2 py-2 flex justify-around items-center z-[9999]">
-                <button onclick="switchView('dashboard')" data-nav="dashboard" class="flex-1 min-w-0 flex flex-col items-center justify-center text-sky-400 nav-btn text-[10px] py-2 px-1">
-                    <i class="fa-solid fa-house text-base mb-0.5"></i> Home
+            <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-slate-800/80 px-2 py-2 flex justify-around items-center">
+                <button onclick="switchView('dashboard')" data-nav="dashboard" class="flex-1 flex flex-col items-center justify-center text-sky-400 nav-btn text-[10px] font-semibold py-1">
+                    <i class="fa-solid fa-chart-pie text-base mb-0.5"></i> Home
                 </button>
-                <button onclick="switchView('clients')" data-nav="clients" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
+                <button onclick="switchView('clients')" data-nav="clients" class="flex-1 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] font-semibold py-1">
                     <i class="fa-solid fa-users text-base mb-0.5"></i> Clientes
                 </button>
-                <button onclick="switchView('schedule')" data-nav="schedule" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
+                <button onclick="switchView('schedule')" data-nav="schedule" class="flex-1 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] font-semibold py-1">
                     <i class="fa-solid fa-calendar-days text-base mb-0.5"></i> Agenda
                 </button>
-                <button onclick="switchView('services')" data-nav="services" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
-                    <i class="fa-solid fa-couch text-base mb-0.5"></i> Catálogo
+                <button onclick="switchView('services')" data-nav="services" class="flex-1 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] font-semibold py-1">
+                    <i class="fa-solid fa-couch text-base mb-0.5"></i> Serviços
                 </button>
-                <button onclick="switchView('budget')" data-nav="budget" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
-                    <i class="fa-solid fa-file-invoice-dollar text-base mb-0.5"></i> Orçamentos
-                </button>
-                <button onclick="switchView('financial')" data-nav="financial" class="flex-1 min-w-0 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] py-2 px-1">
-                    <i class="fa-solid fa-wallet text-base mb-0.5"></i> Financeiro
+                <button onclick="switchView('financial')" data-nav="financial" class="flex-1 flex flex-col items-center justify-center text-slate-400 nav-btn text-[10px] font-semibold py-1">
+                    <i class="fa-solid fa-wallet text-base mb-0.5"></i> Caixa
                 </button>
             </nav>
         </div>
@@ -521,118 +562,117 @@
 
     <!-- Modal Novo Cliente -->
     <div id="modal-client" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="glass p-6 rounded-3xl max-w-lg w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
+        <div class="glass-card p-6 rounded-3xl max-w-lg w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-client-title" class="font-bold text-lg">Novo Cliente</h3>
+                <h3 id="modal-client-title" class="font-bold text-lg text-white">Novo Cliente</h3>
                 <button onclick="closeModal('modal-client')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="form-client" onsubmit="saveClient(event)" class="space-y-3">
                 <input type="hidden" id="client-id">
                 <div>
-                    <label class="text-xs text-slate-400">Nome Completo *</label>
-                    <input type="text" id="client-name" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">Nome Completo *</label>
+                    <input type="text" id="client-name" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400">Telefone *</label>
-                        <input type="text" id="client-phone" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Telefone *</label>
+                        <input type="text" id="client-phone" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">WhatsApp *</label>
-                        <input type="text" id="client-whatsapp" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">WhatsApp *</label>
+                        <input type="text" id="client-whatsapp" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">CPF (Opcional)</label>
-                    <input type="text" id="client-cpf" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">CPF (Opcional)</label>
+                    <input type="text" id="client-cpf" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                 </div>
                 <div class="grid grid-cols-3 gap-3">
                     <div class="col-span-2">
-                        <label class="text-xs text-slate-400">Endereço</label>
-                        <input type="text" id="client-address" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Endereço</label>
+                        <input type="text" id="client-address" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">Número</label>
-                        <input type="text" id="client-number" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Número</label>
+                        <input type="text" id="client-number" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400">Bairro</label>
-                        <input type="text" id="client-neighborhood" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Bairro</label>
+                        <input type="text" id="client-neighborhood" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">Cidade</label>
-                        <input type="text" id="client-city" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Cidade</label>
+                        <input type="text" id="client-city" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">CEP</label>
-                        <input type="text" id="client-cep" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">CEP</label>
+                        <input type="text" id="client-cep" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Observações</label>
-                    <textarea id="client-notes" rows="2" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
+                    <label class="text-xs font-semibold text-slate-400">Observações</label>
+                    <textarea id="client-notes" rows="2" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('modal-client')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar Cliente</button>
+                    <button type="button" onclick="closeModal('modal-client')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-sky-500 text-white hover:bg-sky-600">Salvar Cliente</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal Novo Serviço/Agendamento -->
+    <!-- Modal Novo Agendamento -->
     <div id="modal-service" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="glass p-6 rounded-3xl max-w-lg w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
+        <div class="glass-card p-6 rounded-3xl max-w-lg w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-service-title" class="font-bold text-lg">Novo Agendamento / Serviço</h3>
+                <h3 id="modal-service-title" class="font-bold text-lg text-white">Novo Agendamento</h3>
                 <button onclick="closeModal('modal-service')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="form-service" onsubmit="saveAppointment(event)" class="space-y-3">
                 <input type="hidden" id="service-app-id">
                 <div>
-                    <label class="text-xs text-slate-400">Cliente *</label>
-                    <select id="app-client-id" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
+                    <label class="text-xs font-semibold text-slate-400">Cliente *</label>
+                    <select id="app-client-id" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none text-slate-200"></select>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Estofado / Serviço *</label>
-                    <select id="app-service-name" required onchange="updateAppointmentPrice()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
+                    <label class="text-xs font-semibold text-slate-400">Estofado / Serviço *</label>
+                    <select id="app-service-name" required onchange="updateAppointmentPrice()" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none text-slate-200"></select>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Quantidade</label>
-                    <input type="number" id="app-quantity" min="1" value="1" oninput="updateAppointmentPrice()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">Quantidade</label>
+                    <input type="number" id="app-quantity" min="1" value="1" oninput="updateAppointmentPrice()" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400">Data *</label>
-                        <input type="date" id="app-date" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Data *</label>
+                        <input type="date" id="app-date" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">Horário *</label>
-                        <input type="time" id="app-time" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Horário *</label>
+                        <input type="time" id="app-time" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400">Valor Total (R$) *</label>
-                        <input type="number" step="0.01" id="app-price" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Valor Total (R$) *</label>
+                        <input type="number" step="0.01" id="app-price" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">Forma de Pagamento</label>
-                        <select id="app-payment" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Forma de Pagamento</label>
+                        <select id="app-payment" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none text-slate-200">
                             <option value="Pix">Pix</option>
                             <option value="Cartão de Crédito">Cartão de Crédito</option>
                             <option value="Cartão de Débito">Cartão de Débito</option>
                             <option value="Dinheiro">Dinheiro</option>
                             <option value="Transferência">Transferência</option>
-                            <option value="Outro">Outro</option>
                         </select>
                     </div>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Status</label>
-                    <select id="app-status" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">Status do Serviço</label>
+                    <select id="app-status" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none text-slate-200">
                         <option value="Agendado">Agendado</option>
                         <option value="Confirmado">Confirmado</option>
                         <option value="Em andamento">Em andamento</option>
@@ -641,196 +681,140 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Observações</label>
-                    <textarea id="app-notes" rows="2" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
+                    <label class="text-xs font-semibold text-slate-400">Observações</label>
+                    <textarea id="app-notes" rows="2" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('modal-service')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar Agendamento</button>
+                    <button type="button" onclick="closeModal('modal-service')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-sky-500 text-white hover:bg-sky-600">Salvar Agendamento</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal Novo Item no Catálogo de Estofados / Serviços -->
+    <!-- Modal Novo Item no Catálogo -->
     <div id="modal-catalog-item" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="glass rounded-3xl w-full max-w-2xl p-6 border border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
-
+        <div class="glass-card rounded-3xl w-full max-w-2xl p-6 border border-slate-700/80 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between mb-5">
                 <div>
-                    <h3 class="text-xl font-bold text-white">
-                        <i class="fa-solid fa-couch text-sky-400 mr-2"></i>
-                        Cadastro de Estofado
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-couch text-sky-400"></i> Cadastro de Estofado
                     </h3>
-                    <p class="text-xs text-slate-400 mt-1">
-                        Cadastre o estofado e os serviços disponíveis para ele.
-                    </p>
+                    <p class="text-xs text-slate-400 mt-0.5">Defina preços e configurações de higienização.</p>
                 </div>
-
-                <button type="button" onclick="closeModal('modal-catalog-item')" class="w-9 h-9 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition">
+                <button type="button" onclick="closeModal('modal-catalog-item')" class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <form id="form-catalog" onsubmit="saveCatalogItem(event)" class="space-y-4">
-
                 <input type="hidden" id="catalog-id">
-
-                <!-- Nome + Categoria -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                            Nome do estofado *
-                        </label>
-                        <input type="text" id="catalog-name" required placeholder="Ex.: Sofá 3 Lugares Retrátil" class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Nome do Estofado *</label>
+                        <input type="text" id="catalog-name" required placeholder="Ex.: Sofá Retrátil 3 Lugares" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500">
                     </div>
-
                     <div>
-                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                            Categoria *
-                        </label>
-                        <select id="catalog-category" required class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Categoria *</label>
+                        <select id="catalog-category" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500">
                             <option value="Sofá">Sofá</option>
                             <option value="Poltrona">Poltrona</option>
                             <option value="Cadeira">Cadeira</option>
                             <option value="Colchão">Colchão</option>
                             <option value="Tapete">Tapete</option>
-                            <option value="Banco">Banco</option>
+                            <option value="Banco">Banco Automotivo</option>
                             <option value="Puff">Puff</option>
-                            <option value="Cabeceira">Cabeceira</option>
-                            <option value="Carpete">Carpete</option>
                             <option value="Outro">Outro</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Serviço + Unidade -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                            Tipo de serviço *
-                        </label>
-                        <select id="catalog-service" required class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Serviço *</label>
+                        <select id="catalog-service" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500">
                             <option value="Limpeza">Limpeza</option>
                             <option value="Impermeabilização">Impermeabilização</option>
                             <option value="Limpeza + Impermeabilização">Limpeza + Impermeabilização</option>
-                            <option value="Higienização">Higienização</option>
-                            <option value="Outro">Outro</option>
+                            <option value="Higienização Sanitizante">Higienização Sanitizante</option>
                         </select>
                     </div>
-
                     <div>
-                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                            Unidade de cobrança *
-                        </label>
-                        <select id="catalog-unit" required class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Unidade de Cobrança *</label>
+                        <select id="catalog-unit" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500">
                             <option value="Unidade">Unidade</option>
                             <option value="Módulo">Módulo</option>
                             <option value="Lugar">Lugar</option>
-                            <option value="Metro">Metro</option>
-                            <option value="Serviço">Serviço</option>
+                            <option value="Metro">Metro Quadrado</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Preço + Custo + Tempo -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                            Preço de venda *
-                        </label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-3 text-slate-500 text-sm">R$</span>
-                            <input type="number" id="catalog-price" required min="0" step="0.01" placeholder="0,00" class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-                        </div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Preço de Venda (R$) *</label>
+                        <input type="number" id="catalog-price" required min="0" step="0.01" placeholder="0,00" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500">
                     </div>
-
                     <div>
-                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                            Custo estimado
-                        </label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-3 text-slate-500 text-sm">R$</span>
-                            <input type="number" id="catalog-cost" min="0" step="0.01" placeholder="0,00" class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-                        </div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Custo Estimado (R$)</label>
+                        <input type="number" id="catalog-cost" min="0" step="0.01" placeholder="0,00" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500">
                     </div>
-
                     <div>
-                        <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                            Tempo estimado
-                        </label>
-                        <div class="relative">
-                            <i class="fa-regular fa-clock absolute left-3 top-3.5 text-slate-500 text-sm"></i>
-                            <input type="text" id="catalog-duration" placeholder="Ex.: 2h 30min" class="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-sky-500">
-                        </div>
+                        <label class="text-xs font-semibold text-slate-300 mb-1 block">Tempo Estimado</label>
+                        <input type="text" id="catalog-duration" placeholder="Ex: 2 horas" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500">
                     </div>
                 </div>
 
-                <!-- Descrição -->
                 <div>
-                    <label class="text-xs font-semibold text-slate-300 mb-1.5 block">
-                        Descrição do serviço
-                    </label>
-                    <textarea id="catalog-description" rows="3" placeholder="Ex.: Higienização profunda, remoção de manchas e aplicação de produtos específicos..." class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white text-sm resize-none focus:outline-none focus:border-sky-500"></textarea>
+                    <label class="text-xs font-semibold text-slate-300 mb-1 block">Descrição do Serviço</label>
+                    <textarea id="catalog-description" rows="3" placeholder="Detalhes da higienização..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500"></textarea>
                 </div>
 
-                <!-- Status -->
-                <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
                     <div>
-                        <p class="text-sm font-semibold text-white">Serviço ativo</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">Serviços inativos não aparecem para novos agendamentos e orçamentos.</p>
+                        <p class="text-xs font-semibold text-white">Item Ativo no Catálogo</p>
+                        <p class="text-[11px] text-slate-400">Itens ativos aparecem nos seletores de agendamentos e orçamentos.</p>
                     </div>
-
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="catalog-active" checked class="sr-only peer">
-                        <div class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:bg-sky-500 transition"></div>
-                        <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-5"></div>
-                    </label>
+                    <input type="checkbox" id="catalog-active" checked class="w-4 h-4 text-sky-500 rounded">
                 </div>
 
-                <!-- Rodapé do Modal -->
-                <div class="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-3 border-t border-slate-800">
-                    <button type="button" onclick="closeModal('modal-catalog-item')" class="px-5 py-3 rounded-xl bg-slate-800 text-slate-300 text-sm font-semibold hover:bg-slate-700 transition">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="px-5 py-3 rounded-xl bg-sky-500 text-white text-sm font-semibold hover:bg-sky-400 transition shadow-lg shadow-sky-500/20">
-                        <i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Cadastro
-                    </button>
+                <div class="flex gap-2 justify-end pt-2">
+                    <button type="button" onclick="closeModal('modal-catalog-item')" class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2.5 rounded-xl bg-sky-500 text-white text-xs font-bold hover:bg-sky-400 shadow-lg shadow-sky-500/20">Salvar Item</button>
                 </div>
-
             </form>
         </div>
     </div>
 
     <!-- Modal Transação Financeira -->
     <div id="modal-transaction" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="glass p-6 rounded-3xl max-w-md w-full border border-slate-700/80">
+        <div class="glass-card p-6 rounded-3xl max-w-md w-full border border-slate-700/80">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-trans-title" class="font-bold text-lg">Nova Transação</h3>
+                <h3 id="modal-trans-title" class="font-bold text-lg text-white">Nova Transação</h3>
                 <button onclick="closeModal('modal-transaction')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="form-transaction" onsubmit="saveTransaction(event)" class="space-y-3">
                 <input type="hidden" id="trans-type" value="revenue">
                 <div>
-                    <label class="text-xs text-slate-400">Descrição *</label>
-                    <input type="text" id="trans-desc" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">Descrição *</label>
+                    <input type="text" id="trans-desc" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400">Valor (R$) *</label>
-                        <input type="number" step="0.01" id="trans-val" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Valor (R$) *</label>
+                        <input type="number" step="0.01" id="trans-val" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">Data *</label>
-                        <input type="date" id="trans-date" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Data *</label>
+                        <input type="date" id="trans-date" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400">Categoria</label>
-                        <select id="trans-category" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Categoria</label>
+                        <select id="trans-category" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none text-slate-200">
                             <option value="Serviços">Serviços</option>
-                            <option value="Produtos">Produtos</option>
+                            <option value="Produtos Químicos">Produtos Químicos</option>
                             <option value="Combustível">Combustível</option>
                             <option value="Equipamentos">Equipamentos</option>
                             <option value="Marketing">Marketing</option>
@@ -838,65 +822,64 @@
                         </select>
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">Forma de Pagamento</label>
-                        <select id="trans-payment" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Pagamento</label>
+                        <select id="trans-payment" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none text-slate-200">
                             <option value="Pix">Pix</option>
                             <option value="Dinheiro">Dinheiro</option>
                             <option value="Cartão de Crédito">Cartão de Crédito</option>
                             <option value="Cartão de Débito">Cartão de Débito</option>
-                            <option value="Transferência">Transferência</option>
                         </select>
                     </div>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('modal-transaction')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar Transação</button>
+                    <button type="button" onclick="closeModal('modal-transaction')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-sky-500 text-white hover:bg-sky-600">Salvar Transação</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal Calculadora / Criar Orçamento -->
+    <!-- Modal Orçamento -->
     <div id="modal-budget-builder" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="glass p-6 rounded-3xl max-w-xl w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
+        <div class="glass-card p-6 rounded-3xl max-w-xl w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg">Criar Orçamento Rápido</h3>
+                <h3 class="font-bold text-lg text-white">Criar Novo Orçamento</h3>
                 <button onclick="closeModal('modal-budget-builder')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs text-slate-400">Cliente *</label>
-                    <select id="bud-client-id" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
+                    <label class="text-xs font-semibold text-slate-400">Cliente *</label>
+                    <select id="bud-client-id" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none text-slate-200"></select>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400 mb-1 block">Selecione os Estofados do Catálogo</label>
-                    <div id="bud-services-checkboxes" class="space-y-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-slate-900/60 border border-slate-800"></div>
+                    <label class="text-xs font-semibold text-slate-400 mb-1.5 block">Selecione os Itens do Catálogo</label>
+                    <div id="bud-services-checkboxes" class="space-y-2 max-h-48 overflow-y-auto p-3 rounded-2xl bg-slate-900/80 border border-slate-800"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400">Desconto (R$)</label>
-                        <input type="number" step="0.01" id="bud-discount" value="0" oninput="calcBudgetTotal()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Desconto (R$)</label>
+                        <input type="number" step="0.01" id="bud-discount" value="0" oninput="calcBudgetTotal()" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="text-xs text-slate-400">Taxa de Deslocamento (R$)</label>
-                        <input type="number" step="0.01" id="bud-shipping" value="0" oninput="calcBudgetTotal()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                        <label class="text-xs font-semibold text-slate-400">Taxa Deslocamento (R$)</label>
+                        <input type="number" step="0.01" id="bud-shipping" value="0" oninput="calcBudgetTotal()" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Validade do Orçamento (Dias)</label>
-                    <input type="number" id="bud-validity" value="7" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">Validade (Dias)</label>
+                    <input type="number" id="bud-validity" value="7" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Observações</label>
-                    <textarea id="bud-notes" rows="2" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
+                    <label class="text-xs font-semibold text-slate-400">Observações</label>
+                    <textarea id="bud-notes" rows="2" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></textarea>
                 </div>
-                <div class="glass p-3 rounded-xl flex items-center justify-between font-bold">
-                    <span>Total do Orçamento:</span>
-                    <span id="bud-total-display" class="text-sky-400 text-lg">R$ 0,00</span>
+                <div class="glass p-3.5 rounded-2xl flex items-center justify-between font-bold border border-sky-500/20">
+                    <span class="text-xs text-slate-300">Total do Orçamento:</span>
+                    <span id="bud-total-display" class="text-sky-400 text-xl font-extrabold">R$ 0,00</span>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('modal-budget-builder')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
-                    <button onclick="saveBudget(event)" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar e Gerar Orçamento</button>
+                    <button type="button" onclick="closeModal('modal-budget-builder')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button onclick="saveBudget(event)" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-sky-500 text-white hover:bg-sky-600 shadow-lg shadow-sky-500/20">Salvar & Gerar Orçamento</button>
                 </div>
             </div>
         </div>
@@ -904,42 +887,42 @@
 
     <!-- Modal Perfil do Cliente -->
     <div id="modal-client-profile" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="glass p-6 rounded-3xl max-w-2xl w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
+        <div class="glass-card p-6 rounded-3xl max-w-2xl w-full border border-slate-700/80 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg">Perfil do Cliente</h3>
+                <h3 class="font-bold text-lg text-white">Perfil do Cliente</h3>
                 <button onclick="closeModal('modal-client-profile')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div id="client-profile-content" class="space-y-4"></div>
         </div>
     </div>
 
-    <!-- Modal Adicionar Foto Antes e Depois -->
+    <!-- Modal Foto Antes e Depois -->
     <div id="modal-photo" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="glass p-6 rounded-3xl max-w-md w-full border border-slate-700/80">
+        <div class="glass-card p-6 rounded-3xl max-w-md w-full border border-slate-700/80">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg">Adicionar Foto Antes e Depois</h3>
+                <h3 class="font-bold text-lg text-white">Nova Foto Antes & Depois</h3>
                 <button onclick="closeModal('modal-photo')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="form-photo" onsubmit="savePhoto(event)" class="space-y-3">
                 <div>
-                    <label class="text-xs text-slate-400">Cliente *</label>
-                    <select id="photo-client-id" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
+                    <label class="text-xs font-semibold text-slate-400">Cliente *</label>
+                    <select id="photo-client-id" required class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none text-slate-200"></select>
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">Nome do Serviço *</label>
-                    <input type="text" id="photo-service-name" required placeholder="Ex: Higienização de Sofá 3 Lugares" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">Nome do Serviço *</label>
+                    <input type="text" id="photo-service-name" required placeholder="Ex: Higienização de Sofá 3 Lugares" class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">URL da Foto ANTES *</label>
-                    <input type="url" id="photo-before-url" required placeholder="https://exemplo.com/antes.jpg" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">URL Foto ANTES *</label>
+                    <input type="url" id="photo-before-url" required placeholder="https://..." class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                 </div>
                 <div>
-                    <label class="text-xs text-slate-400">URL da Foto DEPOIS *</label>
-                    <input type="url" id="photo-after-url" required placeholder="https://exemplo.com/depois.jpg" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+                    <label class="text-xs font-semibold text-slate-400">URL Foto DEPOIS *</label>
+                    <input type="url" id="photo-after-url" required placeholder="https://..." class="w-full mt-1 px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('modal-photo')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white hover:bg-sky-600">Salvar Foto</button>
+                    <button type="button" onclick="closeModal('modal-photo')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                    <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-sky-500 text-white hover:bg-sky-600">Salvar Foto</button>
                 </div>
             </form>
         </div>
@@ -947,32 +930,32 @@
 
     <!-- Modal Ação Rápida -->
     <div id="modal-quick-action" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-        <div class="glass p-6 rounded-3xl max-w-sm w-full border border-slate-700/80 text-center space-y-3">
-            <h3 class="font-bold text-lg mb-4">Ações Rápidas</h3>
-            <button onclick="closeModal('modal-quick-action'); openModal('modal-catalog-item');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
-                <i class="fa-solid fa-couch text-base"></i> + Cadastrar Estofado
+        <div class="glass-card p-6 rounded-3xl max-w-sm w-full border border-slate-700/80 text-center space-y-3">
+            <h3 class="font-bold text-lg mb-4 text-white">Ações Rápidas</h3>
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-catalog-item');" class="w-full py-3 px-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:bg-sky-500/20 text-sky-400 font-bold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-couch text-base"></i> Cadastrar Estofado
             </button>
-            <button onclick="closeModal('modal-quick-action'); openModal('modal-client');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
-                <i class="fa-solid fa-user-plus text-base"></i> + Cliente
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-client');" class="w-full py-3 px-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:bg-sky-500/20 text-sky-400 font-bold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-user-plus text-base"></i> Novo Cliente
             </button>
-            <button onclick="closeModal('modal-quick-action'); openModal('modal-service');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
-                <i class="fa-solid fa-calendar-plus text-base"></i> + Serviço / Agendamento
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-service');" class="w-full py-3 px-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:bg-sky-500/20 text-sky-400 font-bold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-calendar-plus text-base"></i> Agendar Atendimento
             </button>
-            <button onclick="closeModal('modal-quick-action'); openModal('modal-budget-builder');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500/20 text-sky-400 font-semibold text-xs transition flex items-center gap-3">
-                <i class="fa-solid fa-file-invoice-dollar text-base"></i> + Orçamento
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-budget-builder');" class="w-full py-3 px-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:bg-sky-500/20 text-sky-400 font-bold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-calculator text-base"></i> Criar Orçamento
             </button>
-            <button onclick="closeModal('modal-quick-action'); openModal('modal-transaction', 'revenue');" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-xs transition flex items-center gap-3">
-                <i class="fa-solid fa-circle-plus text-base"></i> + Receita
+            <button onclick="closeModal('modal-quick-action'); openModal('modal-transaction', 'revenue');" class="w-full py-3 px-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs transition flex items-center gap-3">
+                <i class="fa-solid fa-circle-plus text-base"></i> Nova Receita
             </button>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-16 md:bottom-6 right-6 z-50 glass px-4 py-3 rounded-2xl shadow-2xl border border-sky-500/30 text-xs flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300">
-        <div id="toast-icon" class="text-sky-400 text-base"><i class="fa-solid fa-circle-check"></i></div>
+    <div id="toast" class="fixed bottom-16 md:bottom-6 right-6 z-50 glass-card px-4 py-3 rounded-2xl shadow-2xl border border-sky-500/30 text-xs flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300">
+        <div id="toast-icon" class="text-sky-400 text-lg"><i class="fa-solid fa-circle-check"></i></div>
         <div>
-            <div id="toast-title" class="font-bold">Sucesso</div>
-            <div id="toast-msg" class="text-slate-400">Ação realizada com sucesso.</div>
+            <div id="toast-title" class="font-bold text-white">Sucesso</div>
+            <div id="toast-msg" class="text-slate-400 text-[11px]">Ação realizada com sucesso.</div>
         </div>
     </div>
 
@@ -988,52 +971,20 @@
                 pinActive: false,
                 theme: "dark"
             },
-            clients: [],
-                
+            clients: [
+                { id: "c_1", name: "Carlos Eduardo Silva", phone: "(11) 98888-7777", whatsapp: "5511988887777", cpf: "123.456.789-00", address: "Av. Paulista", number: "1000", neighborhood: "Bela Vista", city: "São Paulo", cep: "01310-100", notes: "Alergia a cheiros fortes." }
+            ],
             servicesCatalog: [
-                {
-                    id: "s_1",
-                    name: "Sofá 3 Lugares",
-                    category: "Sofá",
-                    service: "Limpeza",
-                    unit: "Unidade",
-                    price: 180,
-                    cost: 30,
-                    duration: "2 horas",
-                    description: "Higienização profunda de sofá de 3 lugares com extração a vácuo.",
-                    active: true
-                },
-                {
-                    id: "s_2",
-                    name: "Colchão Casal",
-                    category: "Colchão",
-                    service: "Limpeza + Impermeabilização",
-                    unit: "Unidade",
-                    price: 250,
-                    cost: 50,
-                    duration: "2h30",
-                    description: "Limpeza profunda e sanitização contra ácaros.",
-                    active: true
-                },
-                {
-                    id: "s_3",
-                    name: "Cadeira de Jantar",
-                    category: "Cadeira",
-                    service: "Higienização",
-                    unit: "Unidade",
-                    price: 35,
-                    cost: 5,
-                    duration: "30 minutos",
-                    description: "Higienização individual de cadeira estofada.",
-                    active: true
-                }
+                { id: "s_1", name: "Sofá 3 Lugares", category: "Sofá", service: "Limpeza", unit: "Unidade", price: 180, cost: 30, duration: "2 horas", description: "Higienização profunda com extração a vácuo.", active: true },
+                { id: "s_2", name: "Colchão Casal", category: "Colchão", service: "Limpeza + Impermeabilização", unit: "Unidade", price: 250, cost: 50, duration: "2h30", description: "Sanitização profunda contra ácaros.", active: true },
+                { id: "s_3", name: "Cadeira de Jantar", category: "Cadeira", service: "Limpeza", unit: "Unidade", price: 35, cost: 5, duration: "30 minutos", description: "Higienização individual de estofado.", active: true }
             ],
             appointments: [
-                
+                { id: "a_1", clientId: "c_1", serviceName: "Sofá 3 Lugares", quantity: 1, date: "2026-09-21", time: "14:00", price: 180, payment: "Pix", status: "Concluído", notes: "Cliente satisfeito." }
             ],
             budgets: [],
             transactions: [
-                
+                { id: "t_1", type: "revenue", description: "Higienização Sofá - Carlos Eduardo", value: 180, date: "2026-09-21", category: "Serviços", payment: "Pix" }
             ],
             gallery: []
         };
@@ -1048,7 +999,6 @@
             loadLocalStorage();
             checkPinSecurity();
             initTheme();
-            renderServicesCatalog();
             switchView('dashboard');
             populateSelects();
         });
@@ -1145,22 +1095,22 @@
             if (target) target.classList.remove('hidden');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-sky-500/15', 'text-sky-400');
+                btn.classList.remove('bg-sky-500/15', 'text-sky-400', 'active-nav-glow');
                 btn.classList.add('text-slate-400');
                 if (btn.getAttribute('data-nav') === viewId) {
-                    btn.classList.add('bg-sky-500/15', 'text-sky-400');
+                    btn.classList.add('bg-sky-500/15', 'text-sky-400', 'active-nav-glow');
                     btn.classList.remove('text-slate-400');
                 }
             });
 
             const titles = {
-                dashboard: ["Dashboard", "Visão geral do seu negócio de limpeza"],
+                dashboard: ["Dashboard", "Visão geral e desempenho do negócio"],
                 clients: ["Clientes", "Gerencie sua base de clientes"],
-                schedule: ["Agenda", "Organize seus atendimentos"],
-                services: ["Catálogo de Estofados & Serviços", "Preços, custos e tempos estimados"],
-                budget: ["Orçamentos", "Crie e gerencie propostas comerciais"],
+                schedule: ["Agenda & Atendimentos", "Organize seus horários"],
+                services: ["Catálogo de Serviços", "Estofados, preços e tempos"],
+                budget: ["Orçamentos", "Crie e envie propostas comerciais"],
                 financial: ["Financeiro", "Controle de receitas e despesas"],
-                gallery: ["Antes e Depois", "Galeria de resultados dos serviços"],
+                gallery: ["Antes e Depois", "Galeria de transformação"],
                 settings: ["Configurações", "Preferências e dados do sistema"]
             };
 
@@ -1179,291 +1129,268 @@
         }
 
         /* ----------------------------------------------------
-           FUNÇÕES DO CATÁLOGO DE ESTOFADOS / SERVIÇOS
+           CATÁLOGO DE ESTOFADOS / SERVIÇOS
         ---------------------------------------------------- */
         function renderServicesCatalog() {
             const grid = document.getElementById('services-catalog-grid');
             if (!grid) return;
 
             if (!appData.servicesCatalog || appData.servicesCatalog.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full glass p-8 rounded-3xl text-center text-slate-400 border border-slate-800">
-                        <i class="fa-solid fa-couch text-4xl mb-3 text-sky-500/40"></i>
-                        <p class="font-semibold text-slate-300">Nenhum estofado cadastrado</p>
-                        <p class="text-xs mt-1">Clique em "Cadastrar Estofado" para adicionar itens ao seu catálogo.</p>
-                    </div>
-                `;
+                grid.innerHTML = `<div class="col-span-full p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhum estofado cadastrado no catálogo.</div>`;
                 return;
             }
 
-            grid.innerHTML = appData.servicesCatalog.map(item => {
-                const price = Number(item.price) || 0;
-                const cost = Number(item.cost) || 0;
-                const profit = price - cost;
-                const margin = price > 0 ? Math.round((profit / price) * 100) : 0;
-
-                return `
-                    <div class="glass p-5 rounded-3xl border ${item.active ? 'border-slate-800/80 hover:border-sky-500/40' : 'border-rose-900/30 opacity-60'} transition duration-200 flex flex-col justify-between shadow-lg">
-                        <div>
-                            <div class="flex items-start justify-between gap-2 mb-3">
-                                <div>
-                                    <span class="inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase bg-sky-500/10 text-sky-400 border border-sky-500/20 mb-1">
-                                        ${item.category || 'Estofado'}
-                                    </span>
-                                    <h4 class="font-bold text-base text-slate-100">${item.name}</h4>
-                                </div>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-medium ${item.active ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'}">
-                                    ${item.active ? 'Ativo' : 'Inativo'}
-                                </span>
+            grid.innerHTML = appData.servicesCatalog.map(item => `
+                <div class="glass-card p-5 rounded-3xl relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20">${item.category}</span>
+                            <span class="text-xs font-bold ${item.active ? 'text-emerald-400' : 'text-slate-500'}">${item.active ? 'Ativo' : 'Inativo'}</span>
+                        </div>
+                        <h4 class="font-bold text-base text-white mb-1">${item.name}</h4>
+                        <p class="text-xs text-slate-400 mb-3">${item.description || 'Sem descrição informada.'}</p>
+                        <div class="space-y-1.5 text-xs text-slate-300">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Serviço:</span>
+                                <span class="font-semibold text-sky-400">${item.service}</span>
                             </div>
-
-                            <p class="text-xs text-slate-400 mb-4 line-clamp-2">${item.description || 'Sem descrição cadastrada.'}</p>
-
-                            <div class="grid grid-cols-2 gap-2 text-xs mb-4 bg-slate-900/50 p-3 rounded-2xl border border-slate-800/60">
-                                <div>
-                                    <span class="text-[10px] text-slate-500 block">Tipo de Serviço</span>
-                                    <span class="font-medium text-slate-300">${item.service || 'Limpeza'}</span>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] text-slate-500 block">Cobrança Por</span>
-                                    <span class="font-medium text-slate-300">${item.unit || 'Unidade'}</span>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] text-slate-500 block">Tempo Estimado</span>
-                                    <span class="font-medium text-slate-300"><i class="fa-regular fa-clock text-slate-400 mr-1"></i>${item.duration || 'N/I'}</span>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] text-slate-500 block">Margem de Lucro</span>
-                                    <span class="font-semibold text-emerald-400">${margin}% (~R$ ${profit.toFixed(2)})</span>
-                                </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Cobrança por:</span>
+                                <span class="font-semibold">${item.unit}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Tempo estimado:</span>
+                                <span class="font-semibold">${item.duration || 'N/I'}</span>
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">Preço de Venda</span>
+                            <span class="text-lg font-extrabold text-emerald-400">R$ ${parseFloat(item.price || 0).toFixed(2)}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editCatalogItem('${item.id}')" class="p-2 rounded-xl bg-slate-800 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteCatalogItem('${item.id}')" class="p-2 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-rose-400 transition"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-                        <div class="pt-3 border-t border-slate-800/60 flex items-center justify-between">
+        function saveCatalogItem(e) {
+            e.preventDefault();
+            const id = document.getElementById('catalog-id').value;
+            const newItem = {
+                id: id || 's_' + Date.now(),
+                name: document.getElementById('catalog-name').value,
+                category: document.getElementById('catalog-category').value,
+                service: document.getElementById('catalog-service').value,
+                unit: document.getElementById('catalog-unit').value,
+                price: parseFloat(document.getElementById('catalog-price').value || 0),
+                cost: parseFloat(document.getElementById('catalog-cost').value || 0),
+                duration: document.getElementById('catalog-duration').value,
+                description: document.getElementById('catalog-description').value,
+                active: document.getElementById('catalog-active').checked
+            };
+
+            if (id) {
+                const index = appData.servicesCatalog.findIndex(s => s.id === id);
+                if (index !== -1) appData.servicesCatalog[index] = newItem;
+            } else {
+                appData.servicesCatalog.push(newItem);
+            }
+
+            saveLocalStorage();
+            closeModal('modal-catalog-item');
+            renderServicesCatalog();
+            populateSelects();
+            showToast("Sucesso", "Estofado salvo com sucesso.");
+        }
+
+        function editCatalogItem(id) {
+            const item = appData.servicesCatalog.find(s => s.id === id);
+            if (!item) return;
+            document.getElementById('catalog-id').value = item.id;
+            document.getElementById('catalog-name').value = item.name;
+            document.getElementById('catalog-category').value = item.category;
+            document.getElementById('catalog-service').value = item.service;
+            document.getElementById('catalog-unit').value = item.unit;
+            document.getElementById('catalog-price').value = item.price;
+            document.getElementById('catalog-cost').value = item.cost;
+            document.getElementById('catalog-duration').value = item.duration;
+            document.getElementById('catalog-description').value = item.description;
+            document.getElementById('catalog-active').checked = item.active;
+            openModal('modal-catalog-item');
+        }
+
+        function deleteCatalogItem(id) {
+            if (confirm("Tem certeza que deseja excluir este estofado do catálogo?")) {
+                appData.servicesCatalog = appData.servicesCatalog.filter(s => s.id !== id);
+                saveLocalStorage();
+                renderServicesCatalog();
+                populateSelects();
+                showToast("Item Removido", "Removido do catálogo.");
+            }
+        }
+
+        /* ----------------------------------------------------
+           DASHBOARD & ESTATÍSTICAS
+        ---------------------------------------------------- */
+        function updateDashboard() {
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthApps = appData.appointments.filter(a => a.date && a.date.startsWith(currentMonth));
+            const monthTrans = appData.transactions.filter(t => t.date && t.date.startsWith(currentMonth));
+
+            const totalRev = monthTrans.filter(t => t.type === 'revenue').reduce((acc, t) => acc + (parseFloat(t.value) || 0), 0);
+            const totalExp = monthTrans.filter(t => t.type === 'expense').reduce((acc, t) => acc + (parseFloat(t.value) || 0), 0);
+            const doneServ = monthApps.filter(a => a.status === 'Concluído').length;
+            const schedServ = monthApps.filter(a => a.status === 'Agendado' || a.status === 'Confirmado').length;
+            
+            document.getElementById('stat-rev-month').innerText = 'R$ ' + totalRev.toFixed(2);
+            document.getElementById('stat-profit-month').innerText = 'R$ ' + (totalRev - totalExp).toFixed(2);
+            document.getElementById('stat-serv-done').innerText = doneServ;
+            document.getElementById('stat-serv-scheduled').innerText = schedServ;
+            document.getElementById('stat-clients-count').innerText = appData.clients.length;
+            
+            const ticket = appData.appointments.length > 0 ? (totalRev / (appData.appointments.length || 1)) : 0;
+            document.getElementById('stat-ticket-medio').innerText = 'R$ ' + ticket.toFixed(2);
+            document.getElementById('stat-receivable').innerText = 'R$ ' + (schedServ * 150).toFixed(2);
+            document.getElementById('stat-expenses-month').innerText = 'R$ ' + totalExp.toFixed(2);
+
+            renderDashboardCharts();
+            renderUpcomingServicesList();
+        }
+
+        function renderDashboardCharts() {
+            const ctx1 = document.getElementById('chartMonth');
+            if (ctx1) {
+                if (chartMonthInstance) chartMonthInstance.destroy();
+                chartMonthInstance = new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                        datasets: [{
+                            label: 'Faturamento (R$)',
+                            data: [1200, 1900, 2400, 2100, 3200, 3800, 4200, 4500, 5100, 0, 0, 0],
+                            borderColor: '#0ea5e9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                        }
+                    }
+                });
+            }
+
+            const ctx2 = document.getElementById('chartServices');
+            if (ctx2) {
+                if (chartServicesInstance) chartServicesInstance.destroy();
+                chartServicesInstance = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Sofás', 'Colchões', 'Cadeiras', 'Outros'],
+                        datasets: [{
+                            data: [55, 25, 12, 8],
+                            backgroundColor: ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } } }
+                    }
+                });
+            }
+        }
+
+        function renderUpcomingServicesList() {
+            const container = document.getElementById('upcoming-services-list');
+            if (!container) return;
+
+            if (appData.appointments.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum atendimento agendado no momento.</p>`;
+                return;
+            }
+
+            container.innerHTML = appData.appointments.slice(0, 4).map(app => {
+                const client = appData.clients.find(c => c.id === app.clientId) || { name: 'Cliente Indefinido' };
+                return `
+                    <div class="glass-card p-3 rounded-2xl flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-couch"></i></div>
                             <div>
-                                <span class="text-[10px] text-slate-400 block">Valor da Venda</span>
-                                <span class="text-lg font-bold text-sky-400">R$ ${price.toFixed(2).replace('.', ',')}</span>
+                                <h5 class="text-xs font-bold text-white">${client.name}</h5>
+                                <p class="text-[10px] text-slate-400">${app.serviceName} • ${app.date} às ${app.time}</p>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <button onclick="editCatalogItem('${item.id}')" title="Editar Estofado" class="p-2 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition text-xs">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button onclick="deleteCatalogItem('${item.id}')" title="Excluir Estofado" class="p-2 rounded-xl bg-slate-800/80 hover:bg-rose-500/20 text-rose-400 transition text-xs">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-extrabold text-emerald-400 block">R$ ${parseFloat(app.price || 0).toFixed(2)}</span>
+                            <span class="text-[10px] text-sky-400 font-semibold">${app.status}</span>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function saveCatalogItem(e) {
-            if (e) e.preventDefault();
+        /* ----------------------------------------------------
+           CLIENTES
+        ---------------------------------------------------- */
+        function renderClients() {
+            const grid = document.getElementById('clients-grid');
+            if (!grid) return;
+            const search = document.getElementById('client-search').value.toLowerCase();
 
-            const id = document.getElementById('catalog-id').value;
-            const name = document.getElementById('catalog-name').value.trim();
-            const category = document.getElementById('catalog-category').value;
-            const service = document.getElementById('catalog-service').value;
-            const unit = document.getElementById('catalog-unit').value;
-            const price = parseFloat(document.getElementById('catalog-price').value) || 0;
-            const cost = parseFloat(document.getElementById('catalog-cost').value) || 0;
-            const duration = document.getElementById('catalog-duration').value.trim();
-            const description = document.getElementById('catalog-description').value.trim();
-            const active = document.getElementById('catalog-active').checked;
+            const filtered = appData.clients.filter(c => c.name.toLowerCase().includes(search) || c.phone.includes(search));
 
-            if (!name) {
-                showToast("Atenção", "Informe o nome do estofado.", "error");
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhum cliente encontrado.</div>`;
                 return;
             }
 
-            if (id) {
-                const index = appData.servicesCatalog.findIndex(item => item.id === id);
-                if (index !== -1) {
-                    appData.servicesCatalog[index] = { id, name, category, service, unit, price, cost, duration, description, active };
-                    showToast("Atualizado", "Estofado atualizado no catálogo!");
-                }
-            } else {
-                const newItem = {
-                    id: 's_' + Date.now(),
-                    name, category, service, unit, price, cost, duration, description, active
-                };
-                appData.servicesCatalog.push(newItem);
-                showToast("Cadastrado", "Novo estofado cadastrado no catálogo!");
-            }
-
-            saveLocalStorage();
-            renderServicesCatalog();
-            populateSelects();
-            closeModal('modal-catalog-item');
-        }
-
-        function editCatalogItem(id) {
-            const item = appData.servicesCatalog.find(i => i.id === id);
-            if (!item) return;
-
-            document.getElementById('catalog-id').value = item.id;
-            document.getElementById('catalog-name').value = item.name;
-            document.getElementById('catalog-category').value = item.category || 'Sofá';
-            document.getElementById('catalog-service').value = item.service || 'Limpeza';
-            document.getElementById('catalog-unit').value = item.unit || 'Unidade';
-            document.getElementById('catalog-price').value = item.price;
-            document.getElementById('catalog-cost').value = item.cost || 0;
-            document.getElementById('catalog-duration').value = item.duration || '';
-            document.getElementById('catalog-description').value = item.description || '';
-            document.getElementById('catalog-active').checked = item.active !== false;
-
-            openModal('modal-catalog-item');
-        }
-
-        function deleteCatalogItem(id) {
-            if (confirm("Tem certeza que deseja remover este estofado do catálogo?")) {
-                appData.servicesCatalog = appData.servicesCatalog.filter(i => i.id !== id);
-                saveLocalStorage();
-                renderServicesCatalog();
-                populateSelects();
-                showToast("Removido", "Estofado excluído do catálogo.");
-            }
-        }
-
-        /* ----------------------------------------------------
-           MODAIS E NAVEGAÇÃO GERAL
-        ---------------------------------------------------- */
-        function openModal(modalId, param) {
-            const modal = document.getElementById(modalId);
-            if (!modal) return;
-
-            if (modalId === 'modal-catalog-item' && !param) {
-                document.getElementById('catalog-id').value = '';
-                document.getElementById('form-catalog').reset();
-                document.getElementById('catalog-active').checked = true;
-            }
-
-            if (modalId === 'modal-transaction' && param) {
-                document.getElementById('trans-type').value = param;
-                document.getElementById('modal-trans-title').innerText = param === 'revenue' ? 'Nova Receita' : 'Nova Despesa';
-            }
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) modal.classList.add('hidden');
-        }
-
-        function openQuickActionModal() {
-            openModal('modal-quick-action');
-        }
-
-        function showToast(title, msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            const icon = document.getElementById('toast-icon');
-            document.getElementById('toast-title').innerText = title;
-            document.getElementById('toast-msg').innerText = msg;
-
-            if (type === 'error') {
-                icon.className = 'text-rose-400 text-base';
-                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-            } else {
-                icon.className = 'text-sky-400 text-base';
-                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        /* ----------------------------------------------------
-           POPULAR SELECTS DINÂMICOS
-        ---------------------------------------------------- */
-        function populateSelects() {
-            // Select de estofados no agendamento
-            const appServiceSelect = document.getElementById('app-service-name');
-            if (appServiceSelect) {
-                const activeServices = appData.servicesCatalog.filter(s => s.active);
-                appServiceSelect.innerHTML = activeServices.length > 0 
-                    ? activeServices.map(s => `<option value="${s.name}" data-price="${s.price}">${s.name} - R$ ${s.price.toFixed(2)} (${s.service})</option>`).join('')
-                    : '<option value="">Nenhum estofado cadastrado</option>';
-            }
-
-            // Select de clientes no agendamento
-            const appClientSelect = document.getElementById('app-client-id');
-            if (appClientSelect) {
-                appClientSelect.innerHTML = appData.clients.length > 0 
-                    ? appData.clients.map(c => `<option value="${c.id}">${c.name} (${c.phone})</option>`).join('')
-                    : '<option value="">Nenhum cliente cadastrado</option>';
-            }
-
-            // Select de clientes no orçamento
-            const budClientSelect = document.getElementById('bud-client-id');
-            if (budClientSelect) {
-                budClientSelect.innerHTML = appData.clients.length > 0 
-                    ? appData.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
-                    : '<option value="">Nenhum cliente cadastrado</option>';
-            }
-
-            // Checkboxes do orçamento
-            const budServicesContainer = document.getElementById('bud-services-checkboxes');
-            if (budServicesContainer) {
-                const activeServices = appData.servicesCatalog.filter(s => s.active);
-                budServicesContainer.innerHTML = activeServices.length > 0
-                    ? activeServices.map(s => `
-                        <label class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs cursor-pointer hover:border-sky-500/50 transition">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" value="${s.id}" data-price="${s.price}" onchange="calcBudgetTotal()" class="bud-service-chk w-4 h-4 rounded text-sky-500 bg-slate-800 border-slate-700">
-                                <span class="font-medium">${s.name} <span class="text-slate-500">(${s.category})</span></span>
+            grid.innerHTML = filtered.map(c => `
+                <div class="glass-card p-5 rounded-3xl relative flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500/20 to-indigo-500/20 text-sky-400 flex items-center justify-center font-bold text-sm border border-sky-500/20">${c.name.charAt(0)}</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">${c.name}</h4>
+                                <span class="text-[11px] text-slate-400">${c.phone}</span>
                             </div>
-                            <span class="text-sky-400 font-bold">R$ ${s.price.toFixed(2)}</span>
-                        </label>
-                    `).join('')
-                    : '<p class="text-xs text-slate-500 p-2">Nenhum estofado ativo no catálogo.</p>';
-            }
-
-            // Select de clientes na galeria
-            const photoClientSelect = document.getElementById('photo-client-id');
-            if (photoClientSelect) {
-                photoClientSelect.innerHTML = appData.clients.length > 0
-                    ? appData.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
-                    : '<option value="">Nenhum cliente cadastrado</option>';
-            }
+                        </div>
+                        <div class="space-y-1 text-xs text-slate-400">
+                            <p><i class="fa-solid fa-location-dot text-sky-400 mr-1.5"></i> ${c.address || 'Endereço não informado'}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                        <button onclick="openClientProfile('${c.id}')" class="text-xs font-semibold text-sky-400 hover:underline">Ver Perfil</button>
+                        <div class="flex gap-2">
+                            <a href="https://wa.me/${c.whatsapp}" target="_blank" class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition"><i class="fa-brands fa-whatsapp"></i></a>
+                            <button onclick="editClient('${c.id}')" class="p-2 rounded-xl bg-slate-800 text-sky-400 hover:bg-sky-500/20 transition"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteClient('${c.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-rose-500/20 transition"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function updateAppointmentPrice() {
-            const select = document.getElementById('app-service-name');
-            const qty = parseInt(document.getElementById('app-quantity').value) || 1;
-            if (select && select.selectedOptions[0]) {
-                const basePrice = parseFloat(select.selectedOptions[0].getAttribute('data-price')) || 0;
-                document.getElementById('app-price').value = (basePrice * qty).toFixed(2);
-            }
-        }
-
-        function calcBudgetTotal() {
-            let total = 0;
-            document.querySelectorAll('.bud-service-chk:checked').forEach(chk => {
-                total += parseFloat(chk.getAttribute('data-price')) || 0;
-            });
-
-            const discount = parseFloat(document.getElementById('bud-discount').value) || 0;
-            const shipping = parseFloat(document.getElementById('bud-shipping').value) || 0;
-            total = Math.max(0, total - discount + shipping);
-
-            document.getElementById('bud-total-display').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
-        }
-
-        /* ----------------------------------------------------
-           FUNÇÕES DE CADASTRO GERAIS (CLIENTES, AGENDA, ETC)
-        ---------------------------------------------------- */
         function saveClient(e) {
-            if (e) e.preventDefault();
+            e.preventDefault();
             const id = document.getElementById('client-id').value;
             const newClient = {
                 id: id || 'c_' + Date.now(),
                 name: document.getElementById('client-name').value,
                 phone: document.getElementById('client-phone').value,
-                whatsapp: document.getElementById('client-whatsapp').value,
+                whatsapp: document.getElementById('client-whatsapp').value.replace(/\D/g, ''),
                 cpf: document.getElementById('client-cpf').value,
                 address: document.getElementById('client-address').value,
                 number: document.getElementById('client-number').value,
@@ -1481,187 +1408,396 @@
             }
 
             saveLocalStorage();
+            closeModal('modal-client');
             renderClients();
             populateSelects();
-            closeModal('modal-client');
-            showToast("Cliente Salvo", "Cadastro atualizado com sucesso!");
+            showToast("Cliente Salvo", "Cadastro atualizado com sucesso.");
         }
 
-        function renderClients() {
-            const grid = document.getElementById('clients-grid');
-            if (!grid) return;
+        function editClient(id) {
+            const c = appData.clients.find(x => x.id === id);
+            if (!c) return;
+            document.getElementById('client-id').value = c.id;
+            document.getElementById('client-name').value = c.name;
+            document.getElementById('client-phone').value = c.phone;
+            document.getElementById('client-whatsapp').value = c.whatsapp;
+            document.getElementById('client-cpf').value = c.cpf || '';
+            document.getElementById('client-address').value = c.address || '';
+            document.getElementById('client-number').value = c.number || '';
+            document.getElementById('client-neighborhood').value = c.neighborhood || '';
+            document.getElementById('client-city').value = c.city || '';
+            document.getElementById('client-cep').value = c.cep || '';
+            document.getElementById('client-notes').value = c.notes || '';
+            openModal('modal-client');
+        }
 
-            const query = (document.getElementById('client-search')?.value || '').toLowerCase();
-            const filtered = appData.clients.filter(c => c.name.toLowerCase().includes(query) || c.phone.includes(query));
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="col-span-full glass p-8 rounded-3xl text-center text-slate-400">Nenhum cliente encontrado.</div>';
-                return;
+        function deleteClient(id) {
+            if (confirm("Deseja remover este cliente?")) {
+                appData.clients = appData.clients.filter(c => c.id !== id);
+                saveLocalStorage();
+                renderClients();
+                populateSelects();
+                showToast("Cliente Removido", "Removido da base de dados.");
             }
+        }
 
-            grid.innerHTML = filtered.map(c => `
-                <div class="glass p-5 rounded-3xl border border-slate-800 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-bold text-base text-slate-200">${c.name}</h4>
-                        <a href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" class="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/25 transition">
-                            <i class="fa-brands fa-whatsapp text-sm"></i>
-                        </a>
-                    </div>
-                    <div class="text-xs text-slate-400 space-y-1">
-                        <p><i class="fa-solid fa-phone mr-1.5 text-sky-400"></i> ${c.phone}</p>
-                        <p><i class="fa-solid fa-location-dot mr-1.5 text-indigo-400"></i> ${c.address || 'Endereço não informado'}</p>
-                    </div>
+        function openClientProfile(id) {
+            const c = appData.clients.find(x => x.id === id);
+            if (!c) return;
+            const content = document.getElementById('client-profile-content');
+            content.innerHTML = `
+                <div class="glass-card p-4 rounded-2xl space-y-2">
+                    <h4 class="font-extrabold text-lg text-white">${c.name}</h4>
+                    <p class="text-xs text-slate-400">Telefone: ${c.phone} | WhatsApp: ${c.whatsapp}</p>
+                    <p class="text-xs text-slate-400">Endereço: ${c.address || ''}, ${c.number || ''} - ${c.neighborhood || ''}, ${c.city || ''}</p>
+                    <p class="text-xs text-slate-400">Observações: ${c.notes || 'Nenhuma'}</p>
                 </div>
-            `).join('');
+            `;
+            openModal('modal-client-profile');
         }
 
-        function saveAppointment(e) {
-            if (e) e.preventDefault();
-            const newApp = {
-                id: 'a_' + Date.now(),
-                clientId: document.getElementById('app-client-id').value,
-                serviceName: document.getElementById('app-service-name').value,
-                date: document.getElementById('app-date').value,
-                time: document.getElementById('app-time').value,
-                price: parseFloat(document.getElementById('app-price').value) || 0,
-                payment: document.getElementById('app-payment').value,
-                status: document.getElementById('app-status').value,
-                notes: document.getElementById('app-notes').value
-            };
-
-            appData.appointments.push(newApp);
-            saveLocalStorage();
-            renderSchedule();
-            updateDashboard();
-            closeModal('modal-service');
-            showToast("Agendado", "Serviço agendado com sucesso!");
-        }
-
+        /* ----------------------------------------------------
+           AGENDA & SERVIÇOS AGENDADOS
+        ---------------------------------------------------- */
         function renderSchedule() {
             const container = document.getElementById('schedule-container');
             if (!container) return;
 
             if (appData.appointments.length === 0) {
-                container.innerHTML = '<div class="glass p-8 rounded-3xl text-center text-slate-400">Nenhum agendamento cadastrado.</div>';
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhum atendimento agendado na agenda.</div>`;
                 return;
             }
 
-            container.innerHTML = appData.appointments.map(a => {
-                const client = appData.clients.find(c => c.id === a.clientId);
+            container.innerHTML = appData.appointments.map(app => {
+                const client = appData.clients.find(c => c.id === app.clientId) || { name: 'Cliente Indefinido', phone: '' };
                 return `
-                    <div class="glass p-4 rounded-2xl border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-                        <div>
-                            <span class="text-xs text-sky-400 font-semibold">${a.date} às ${a.time}</span>
-                            <h4 class="font-bold text-sm text-slate-100">${a.serviceName} - ${client ? client.name : 'Cliente'}</h4>
-                            <p class="text-xs text-slate-400">${a.notes || 'Sem observações'}</p>
+                    <div class="glass-card p-4 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center font-extrabold text-sm">${app.time}</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">${client.name}</h4>
+                                <p class="text-xs text-sky-400 font-semibold">${app.serviceName} (x${app.quantity})</p>
+                                <span class="text-[11px] text-slate-400">${app.date} • ${app.payment}</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-sm font-bold text-emerald-400">R$ ${a.price.toFixed(2)}</span>
-                            <span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-sky-500/15 text-sky-400 border border-sky-500/20">${a.status}</span>
+                        <div class="flex items-center justify-between md:justify-end gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
+                            <span class="text-sm font-extrabold text-emerald-400">R$ ${parseFloat(app.price || 0).toFixed(2)}</span>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20">${app.status}</span>
+                            <button onclick="deleteAppointment('${app.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-rose-500/20 transition"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
+        function saveAppointment(e) {
+            e.preventDefault();
+            const id = document.getElementById('service-app-id').value;
+            const newApp = {
+                id: id || 'a_' + Date.now(),
+                clientId: document.getElementById('app-client-id').value,
+                serviceName: document.getElementById('app-service-name').value,
+                quantity: parseInt(document.getElementById('app-quantity').value || 1),
+                date: document.getElementById('app-date').value,
+                time: document.getElementById('app-time').value,
+                price: parseFloat(document.getElementById('app-price').value || 0),
+                payment: document.getElementById('app-payment').value,
+                status: document.getElementById('app-status').value,
+                notes: document.getElementById('app-notes').value
+            };
+
+            if (id) {
+                const idx = appData.appointments.findIndex(a => a.id === id);
+                if (idx !== -1) appData.appointments[idx] = newApp;
+            } else {
+                appData.appointments.push(newApp);
+            }
+
+            saveLocalStorage();
+            closeModal('modal-service');
+            renderSchedule();
+            updateDashboard();
+            showToast("Agendamento Salvo", "Salvo na agenda com sucesso.");
+        }
+
+        function deleteAppointment(id) {
+            if (confirm("Deseja cancelar/excluir este agendamento?")) {
+                appData.appointments = appData.appointments.filter(a => a.id !== id);
+                saveLocalStorage();
+                renderSchedule();
+                updateDashboard();
+                showToast("Removido", "Agendamento excluído.");
+            }
+        }
+
+        function updateAppointmentPrice() {
+            const name = document.getElementById('app-service-name').value;
+            const qty = parseInt(document.getElementById('app-quantity').value || 1);
+            const item = appData.servicesCatalog.find(s => s.name === name);
+            if (item) {
+                document.getElementById('app-price').value = (item.price * qty).toFixed(2);
+            }
+        }
+
+        function setScheduleViewMode(mode) {
+            scheduleViewModeState = mode;
+            ['day', 'week', 'month'].forEach(m => {
+                const btn = document.getElementById('btn-mode-' + m);
+                if (btn) {
+                    btn.className = m === mode ? 'px-3.5 py-1.5 rounded-xl bg-sky-500 text-white transition font-bold' : 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition font-semibold';
+                }
+            });
+            renderSchedule();
+        }
+
+        function changeScheduleDate(days) {
+            currentScheduleDate.setDate(currentScheduleDate.getDate() + days);
+            document.getElementById('schedule-current-date-label').innerText = currentScheduleDate.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            renderSchedule();
+        }
+
+        /* ----------------------------------------------------
+           ORÇAMENTOS
+        ---------------------------------------------------- */
+        function renderBudgets() {
+            const container = document.getElementById('budget-tab-content');
+            if (!container) return;
+
+            if (appData.budgets.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhum orçamento salvo no momento.</div>`;
+                return;
+            }
+
+            container.innerHTML = appData.budgets.map(b => {
+                const client = appData.clients.find(c => c.id === b.clientId) || { name: 'Cliente Indefinido' };
+                return `
+                    <div class="glass-card p-4 rounded-3xl flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-sm text-white">${client.name}</h4>
+                            <p class="text-xs text-slate-400">Total: R$ ${parseFloat(b.total || 0).toFixed(2)} • Validade: ${b.validity} dias</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="shareBudgetWhatsApp('${b.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition flex items-center gap-1.5"><i class="fa-brands fa-whatsapp"></i> Enviar</button>
+                            <button onclick="deleteBudget('${b.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-rose-500/20 transition"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function calcBudgetTotal() {
+            const checkboxes = document.querySelectorAll('.bud-service-item:checked');
+            let total = 0;
+            checkboxes.forEach(cb => {
+                total += parseFloat(cb.getAttribute('data-price') || 0);
+            });
+            const discount = parseFloat(document.getElementById('bud-discount').value || 0);
+            const shipping = parseFloat(document.getElementById('bud-shipping').value || 0);
+            total = Math.max(0, total - discount + shipping);
+            document.getElementById('bud-total-display').innerText = 'R$ ' + total.toFixed(2);
+        }
+
+        function saveBudget(e) {
+            e.preventDefault();
+            const clientId = document.getElementById('bud-client-id').value;
+            const discount = parseFloat(document.getElementById('bud-discount').value || 0);
+            const shipping = parseFloat(document.getElementById('bud-shipping').value || 0);
+            const validity = document.getElementById('bud-validity').value;
+            const notes = document.getElementById('bud-notes').value;
+
+            const selected = [];
+            document.querySelectorAll('.bud-service-item:checked').forEach(cb => {
+                selected.push(cb.value);
+            });
+
+            let total = selected.reduce((acc, name) => {
+                const item = appData.servicesCatalog.find(s => s.name === name);
+                return acc + (item ? item.price : 0);
+            }, 0);
+
+            total = Math.max(0, total - discount + shipping);
+
+            const budget = {
+                id: 'b_' + Date.now(),
+                clientId,
+                items: selected,
+                discount,
+                shipping,
+                validity,
+                notes,
+                total
+            };
+
+            appData.budgets.push(budget);
+            saveLocalStorage();
+            closeModal('modal-budget-builder');
+            renderBudgets();
+            showToast("Orçamento Criado", "Proposta comercial salva.");
+        }
+
+        function shareBudgetWhatsApp(id) {
+            const b = appData.budgets.find(x => x.id === id);
+            if (!b) return;
+            const c = appData.clients.find(x => x.id === b.clientId);
+            if (!c) return;
+
+            const msg = `Olá *${c.name}*!\n\nSegue o seu orçamento da *${appData.settings.companyName}*:\n` +
+                b.items.map(i => `• ${i}`).join('\n') +
+                `\n\n*Total:* R$ ${b.total.toFixed(2)}\n*Validade:* ${b.validity} dias.\n\nFicamos à disposição para agendar!`;
+
+            window.open(`https://wa.me/${c.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function deleteBudget(id) {
+            if (confirm("Remover este orçamento?")) {
+                appData.budgets = appData.budgets.filter(b => b.id !== id);
+                saveLocalStorage();
+                renderBudgets();
+                showToast("Removido", "Orçamento excluído.");
+            }
+        }
+
+        function switchBudgetTab(tab) {
+            renderBudgets();
+        }
+
+        /* ----------------------------------------------------
+           FINANCEIRO
+        ---------------------------------------------------- */
+        function renderFinancial() {
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthTrans = appData.transactions.filter(t => t.date && t.date.startsWith(currentMonth));
+
+            const totalRev = monthTrans.filter(t => t.type === 'revenue').reduce((acc, t) => acc + parseFloat(t.value || 0), 0);
+            const totalExp = monthTrans.filter(t => t.type === 'expense').reduce((acc, t) => acc + parseFloat(t.value || 0), 0);
+
+            document.getElementById('fin-rev').innerText = 'R$ ' + totalRev.toFixed(2);
+            document.getElementById('fin-exp').innerText = 'R$ ' + totalExp.toFixed(2);
+            document.getElementById('fin-profit').innerText = 'R$ ' + (totalRev - totalExp).toFixed(2);
+
+            renderFinancialChart(totalRev, totalExp);
+
+            const list = document.getElementById('transactions-list');
+            if (!list) return;
+
+            if (appData.transactions.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhuma transação registrada.</p>`;
+                return;
+            }
+
+            list.innerHTML = appData.transactions.map(t => `
+                <div class="glass-card p-3 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl ${t.type === 'revenue' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} flex items-center justify-center font-bold text-xs">
+                            <i class="fa-solid ${t.type === 'revenue' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-xs font-bold text-white">${t.description}</h5>
+                            <span class="text-[10px] text-slate-400">${t.date} • ${t.category}</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-extrabold ${t.type === 'revenue' ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${t.type === 'revenue' ? '+' : '-'} R$ ${parseFloat(t.value || 0).toFixed(2)}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderFinancialChart(rev, exp) {
+            const ctx = document.getElementById('chartFinancial');
+            if (!ctx) return;
+            if (chartFinancialInstance) chartFinancialInstance.destroy();
+            chartFinancialInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Este Mês'],
+                    datasets: [
+                        { label: 'Receitas', data: [rev], backgroundColor: '#10b981', borderRadius: 8 },
+                        { label: 'Despesas', data: [exp], backgroundColor: '#f43f5e', borderRadius: 8 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
         function saveTransaction(e) {
-            if (e) e.preventDefault();
-            const newTrans = {
+            e.preventDefault();
+            const trans = {
                 id: 't_' + Date.now(),
                 type: document.getElementById('trans-type').value,
-                desc: document.getElementById('trans-desc').value,
-                val: parseFloat(document.getElementById('trans-val').value) || 0,
+                description: document.getElementById('trans-desc').value,
+                value: parseFloat(document.getElementById('trans-val').value || 0),
                 date: document.getElementById('trans-date').value,
                 category: document.getElementById('trans-category').value,
                 payment: document.getElementById('trans-payment').value
             };
 
-            appData.transactions.push(newTrans);
+            appData.transactions.push(trans);
             saveLocalStorage();
+            closeModal('modal-transaction');
             renderFinancial();
             updateDashboard();
-            closeModal('modal-transaction');
-            showToast("Lançado", "Transação financeira registrada!");
-        }
-
-        function renderFinancial() {
-            const list = document.getElementById('transactions-list');
-            let rev = 0, exp = 0;
-
-            appData.transactions.forEach(t => {
-                if (t.type === 'revenue') rev += t.val;
-                else exp += t.val;
-            });
-
-            document.getElementById('fin-rev').innerText = `R$ ${rev.toFixed(2)}`;
-            document.getElementById('fin-exp').innerText = `R$ ${exp.toFixed(2)}`;
-            document.getElementById('fin-profit').innerText = `R$ ${(rev - exp).toFixed(2)}`;
-
-            if (list) {
-                list.innerHTML = appData.transactions.map(t => `
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
-                        <div>
-                            <p class="font-semibold text-slate-200">${t.desc}</p>
-                            <span class="text-slate-500">${t.date} • ${t.category}</span>
-                        </div>
-                        <span class="font-bold ${t.type === 'revenue' ? 'text-emerald-400' : 'text-rose-400'}">
-                            ${t.type === 'revenue' ? '+' : '-'} R$ ${t.val.toFixed(2)}
-                        </span>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function saveBudget(e) {
-            if (e) e.preventDefault();
-            showToast("Orçamento Salvo", "Orçamento gerado com sucesso!");
-            closeModal('modal-budget-builder');
-        }
-
-        function renderBudgets() {
-            const content = document.getElementById('budget-tab-content');
-            if (content) {
-                content.innerHTML = '<div class="glass p-8 rounded-3xl text-center text-slate-400">Utilize o botão "+ Novo Orçamento Rápido" para criar propostas em PDF/WhatsApp.</div>';
-            }
-        }
-
-        function savePhoto(e) {
-            if (e) e.preventDefault();
-            showToast("Foto Salva", "Resultado adicionado à galeria!");
-            closeModal('modal-photo');
-        }
-
-        function renderGallery() {
-            const grid = document.getElementById('gallery-grid');
-            if (grid) {
-                grid.innerHTML = '<div class="col-span-full glass p-8 rounded-3xl text-center text-slate-400">Nenhuma foto de "Antes e Depois" cadastrada.</div>';
-            }
-        }
-
-        function updateDashboard() {
-            let totalRev = 0;
-            appData.transactions.filter(t => t.type === 'revenue').forEach(t => totalRev += t.val);
-
-            document.getElementById('stat-rev-month').innerText = `R$ ${totalRev.toFixed(2)}`;
-            document.getElementById('stat-serv-done').innerText = appData.appointments.length;
-            document.getElementById('stat-clients-count').innerText = appData.clients.length;
-
-            const upcomingList = document.getElementById('upcoming-services-list');
-            if (upcomingList) {
-                upcomingList.innerHTML = appData.appointments.slice(0, 3).map(a => `
-                    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs">
-                        <div>
-                            <span class="font-bold text-slate-200">${a.serviceName}</span>
-                            <p class="text-slate-400">${a.date} às ${a.time}</p>
-                        </div>
-                        <span class="text-sky-400 font-semibold">R$ ${a.price.toFixed(2)}</span>
-                    </div>
-                `).join('') || '<p class="text-xs text-slate-500">Nenhum agendamento próximo.</p>';
-            }
+            showToast("Lançamento Salvo", "Transação gravada no caixa.");
         }
 
         /* ----------------------------------------------------
-           CONFIGURAÇÕES, BACKUP E OUTROS
+           GALERIA ANTES E DEPOIS
+        ---------------------------------------------------- */
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            if (!grid) return;
+
+            if (appData.gallery.length === 0) {
+                grid.innerHTML = `<div class="col-span-full p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhuma foto adicionada à galeria.</div>`;
+                return;
+            }
+
+            grid.innerHTML = appData.gallery.map(g => `
+                <div class="glass-card p-4 rounded-3xl space-y-3">
+                    <h4 class="font-bold text-xs text-white">${g.serviceName}</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-900 border border-slate-800">
+                            <img src="${g.beforeUrl}" onerror="this.src='https://via.placeholder.com/300x200?text=Antes'" class="w-full h-full object-cover">
+                            <span class="absolute bottom-1 left-1 px-2 py-0.5 rounded-md bg-slate-950/80 text-[9px] font-bold text-rose-400">ANTES</span>
+                        </div>
+                        <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-900 border border-slate-800">
+                            <img src="${g.afterUrl}" onerror="this.src='https://via.placeholder.com/300x200?text=Depois'" class="w-full h-full object-cover">
+                            <span class="absolute bottom-1 left-1 px-2 py-0.5 rounded-md bg-slate-950/80 text-[9px] font-bold text-emerald-400">DEPOIS</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function savePhoto(e) {
+            e.preventDefault();
+            const photo = {
+                id: 'p_' + Date.now(),
+                clientId: document.getElementById('photo-client-id').value,
+                serviceName: document.getElementById('photo-service-name').value,
+                beforeUrl: document.getElementById('photo-before-url').value,
+                afterUrl: document.getElementById('photo-after-url').value
+            };
+
+            appData.gallery.push(photo);
+            saveLocalStorage();
+            closeModal('modal-photo');
+            renderGallery();
+            showToast("Foto Salva", "Adicionada à galeria.");
+        }
+
+        /* ----------------------------------------------------
+           CONFIGURAÇÕES & AUXILIARES
         ---------------------------------------------------- */
         function saveCompanySettings() {
             appData.settings.companyName = document.getElementById('set-company-name').value;
@@ -1676,60 +1812,143 @@
             appData.settings.pin = document.getElementById('set-pin-input').value;
             appData.settings.pinActive = document.getElementById('set-pin-active').checked;
             saveLocalStorage();
-            showToast("Segurança", "Configurações de PIN salvas.");
+            showToast("Segurança Atualizada", "PIN salvo.");
         }
 
         function exportBackupJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `cleangestor_backup_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `cleangestor_backup_${new Date().toISOString().slice(0,10)}.json`);
+            dlAnchorElem.click();
         }
 
         function importBackupJSON(event) {
-            const file = event.target.files[0];
-            if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    appData = JSON.parse(e.target.result);
-                    saveLocalStorage();
-                    location.reload();
-                } catch (err) {
-                    showToast("Erro no Arquivo", "JSON inválido.", "error");
-                }
-            };
-            reader.readAsText(file);
+            reader.onload = onReaderLoad;
+            reader.readAsText(event.target.files[0]);
+        }
+
+        function onReaderLoad(event) {
+            try {
+                const obj = JSON.parse(event.target.result);
+                appData = obj;
+                saveLocalStorage();
+                location.reload();
+            } catch (e) {
+                showToast("Erro", "Arquivo JSON inválido.", "error");
+            }
+        }
+
+        function exportClientsCSV() {
+            let csv = "Nome,Telefone,WhatsApp,Endereco\n";
+            appData.clients.forEach(c => {
+                csv += `"${c.name}","${c.phone}","${c.whatsapp}","${c.address || ''}"\n`;
+            });
+            downloadCSV(csv, "clientes_cleangestor.csv");
+        }
+
+        function exportFinancialCSV() {
+            let csv = "Tipo,Descricao,Valor,Data,Categoria\n";
+            appData.transactions.forEach(t => {
+                csv += `"${t.type}","${t.description}","${t.value}","${t.date}","${t.category}"\n`;
+            });
+            downloadCSV(csv, "financeiro_cleangestor.csv");
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", filename);
+            link.click();
         }
 
         function clearAllData() {
-            if (confirm("ATENÇÃO: Todos os dados serão excluídos. Deseja continuar?")) {
+            if (confirm("Atenção! Isso apagará todos os dados salvos localmente. Deseja continuar?")) {
                 localStorage.removeItem('cleangestor_data');
                 location.reload();
             }
         }
 
-        function setScheduleViewMode(mode) {
-            scheduleViewModeState = mode;
-            showToast("Modo de Exibição", `Agenda em modo ${mode}`);
+        function populateSelects() {
+            const clientSelects = ['app-client-id', 'bud-client-id', 'photo-client-id'];
+            clientSelects.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.innerHTML = appData.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                }
+            });
+
+            const serviceSelect = document.getElementById('app-service-name');
+            if (serviceSelect) {
+                serviceSelect.innerHTML = appData.servicesCatalog.filter(s => s.active).map(s => `<option value="${s.name}">${s.name} - R$ ${parseFloat(s.price).toFixed(2)}</option>`).join('');
+            }
+
+            const budCheckboxes = document.getElementById('bud-services-checkboxes');
+            if (budCheckboxes) {
+                budCheckboxes.innerHTML = appData.servicesCatalog.filter(s => s.active).map(s => `
+                    <label class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-800/60 cursor-pointer">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" value="${s.name}" data-price="${s.price}" onchange="calcBudgetTotal()" class="bud-service-item w-4 h-4 text-sky-500 rounded">
+                            <span class="text-xs font-semibold text-slate-200">${s.name}</span>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-400">R$ ${parseFloat(s.price).toFixed(2)}</span>
+                    </label>
+                `).join('');
+            }
         }
 
-        function changeScheduleDate(days) {
-            currentScheduleDate.setDate(currentScheduleDate.getDate() + days);
-            document.getElementById('schedule-current-date-label').innerText = currentScheduleDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        function openModal(modalId, param) {
+            if (modalId === 'modal-transaction' && param) {
+                document.getElementById('trans-type').value = param;
+                document.getElementById('modal-trans-title').innerText = param === 'revenue' ? 'Nova Receita' : 'Nova Despesa';
+            }
+            document.getElementById(modalId).classList.remove('hidden');
         }
 
-        function handleGlobalSearch(val) {
-            const results = document.getElementById('search-results');
-            if (!val.trim()) {
-                results.classList.add('hidden');
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function openQuickActionModal() {
+            openModal('modal-quick-action');
+        }
+
+        function handleGlobalSearch(query) {
+            const resContainer = document.getElementById('search-results');
+            if (!query.trim()) {
+                resContainer.classList.add('hidden');
                 return;
             }
-            results.classList.remove('hidden');
-            results.innerHTML = `<p class="text-xs text-slate-400 p-2">Buscando por: "${val}"...</p>`;
+            const q = query.toLowerCase();
+            const matchedClients = appData.clients.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q));
+            const matchedServices = appData.servicesCatalog.filter(s => s.name.toLowerCase().includes(q));
+
+            let html = '';
+            if (matchedClients.length > 0) {
+                html += `<div class="text-[10px] font-bold uppercase text-slate-500 px-2 py-1">Clientes</div>`;
+                html += matchedClients.map(c => `<div onclick="switchView('clients'); closeModal('search-results');" class="p-2 rounded-xl hover:bg-slate-800 cursor-pointer text-xs font-semibold text-white">${c.name} (${c.phone})</div>`).join('');
+            }
+            if (matchedServices.length > 0) {
+                html += `<div class="text-[10px] font-bold uppercase text-slate-500 px-2 py-1 mt-1">Serviços</div>`;
+                html += matchedServices.map(s => `<div onclick="switchView('services'); closeModal('search-results');" class="p-2 rounded-xl hover:bg-slate-800 cursor-pointer text-xs font-semibold text-sky-400">${s.name}</div>`).join('');
+            }
+
+            if (!html) html = `<div class="p-2 text-xs text-slate-500 text-center">Nenhum resultado encontrado.</div>`;
+
+            resContainer.innerHTML = html;
+            resContainer.classList.remove('hidden');
+        }
+
+        function showToast(title, msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
         }
     </script>
 </body>
