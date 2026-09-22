@@ -200,7 +200,7 @@
                 <section id="view-dashboard" class="space-y-6 view-section">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h3 id="welcome-msg" class="text-xl md:text-2xl font-bold">Olá, Profissional! 👋</h3>
+                            <h3 id="welcome-msg" class="text-xl md:text-2xl font-bold">Olá, Bruno! 👋</h3>
                             <p class="text-slate-400 text-sm">Aqui está o resumo do seu desempenho hoje.</p>
                         </div>
                         <div class="flex gap-2 flex-wrap">
@@ -913,35 +913,24 @@
         // DADOS INICIAIS DE DEMONSTRAÇÃO
         const initialDB = {
             clients: [
-                { id: "1", name: "Carlos Silva", phone: "(31) 98877-6655", whatsapp: "5531988776655", cpf: "123.456.789-00", address: "Rua das Flores", number: "120", neighborhood: "Centro", city: "Belo Horizonte", cep: "30100-000", notes: "Prefere atendimento na parte da manhã.", createdAt: "2026-09-01" },
-                { id: "2", name: "Mariana Costa", phone: "(31) 99123-4567", whatsapp: "5531991234567", cpf: "987.654.321-11", address: "Av. Brasil", number: "450", neighborhood: "Lourdes", city: "Belo Horizonte", cep: "30140-000", notes: "Possui 2 gatos em casa.", createdAt: "2026-09-05" }
-            ],
+                  ],
             catalog: [
-                { id: "1", name: "Sofá 3 Lugares Retrátil", category: "Sofá", service: "Higienização", unit: "Unidade", price: 250, cost: 35, duration: "2h", description: "Limpeza profunda e higienização antibacteriana.", active: true },
-                { id: "2", name: "Poltrona do Papai", category: "Poltrona", service: "Limpeza + Impermeabilização", unit: "Unidade", price: 180, cost: 40, duration: "1h 30m", description: "Higienização completa + aplicação de impermeabilizante.", active: true },
-                { id: "3", name: "Colchão Casal Queen", category: "Colchão", service: "Higienização", unit: "Unidade", price: 220, cost: 30, duration: "2h", description: "Remoção de ácaros e manchas superficiais.", active: true }
+               
             ],
             appointments: [
-                { id: "101", clientId: "1", serviceName: "Sofá 3 Lugares Retrátil", quantity: 1, date: "2026-09-22", time: "09:00", price: 250, payment: "Pix", status: "Agendado", notes: "Trazer extensão elétrica." },
-                { id: "102", clientId: "2", serviceName: "Poltrona do Papai", quantity: 1, date: "2026-09-20", time: "14:00", price: 180, payment: "Cartão de Crédito", status: "Concluído", notes: "Cliente gostou do serviço." }
+                
             ],
             transactions: [
-                { id: "t1", type: "revenue", desc: "Serviço - Mariana Costa", val: 180, date: "2026-09-20", category: "Serviços", payment: "Cartão de Crédito" },
-                { id: "t2", type: "expense", desc: "Compra de Detergente Extratora", val: 65, date: "2026-09-18", category: "Produtos", payment: "Pix" }
+               
             ],
             budgets: [
-                { id: "b1", clientId: "1", items: [{ name: "Sofá 3 Lugares Retrátil", qty: 1, price: 250 }], discount: 10, total: 240, notes: "Válido por 7 dias", date: "2026-09-15" }
+               
             ],
             photos: [
-                { id: "p1", title: "Sofá Retrátil Manchado", beforeImg: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80", afterImg: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80", date: "2026-09-10" }
+              
             ],
             settings: {
-                companyName: "CleanEstofados Profissional",
-                companyDoc: "12.345.678/0001-90",
-                companyPhone: "(31) 98877-6655",
-                companyPix: "31988776655",
-                pin: "1234",
-                pinActive: false
+                
             }
         };
 
@@ -1829,7 +1818,7 @@
                         labels: ['Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'],
                         datasets: [{
                             label: 'Faturamento (R$)',
-                            data: [1200, 1900, 3000, 2500, 4200, 0],
+                            data: [],
                             borderColor: '#0ea5e9',
                             backgroundColor: 'rgba(14, 165, 233, 0.1)',
                             fill: true,
@@ -1867,8 +1856,8 @@
                     data: {
                         labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
                         datasets: [
-                            { label: 'Receitas', data: [800, 1200, 1100, 950], backgroundColor: '#10b981' },
-                            { label: 'Despesas', data: [200, 350, 150, 400], backgroundColor: '#f43f5e' }
+                            { label: 'Receitas', data: [], backgroundColor: '#10b981' },
+                            { label: 'Despesas', data: [], backgroundColor: '#f43f5e' }
                         ]
                     },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 10 } } } } }
