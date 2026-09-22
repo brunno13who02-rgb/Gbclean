@@ -52,6 +52,7 @@
                 radial-gradient(at 10% 10%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
                 radial-gradient(at 90% 90%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
             background-attachment: fixed;
+            transition: all 0.3s ease;
         }
 
         .glass {
@@ -103,9 +104,37 @@
         #sidebar { z-index: 40; }
         #mobile-bottom-nav { position: fixed; z-index: 40; }
         #main-content { position: relative; z-index: 1; }
+
+        /* REGRAS PARA MODO PC E MODO MOBILE FORÇADOS */
+        body.mode-pc #sidebar { display: flex !important; }
+        body.mode-pc #mobile-bottom-nav { display: none !important; }
+        body.mode-pc .md\:hidden { display: none !important; }
+        body.mode-pc .hidden.md\:flex { display: flex !important; }
+        body.mode-pc .hidden.md\:block { display: block !important; }
+        body.mode-pc .hidden.sm\:block { display: block !important; }
+        body.mode-pc .hidden.sm\:inline { display: inline !important; }
+        body.mode-pc #app-container { max-width: 100% !important; margin: 0 !important; border: none !important; }
+        body.mode-pc main { padding-bottom: 2rem !important; }
+
+        body.mode-mobile #sidebar { display: none !important; }
+        body.mode-mobile #mobile-bottom-nav { display: flex !important; }
+        body.mode-mobile .md\:hidden { display: flex !important; }
+        body.mode-mobile .hidden.md\:flex { display: none !important; }
+        body.mode-mobile .hidden.md\:block { display: none !important; }
+        body.mode-mobile .hidden.sm\:block { display: none !important; }
+        body.mode-mobile .hidden.sm\:inline { display: none !important; }
+        body.mode-mobile .grid-cols-2.lg\:grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        body.mode-mobile .md\:grid-cols-2, body.mode-mobile .lg\:grid-cols-3, body.mode-mobile .md\:grid-cols-3 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+        body.mode-mobile #app-container {
+            max-width: 480px !important;
+            margin: 0 auto !important;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
+<body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white mode-auto">
 
     <!-- TELA DE PIN (SEGURANÇA) -->
     <div id="pin-screen" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-2xl flex flex-col items-center justify-center p-6 hidden">
@@ -209,8 +238,21 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <div class="relative hidden sm:block w-64">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- SELETOR DE MODO DISPOSITIVO (PC / MOBILE / AUTO) -->
+                    <div class="glass p-1 rounded-2xl flex items-center gap-1 border border-slate-700/60 text-xs">
+                        <button onclick="setDeviceView('auto')" id="btn-view-auto" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-sky-500 text-white shadow-sm transition" title="Responsivo Automático">
+                            <i class="fa-solid fa-laptop-mobile"></i> <span class="hidden sm:inline">Auto</span>
+                        </button>
+                        <button onclick="setDeviceView('pc')" id="btn-view-pc" class="px-2.5 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-slate-200 transition" title="Forçar Versão PC">
+                            <i class="fa-solid fa-desktop"></i> <span class="hidden sm:inline">PC</span>
+                        </button>
+                        <button onclick="setDeviceView('mobile')" id="btn-view-mobile" class="px-2.5 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-slate-200 transition" title="Forçar Versão Mobile">
+                            <i class="fa-solid fa-mobile-screen-button"></i> <span class="hidden sm:inline">Mobile</span>
+                        </button>
+                    </div>
+
+                    <div class="relative hidden sm:block w-48 lg:w-64">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
                             <i class="fa-solid fa-magnifying-glass text-xs"></i>
                         </span>
@@ -218,7 +260,7 @@
                         <div id="search-results" class="absolute left-0 right-0 mt-2 glass-card rounded-2xl shadow-2xl border border-slate-700/80 max-h-80 overflow-y-auto hidden z-50 p-2"></div>
                     </div>
 
-                    <button onclick="openQuickActionModal()" class="bg-gradient-to-r from-sky-500 via-indigo-500 to-indigo-600 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg shadow-sky-500/20 hover:brightness-110 active:scale-95 transition flex items-center gap-2">
+                    <button onclick="openQuickActionModal()" class="bg-gradient-to-r from-sky-500 via-indigo-500 to-indigo-600 text-white px-3 sm:px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg shadow-sky-500/20 hover:brightness-110 active:scale-95 transition flex items-center gap-2">
                         <i class="fa-solid fa-bolt text-xs"></i> <span class="hidden sm:inline">Ação Rápida</span>
                     </button>
                 </div>
@@ -969,7 +1011,8 @@
                 companyPix: "suachave@cleangestor.com",
                 pin: "1234",
                 pinActive: false,
-                theme: "dark"
+                theme: "dark",
+                deviceView: "auto"
             },
             clients: [
                 { id: "c_1", name: "Carlos Eduardo Silva", phone: "(11) 98888-7777", whatsapp: "5511988887777", cpf: "123.456.789-00", address: "Av. Paulista", number: "1000", neighborhood: "Bela Vista", city: "São Paulo", cep: "01310-100", notes: "Alergia a cheiros fortes." }
@@ -994,390 +1037,241 @@
         let chartFinancialInstance = null;
         let scheduleViewModeState = 'day';
         let currentScheduleDate = new Date();
+        let currentPinInput = "";
 
         window.addEventListener('DOMContentLoaded', () => {
-            loadLocalStorage();
-            checkPinSecurity();
-            initTheme();
-            switchView('dashboard');
+            loadLocalData();
+            checkPinProtection();
+            setDeviceView(appData.settings.deviceView || 'auto');
+            renderDashboard();
             populateSelects();
         });
 
-        function loadLocalStorage() {
-            const saved = localStorage.getItem('cleangestor_data');
-            if (saved) {
-                try { 
-                    const parsed = JSON.parse(saved);
-                    appData = { ...appData, ...parsed };
-                } catch (e) { 
-                    console.error("Erro ao carregar dados salvos:", e); 
-                }
-            }
-        }
+        /* FUNÇÃO PARA ALTERNAR ENTRE VERSÃO PC / MOBILE / AUTO */
+        function setDeviceView(mode) {
+            appData.settings.deviceView = mode;
+            document.body.classList.remove('mode-auto', 'mode-pc', 'mode-mobile');
+            document.body.classList.add(`mode-${mode}`);
 
-        function saveLocalStorage() {
-            localStorage.setItem('cleangestor_data', JSON.stringify(appData));
-        }
-
-        let enteredPin = "";
-        function checkPinSecurity() {
-            if (appData.settings.pinActive && appData.settings.pin) {
-                document.getElementById('pin-screen').classList.remove('hidden');
-            }
-        }
-
-        function pressPin(num) {
-            if (enteredPin.length < 6) {
-                enteredPin += num;
-                updatePinDots();
-            }
-        }
-
-        function clearPin() {
-            enteredPin = "";
-            updatePinDots();
-        }
-
-        function updatePinDots() {
-            const dots = document.querySelectorAll('#pin-dots div');
-            dots.forEach((dot, idx) => {
-                if (idx < enteredPin.length) {
-                    dot.classList.add('bg-sky-500', 'border-sky-500');
-                } else {
-                    dot.classList.remove('bg-sky-500', 'border-sky-500');
+            ['auto', 'pc', 'mobile'].forEach(m => {
+                const btn = document.getElementById(`btn-view-${m}`);
+                if (btn) {
+                    if (m === mode) {
+                        btn.className = "px-2.5 py-1 rounded-xl text-[11px] font-bold bg-sky-500 text-white shadow-sm transition";
+                    } else {
+                        btn.className = "px-2.5 py-1 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-slate-200 transition";
+                    }
                 }
             });
+
+            saveLocalData();
         }
 
-        function submitPin() {
-            if (enteredPin === appData.settings.pin) {
-                document.getElementById('pin-screen').classList.add('hidden');
-                showToast("Bem-vindo de volta!", "Acesso autorizado com sucesso.");
-            } else {
-                showToast("PIN Incorreto", "Tente novamente.", "error");
-                clearPin();
+        /* BANCO DE DADOS LOCAL (LOCALSTORAGE) */
+        function loadLocalData() {
+            const saved = localStorage.getItem('clean_gestor_pro_db');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch(e) {
+                    console.error("Erro ao carregar dados locais:", e);
+                }
             }
         }
 
-        function initTheme() {
-            if (appData.settings.theme === 'light') {
-                document.documentElement.classList.remove('dark');
-                document.getElementById('theme-icon').className = 'fa-solid fa-sun';
-            } else {
-                document.documentElement.classList.add('dark');
-                document.getElementById('theme-icon').className = 'fa-solid fa-moon';
-            }
-            document.getElementById('set-company-name').value = appData.settings.companyName || '';
-            document.getElementById('set-company-doc').value = appData.settings.companyDoc || '';
-            document.getElementById('set-company-phone').value = appData.settings.companyPhone || '';
-            document.getElementById('set-company-pix').value = appData.settings.companyPix || '';
-            document.getElementById('set-pin-input').value = appData.settings.pin || '';
-            document.getElementById('set-pin-active').checked = appData.settings.pinActive || false;
+        function saveLocalData() {
+            localStorage.setItem('clean_gestor_pro_db', JSON.stringify(appData));
         }
 
-        function toggleTheme() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                appData.settings.theme = 'light';
-                document.getElementById('theme-icon').className = 'fa-solid fa-sun';
-            } else {
-                document.documentElement.classList.add('dark');
-                appData.settings.theme = 'dark';
-                document.getElementById('theme-icon').className = 'fa-solid fa-moon';
-            }
-            saveLocalStorage();
-            showToast("Tema Alterado", "Preferência salva.");
-        }
+        /* NAVEGAÇÃO DE TELAS */
+        function switchView(viewName) {
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(v => v.classList.add('hidden'));
 
-        function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            const target = document.getElementById('view-' + viewId);
+            const target = document.getElementById(`view-${viewName}`);
             if (target) target.classList.remove('hidden');
 
+            const titleMap = {
+                dashboard: { title: "Dashboard", sub: "Visão geral e desempenho do negócio" },
+                clients: { title: "Clientes", sub: "Gerenciamento da base de clientes" },
+                schedule: { title: "Agenda & Serviços", sub: "Organização de horários e rotas" },
+                services: { title: "Catálogo de Serviços", sub: "Estofados e preços de higienização" },
+                budget: { title: "Orçamentos", sub: "Cotações e propostas para clientes" },
+                financial: { title: "Financeiro", sub: "Controle de fluxo de caixa e relatórios" },
+                gallery: { title: "Galeria Antes & Depois", sub: "Resultados dos atendimentos realizados" },
+                settings: { title: "Configurações", sub: "Ajustes de perfil, segurança e dados" }
+            };
+
+            if (titleMap[viewName]) {
+                document.getElementById('view-title').textContent = titleMap[viewName].title;
+                document.getElementById('view-subtitle').textContent = titleMap[viewName].sub;
+            }
+
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-sky-500/15', 'text-sky-400', 'active-nav-glow');
-                btn.classList.add('text-slate-400');
-                if (btn.getAttribute('data-nav') === viewId) {
+                if (btn.getAttribute('data-nav') === viewName) {
                     btn.classList.add('bg-sky-500/15', 'text-sky-400', 'active-nav-glow');
                     btn.classList.remove('text-slate-400');
+                } else {
+                    btn.classList.remove('bg-sky-500/15', 'text-sky-400', 'active-nav-glow');
+                    btn.classList.add('text-slate-400');
                 }
             });
 
-            const titles = {
-                dashboard: ["Dashboard", "Visão geral e desempenho do negócio"],
-                clients: ["Clientes", "Gerencie sua base de clientes"],
-                schedule: ["Agenda & Atendimentos", "Organize seus horários"],
-                services: ["Catálogo de Serviços", "Estofados, preços e tempos"],
-                budget: ["Orçamentos", "Crie e envie propostas comerciais"],
-                financial: ["Financeiro", "Controle de receitas e despesas"],
-                gallery: ["Antes e Depois", "Galeria de transformação"],
-                settings: ["Configurações", "Preferências e dados do sistema"]
-            };
-
-            if (titles[viewId]) {
-                document.getElementById('view-title').innerText = titles[viewId][0];
-                document.getElementById('view-subtitle').innerText = titles[viewId][1];
-            }
-
-            if (viewId === 'dashboard') updateDashboard();
-            if (viewId === 'clients') renderClients();
-            if (viewId === 'schedule') renderSchedule();
-            if (viewId === 'services') renderServicesCatalog();
-            if (viewId === 'budget') renderBudgets();
-            if (viewId === 'financial') renderFinancial();
-            if (viewId === 'gallery') renderGallery();
+            if (viewName === 'dashboard') renderDashboard();
+            if (viewName === 'clients') renderClients();
+            if (viewName === 'schedule') renderSchedule();
+            if (viewName === 'services') renderCatalog();
+            if (viewName === 'budget') renderBudgets();
+            if (viewName === 'financial') renderFinancial();
+            if (viewName === 'gallery') renderGallery();
+            if (viewName === 'settings') loadSettingsForm();
         }
 
-        /* ----------------------------------------------------
-           CATÁLOGO DE ESTOFADOS / SERVIÇOS
-        ---------------------------------------------------- */
-        function renderServicesCatalog() {
-            const grid = document.getElementById('services-catalog-grid');
-            if (!grid) return;
-
-            if (!appData.servicesCatalog || appData.servicesCatalog.length === 0) {
-                grid.innerHTML = `<div class="col-span-full p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhum estofado cadastrado no catálogo.</div>`;
-                return;
-            }
-
-            grid.innerHTML = appData.servicesCatalog.map(item => `
-                <div class="glass-card p-5 rounded-3xl relative flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20">${item.category}</span>
-                            <span class="text-xs font-bold ${item.active ? 'text-emerald-400' : 'text-slate-500'}">${item.active ? 'Ativo' : 'Inativo'}</span>
-                        </div>
-                        <h4 class="font-bold text-base text-white mb-1">${item.name}</h4>
-                        <p class="text-xs text-slate-400 mb-3">${item.description || 'Sem descrição informada.'}</p>
-                        <div class="space-y-1.5 text-xs text-slate-300">
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Serviço:</span>
-                                <span class="font-semibold text-sky-400">${item.service}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Cobrança por:</span>
-                                <span class="font-semibold">${item.unit}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Tempo estimado:</span>
-                                <span class="font-semibold">${item.duration || 'N/I'}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] text-slate-400 block">Preço de Venda</span>
-                            <span class="text-lg font-extrabold text-emerald-400">R$ ${parseFloat(item.price || 0).toFixed(2)}</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="editCatalogItem('${item.id}')" class="p-2 rounded-xl bg-slate-800 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteCatalogItem('${item.id}')" class="p-2 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-rose-400 transition"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function saveCatalogItem(e) {
-            e.preventDefault();
-            const id = document.getElementById('catalog-id').value;
-            const newItem = {
-                id: id || 's_' + Date.now(),
-                name: document.getElementById('catalog-name').value,
-                category: document.getElementById('catalog-category').value,
-                service: document.getElementById('catalog-service').value,
-                unit: document.getElementById('catalog-unit').value,
-                price: parseFloat(document.getElementById('catalog-price').value || 0),
-                cost: parseFloat(document.getElementById('catalog-cost').value || 0),
-                duration: document.getElementById('catalog-duration').value,
-                description: document.getElementById('catalog-description').value,
-                active: document.getElementById('catalog-active').checked
-            };
-
-            if (id) {
-                const index = appData.servicesCatalog.findIndex(s => s.id === id);
-                if (index !== -1) appData.servicesCatalog[index] = newItem;
-            } else {
-                appData.servicesCatalog.push(newItem);
-            }
-
-            saveLocalStorage();
-            closeModal('modal-catalog-item');
-            renderServicesCatalog();
-            populateSelects();
-            showToast("Sucesso", "Estofado salvo com sucesso.");
-        }
-
-        function editCatalogItem(id) {
-            const item = appData.servicesCatalog.find(s => s.id === id);
-            if (!item) return;
-            document.getElementById('catalog-id').value = item.id;
-            document.getElementById('catalog-name').value = item.name;
-            document.getElementById('catalog-category').value = item.category;
-            document.getElementById('catalog-service').value = item.service;
-            document.getElementById('catalog-unit').value = item.unit;
-            document.getElementById('catalog-price').value = item.price;
-            document.getElementById('catalog-cost').value = item.cost;
-            document.getElementById('catalog-duration').value = item.duration;
-            document.getElementById('catalog-description').value = item.description;
-            document.getElementById('catalog-active').checked = item.active;
-            openModal('modal-catalog-item');
-        }
-
-        function deleteCatalogItem(id) {
-            if (confirm("Tem certeza que deseja excluir este estofado do catálogo?")) {
-                appData.servicesCatalog = appData.servicesCatalog.filter(s => s.id !== id);
-                saveLocalStorage();
-                renderServicesCatalog();
-                populateSelects();
-                showToast("Item Removido", "Removido do catálogo.");
-            }
-        }
-
-        /* ----------------------------------------------------
-           DASHBOARD & ESTATÍSTICAS
-        ---------------------------------------------------- */
-        function updateDashboard() {
-            const currentMonth = new Date().toISOString().slice(0, 7);
-            const monthApps = appData.appointments.filter(a => a.date && a.date.startsWith(currentMonth));
-            const monthTrans = appData.transactions.filter(t => t.date && t.date.startsWith(currentMonth));
-
-            const totalRev = monthTrans.filter(t => t.type === 'revenue').reduce((acc, t) => acc + (parseFloat(t.value) || 0), 0);
-            const totalExp = monthTrans.filter(t => t.type === 'expense').reduce((acc, t) => acc + (parseFloat(t.value) || 0), 0);
-            const doneServ = monthApps.filter(a => a.status === 'Concluído').length;
-            const schedServ = monthApps.filter(a => a.status === 'Agendado' || a.status === 'Confirmado').length;
+        /* DASHBOARD & RENDERIZAÇÕES */
+        function renderDashboard() {
+            const currentMonth = new Date().toISOString().substring(0, 7);
             
-            document.getElementById('stat-rev-month').innerText = 'R$ ' + totalRev.toFixed(2);
-            document.getElementById('stat-profit-month').innerText = 'R$ ' + (totalRev - totalExp).toFixed(2);
-            document.getElementById('stat-serv-done').innerText = doneServ;
-            document.getElementById('stat-serv-scheduled').innerText = schedServ;
-            document.getElementById('stat-clients-count').innerText = appData.clients.length;
-            
-            const ticket = appData.appointments.length > 0 ? (totalRev / (appData.appointments.length || 1)) : 0;
-            document.getElementById('stat-ticket-medio').innerText = 'R$ ' + ticket.toFixed(2);
-            document.getElementById('stat-receivable').innerText = 'R$ ' + (schedServ * 150).toFixed(2);
-            document.getElementById('stat-expenses-month').innerText = 'R$ ' + totalExp.toFixed(2);
+            const monthApps = appData.appointments.filter(a => a.date.startsWith(currentMonth));
+            const monthDoneApps = monthApps.filter(a => a.status === 'Concluído');
+            const revMonth = monthDoneApps.reduce((acc, cur) => acc + (parseFloat(cur.price) || 0), 0);
 
+            const monthExpenses = appData.transactions
+                .filter(t => t.type === 'expense' && t.date.startsWith(currentMonth))
+                .reduce((acc, cur) => acc + (parseFloat(cur.value) || 0), 0);
+
+            document.getElementById('stat-rev-month').textContent = formatCurrency(revMonth);
+            document.getElementById('stat-profit-month').textContent = formatCurrency(revMonth - monthExpenses);
+            document.getElementById('stat-serv-done').textContent = monthDoneApps.length;
+            document.getElementById('stat-serv-scheduled').textContent = monthApps.filter(a => a.status === 'Agendado' || a.status === 'Confirmado').length;
+            document.getElementById('stat-clients-count').textContent = appData.clients.length;
+
+            const ticketMedio = monthDoneApps.length > 0 ? (revMonth / monthDoneApps.length) : 0;
+            document.getElementById('stat-ticket-medio').textContent = formatCurrency(ticketMedio);
+
+            const pendingVal = appData.appointments
+                .filter(a => a.status === 'Agendado' || a.status === 'Em andamento')
+                .reduce((acc, cur) => acc + (parseFloat(cur.price) || 0), 0);
+            
+            document.getElementById('stat-receivable').textContent = formatCurrency(pendingVal);
+            document.getElementById('stat-expenses-month').textContent = formatCurrency(monthExpenses);
+
+            renderUpcomingList();
             renderDashboardCharts();
-            renderUpcomingServicesList();
         }
 
-        function renderDashboardCharts() {
-            const ctx1 = document.getElementById('chartMonth');
-            if (ctx1) {
-                if (chartMonthInstance) chartMonthInstance.destroy();
-                chartMonthInstance = new Chart(ctx1, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                        datasets: [{
-                            label: 'Faturamento (R$)',
-                            data: [1200, 1900, 2400, 2100, 3200, 3800, 4200, 4500, 5100, 0, 0, 0],
-                            borderColor: '#0ea5e9',
-                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
-                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
-                        }
-                    }
-                });
-            }
-
-            const ctx2 = document.getElementById('chartServices');
-            if (ctx2) {
-                if (chartServicesInstance) chartServicesInstance.destroy();
-                chartServicesInstance = new Chart(ctx2, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Sofás', 'Colchões', 'Cadeiras', 'Outros'],
-                        datasets: [{
-                            data: [55, 25, 12, 8],
-                            backgroundColor: ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } } }
-                    }
-                });
-            }
-        }
-
-        function renderUpcomingServicesList() {
+        function renderUpcomingList() {
             const container = document.getElementById('upcoming-services-list');
             if (!container) return;
 
-            if (appData.appointments.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhum atendimento agendado no momento.</p>`;
+            const sorted = [...appData.appointments]
+                .filter(a => a.status !== 'Concluído' && a.status !== 'Cancelado')
+                .sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time))
+                .slice(0, 5);
+
+            if (sorted.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-xs text-slate-500">Nenhum próximo atendimento agendado.</div>`;
                 return;
             }
 
-            container.innerHTML = appData.appointments.slice(0, 4).map(app => {
-                const client = appData.clients.find(c => c.id === app.clientId) || { name: 'Cliente Indefinido' };
+            container.innerHTML = sorted.map(app => {
+                const client = appData.clients.find(c => c.id === app.clientId) || { name: "Cliente Desconhecido" };
                 return `
-                    <div class="glass-card p-3 rounded-2xl flex items-center justify-between">
+                    <div class="glass p-3.5 rounded-2xl flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-couch"></i></div>
+                            <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center font-bold text-xs border border-sky-500/20">
+                                <i class="fa-solid fa-couch"></i>
+                            </div>
                             <div>
-                                <h5 class="text-xs font-bold text-white">${client.name}</h5>
-                                <p class="text-[10px] text-slate-400">${app.serviceName} • ${app.date} às ${app.time}</p>
+                                <h5 class="text-xs font-bold text-white">${escapeHTML(client.name)}</h5>
+                                <p class="text-[11px] text-slate-400">${escapeHTML(app.serviceName)} • ${formatDateBR(app.date)} às ${app.time}</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs font-extrabold text-emerald-400 block">R$ ${parseFloat(app.price || 0).toFixed(2)}</span>
-                            <span class="text-[10px] text-sky-400 font-semibold">${app.status}</span>
+                            <span class="text-xs font-bold text-sky-400">${formatCurrency(app.price)}</span>
+                            <span class="block text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 mt-1">${app.status}</span>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        /* ----------------------------------------------------
-           CLIENTES
-        ---------------------------------------------------- */
+        function renderDashboardCharts() {
+            const ctxMonth = document.getElementById('chartMonth');
+            if (ctxMonth) {
+                if (chartMonthInstance) chartMonthInstance.destroy();
+                chartMonthInstance = new Chart(ctxMonth, {
+                    type: 'line',
+                    data: {
+                        labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+                        datasets: [{
+                            label: 'Faturamento (R$)',
+                            data: [1200, 1900, 1500, 2400],
+                            borderColor: '#0ea5e9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+
+            const ctxServ = document.getElementById('chartServices');
+            if (ctxServ) {
+                if (chartServicesInstance) chartServicesInstance.destroy();
+                chartServicesInstance = new Chart(ctxServ, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Sofá', 'Colchão', 'Cadeira', 'Outros'],
+                        datasets: [{
+                            data: [55, 25, 15, 5],
+                            backgroundColor: ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+        }
+
+        /* CLIENTES */
         function renderClients() {
             const grid = document.getElementById('clients-grid');
             if (!grid) return;
-            const search = document.getElementById('client-search').value.toLowerCase();
 
-            const filtered = appData.clients.filter(c => c.name.toLowerCase().includes(search) || c.phone.includes(search));
+            const search = (document.getElementById('client-search')?.value || '').toLowerCase();
+            const filter = document.getElementById('client-filter')?.value || 'all';
+
+            let filtered = appData.clients.filter(c => 
+                c.name.toLowerCase().includes(search) || 
+                c.phone.includes(search) || 
+                (c.city && c.city.toLowerCase().includes(search))
+            );
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhum cliente encontrado.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-xs">Nenhum cliente encontrado.</div>`;
                 return;
             }
 
             grid.innerHTML = filtered.map(c => `
-                <div class="glass-card p-5 rounded-3xl relative flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500/20 to-indigo-500/20 text-sky-400 flex items-center justify-center font-bold text-sm border border-sky-500/20">${c.name.charAt(0)}</div>
-                            <div>
-                                <h4 class="font-bold text-sm text-white">${c.name}</h4>
-                                <span class="text-[11px] text-slate-400">${c.phone}</span>
-                            </div>
+                <div class="glass-card p-5 rounded-3xl space-y-3 relative group">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-sm text-white">${escapeHTML(c.name)}</h4>
+                            <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot text-sky-400 mr-1"></i>${escapeHTML(c.city || 'Cidade não inf.')}</p>
                         </div>
-                        <div class="space-y-1 text-xs text-slate-400">
-                            <p><i class="fa-solid fa-location-dot text-sky-400 mr-1.5"></i> ${c.address || 'Endereço não informado'}</p>
-                        </div>
+                        <button onclick="openClientProfile('${c.id}')" class="p-2 rounded-xl bg-slate-800 text-sky-400 hover:bg-sky-500 hover:text-white transition"><i class="fa-solid fa-eye text-xs"></i></button>
                     </div>
-                    <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
-                        <button onclick="openClientProfile('${c.id}')" class="text-xs font-semibold text-sky-400 hover:underline">Ver Perfil</button>
-                        <div class="flex gap-2">
-                            <a href="https://wa.me/${c.whatsapp}" target="_blank" class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition"><i class="fa-brands fa-whatsapp"></i></a>
-                            <button onclick="editClient('${c.id}')" class="p-2 rounded-xl bg-slate-800 text-sky-400 hover:bg-sky-500/20 transition"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteClient('${c.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-rose-500/20 transition"><i class="fa-solid fa-trash"></i></button>
-                        </div>
+                    <div class="text-xs text-slate-300 space-y-1">
+                        <p><i class="fa-brands fa-whatsapp text-emerald-400 mr-1.5"></i>${escapeHTML(c.whatsapp)}</p>
+                        <p><i class="fa-solid fa-house text-slate-500 mr-1.5"></i>${escapeHTML(c.address || 'Sem endereço')}, ${escapeHTML(c.number || '')}</p>
+                    </div>
+                    <div class="flex gap-2 pt-2 border-t border-slate-800">
+                        <a href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" class="flex-1 text-center py-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold text-xs hover:bg-emerald-500/25 transition">
+                            <i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp
+                        </a>
+                        <button onclick="editClient('${c.id}')" class="px-3 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs hover:bg-slate-700 transition">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -1385,12 +1279,12 @@
 
         function saveClient(e) {
             e.preventDefault();
-            const id = document.getElementById('client-id').value;
-            const newClient = {
-                id: id || 'c_' + Date.now(),
+            const id = document.getElementById('client-id').value || 'c_' + Date.now();
+            const client = {
+                id,
                 name: document.getElementById('client-name').value,
                 phone: document.getElementById('client-phone').value,
-                whatsapp: document.getElementById('client-whatsapp').value.replace(/\D/g, ''),
+                whatsapp: document.getElementById('client-whatsapp').value,
                 cpf: document.getElementById('client-cpf').value,
                 address: document.getElementById('client-address').value,
                 number: document.getElementById('client-number').value,
@@ -1400,18 +1294,15 @@
                 notes: document.getElementById('client-notes').value
             };
 
-            if (id) {
-                const idx = appData.clients.findIndex(c => c.id === id);
-                if (idx !== -1) appData.clients[idx] = newClient;
-            } else {
-                appData.clients.push(newClient);
-            }
+            const idx = appData.clients.findIndex(c => c.id === id);
+            if (idx >= 0) appData.clients[idx] = client;
+            else appData.clients.push(client);
 
-            saveLocalStorage();
+            saveLocalData();
             closeModal('modal-client');
             renderClients();
             populateSelects();
-            showToast("Cliente Salvo", "Cadastro atualizado com sucesso.");
+            showToast("Sucesso", "Cliente salvo com sucesso!");
         }
 
         function editClient(id) {
@@ -1428,305 +1319,388 @@
             document.getElementById('client-city').value = c.city || '';
             document.getElementById('client-cep').value = c.cep || '';
             document.getElementById('client-notes').value = c.notes || '';
+            
             openModal('modal-client');
-        }
-
-        function deleteClient(id) {
-            if (confirm("Deseja remover este cliente?")) {
-                appData.clients = appData.clients.filter(c => c.id !== id);
-                saveLocalStorage();
-                renderClients();
-                populateSelects();
-                showToast("Cliente Removido", "Removido da base de dados.");
-            }
         }
 
         function openClientProfile(id) {
             const c = appData.clients.find(x => x.id === id);
             if (!c) return;
+
+            const clientApps = appData.appointments.filter(a => a.clientId === id);
             const content = document.getElementById('client-profile-content');
             content.innerHTML = `
-                <div class="glass-card p-4 rounded-2xl space-y-2">
-                    <h4 class="font-extrabold text-lg text-white">${c.name}</h4>
-                    <p class="text-xs text-slate-400">Telefone: ${c.phone} | WhatsApp: ${c.whatsapp}</p>
-                    <p class="text-xs text-slate-400">Endereço: ${c.address || ''}, ${c.number || ''} - ${c.neighborhood || ''}, ${c.city || ''}</p>
-                    <p class="text-xs text-slate-400">Observações: ${c.notes || 'Nenhuma'}</p>
+                <div class="glass p-4 rounded-2xl space-y-2">
+                    <h4 class="text-base font-bold text-white">${escapeHTML(c.name)}</h4>
+                    <p class="text-xs text-slate-300"><i class="fa-brands fa-whatsapp text-emerald-400 mr-2"></i>${escapeHTML(c.whatsapp)}</p>
+                    <p class="text-xs text-slate-300"><i class="fa-solid fa-location-dot text-sky-400 mr-2"></i>${escapeHTML(c.address || '')}, ${escapeHTML(c.number || '')} - ${escapeHTML(c.city || '')}</p>
+                    ${c.notes ? `<p class="text-xs text-amber-400 bg-amber-500/10 p-2 rounded-xl mt-2 border border-amber-500/20"><i class="fa-solid fa-note-sticky mr-1"></i> ${escapeHTML(c.notes)}</p>` : ''}
+                </div>
+                <div>
+                    <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Histórico de Atendimentos (${clientApps.length})</h5>
+                    <div class="space-y-2 max-h-60 overflow-y-auto">
+                        ${clientApps.length === 0 ? '<p class="text-xs text-slate-500">Nenhum serviço registrado.</p>' : 
+                            clientApps.map(a => `
+                                <div class="glass p-3 rounded-xl flex justify-between items-center text-xs">
+                                    <div>
+                                        <p class="font-bold text-white">${escapeHTML(a.serviceName)}</p>
+                                        <p class="text-slate-400 text-[11px]">${formatDateBR(a.date)} às ${a.time}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="font-bold text-emerald-400">${formatCurrency(a.price)}</span>
+                                        <span class="block text-[10px] text-slate-400">${a.status}</span>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
                 </div>
             `;
             openModal('modal-client-profile');
         }
 
-        /* ----------------------------------------------------
-           AGENDA & SERVIÇOS AGENDADOS
-        ---------------------------------------------------- */
+        /* AGENDA */
         function renderSchedule() {
             const container = document.getElementById('schedule-container');
             if (!container) return;
 
-            if (appData.appointments.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhum atendimento agendado na agenda.</div>`;
+            const dateStr = currentScheduleDate.toISOString().substring(0, 10);
+            document.getElementById('schedule-current-date-label').textContent = formatDateBRFull(currentScheduleDate);
+
+            const dayApps = appData.appointments.filter(a => a.date === dateStr);
+
+            if (dayApps.length === 0) {
+                container.innerHTML = `<div class="glass-card p-12 text-center text-slate-500 text-xs">Nenhum atendimento agendado para esta data.</div>`;
                 return;
             }
 
-            container.innerHTML = appData.appointments.map(app => {
-                const client = appData.clients.find(c => c.id === app.clientId) || { name: 'Cliente Indefinido', phone: '' };
+            container.innerHTML = dayApps.map(app => {
+                const client = appData.clients.find(c => c.id === app.clientId) || { name: "Cliente Desconhecido", phone: "" };
                 return `
-                    <div class="glass-card p-4 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center font-extrabold text-sm">${app.time}</div>
-                            <div>
-                                <h4 class="font-bold text-sm text-white">${client.name}</h4>
-                                <p class="text-xs text-sky-400 font-semibold">${app.serviceName} (x${app.quantity})</p>
-                                <span class="text-[11px] text-slate-400">${app.date} • ${app.payment}</span>
+                    <div class="glass-card p-4 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 border-l-sky-500">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-xl bg-sky-500/20 text-sky-400 font-bold text-xs">${app.time}</span>
+                                <h4 class="font-bold text-sm text-white">${escapeHTML(client.name)}</h4>
                             </div>
+                            <p class="text-xs text-slate-300">${escapeHTML(app.serviceName)} (x${app.quantity})</p>
+                            <p class="text-[11px] text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i>${escapeHTML(client.address || 'Endereço não informado')}</p>
                         </div>
-                        <div class="flex items-center justify-between md:justify-end gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
-                            <span class="text-sm font-extrabold text-emerald-400">R$ ${parseFloat(app.price || 0).toFixed(2)}</span>
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20">${app.status}</span>
-                            <button onclick="deleteAppointment('${app.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-rose-500/20 transition"><i class="fa-solid fa-trash"></i></button>
+                        <div class="flex items-center gap-3 justify-between sm:justify-end">
+                            <div class="text-right">
+                                <div class="text-sm font-extrabold text-emerald-400">${formatCurrency(app.price)}</div>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">${app.status}</span>
+                            </div>
+                            <button onclick="changeAppStatus('${app.id}')" class="p-2.5 rounded-xl bg-slate-800 text-sky-400 hover:bg-sky-500 hover:text-white transition" title="Alterar Status">
+                                <i class="fa-solid fa-check-double text-xs"></i>
+                            </button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function saveAppointment(e) {
-            e.preventDefault();
-            const id = document.getElementById('service-app-id').value;
-            const newApp = {
-                id: id || 'a_' + Date.now(),
-                clientId: document.getElementById('app-client-id').value,
-                serviceName: document.getElementById('app-service-name').value,
-                quantity: parseInt(document.getElementById('app-quantity').value || 1),
-                date: document.getElementById('app-date').value,
-                time: document.getElementById('app-time').value,
-                price: parseFloat(document.getElementById('app-price').value || 0),
-                payment: document.getElementById('app-payment').value,
-                status: document.getElementById('app-status').value,
-                notes: document.getElementById('app-notes').value
-            };
-
-            if (id) {
-                const idx = appData.appointments.findIndex(a => a.id === id);
-                if (idx !== -1) appData.appointments[idx] = newApp;
-            } else {
-                appData.appointments.push(newApp);
-            }
-
-            saveLocalStorage();
-            closeModal('modal-service');
+        function changeScheduleDate(days) {
+            currentScheduleDate.setDate(currentScheduleDate.getDate() + days);
             renderSchedule();
-            updateDashboard();
-            showToast("Agendamento Salvo", "Salvo na agenda com sucesso.");
-        }
-
-        function deleteAppointment(id) {
-            if (confirm("Deseja cancelar/excluir este agendamento?")) {
-                appData.appointments = appData.appointments.filter(a => a.id !== id);
-                saveLocalStorage();
-                renderSchedule();
-                updateDashboard();
-                showToast("Removido", "Agendamento excluído.");
-            }
-        }
-
-        function updateAppointmentPrice() {
-            const name = document.getElementById('app-service-name').value;
-            const qty = parseInt(document.getElementById('app-quantity').value || 1);
-            const item = appData.servicesCatalog.find(s => s.name === name);
-            if (item) {
-                document.getElementById('app-price').value = (item.price * qty).toFixed(2);
-            }
         }
 
         function setScheduleViewMode(mode) {
             scheduleViewModeState = mode;
             ['day', 'week', 'month'].forEach(m => {
-                const btn = document.getElementById('btn-mode-' + m);
+                const btn = document.getElementById(`btn-mode-${m}`);
                 if (btn) {
-                    btn.className = m === mode ? 'px-3.5 py-1.5 rounded-xl bg-sky-500 text-white transition font-bold' : 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition font-semibold';
+                    if (m === mode) btn.className = "px-3.5 py-1.5 rounded-xl bg-sky-500 text-white transition";
+                    else btn.className = "px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition";
                 }
             });
             renderSchedule();
         }
 
-        function changeScheduleDate(days) {
-            currentScheduleDate.setDate(currentScheduleDate.getDate() + days);
-            document.getElementById('schedule-current-date-label').innerText = currentScheduleDate.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        function saveAppointment(e) {
+            e.preventDefault();
+            const id = document.getElementById('service-app-id').value || 'a_' + Date.now();
+            const app = {
+                id,
+                clientId: document.getElementById('app-client-id').value,
+                serviceName: document.getElementById('app-service-name').value,
+                quantity: parseInt(document.getElementById('app-quantity').value) || 1,
+                date: document.getElementById('app-date').value,
+                time: document.getElementById('app-time').value,
+                price: parseFloat(document.getElementById('app-price').value) || 0,
+                payment: document.getElementById('app-payment').value,
+                status: document.getElementById('app-status').value,
+                notes: document.getElementById('app-notes').value
+            };
+
+            const idx = appData.appointments.findIndex(a => a.id === id);
+            if (idx >= 0) appData.appointments[idx] = app;
+            else appData.appointments.push(app);
+
+            saveLocalData();
+            closeModal('modal-service');
             renderSchedule();
+            renderDashboard();
+            showToast("Sucesso", "Agendamento salvo!");
         }
 
-        /* ----------------------------------------------------
-           ORÇAMENTOS
-        ---------------------------------------------------- */
+        function changeAppStatus(id) {
+            const app = appData.appointments.find(a => a.id === id);
+            if (!app) return;
+            const statuses = ['Agendado', 'Confirmado', 'Em andamento', 'Concluído', 'Cancelado'];
+            const nextIdx = (statuses.indexOf(app.status) + 1) % statuses.length;
+            app.status = statuses[nextIdx];
+
+            if (app.status === 'Concluído') {
+                const exists = appData.transactions.find(t => t.id === 't_app_' + app.id);
+                if (!exists) {
+                    appData.transactions.push({
+                        id: 't_app_' + app.id,
+                        type: 'revenue',
+                        description: `Serviço Concluído: ${app.serviceName}`,
+                        value: app.price,
+                        date: app.date,
+                        category: 'Serviços',
+                        payment: app.payment
+                    });
+                }
+            }
+
+            saveLocalData();
+            renderSchedule();
+            renderDashboard();
+            showToast("Status Atualizado", `Novo status: ${app.status}`);
+        }
+
+        /* CATÁLOGO DE ESTOFADOS */
+        function renderCatalog() {
+            const grid = document.getElementById('services-catalog-grid');
+            if (!grid) return;
+
+            grid.innerHTML = appData.servicesCatalog.map(item => `
+                <div class="glass-card p-5 rounded-3xl space-y-3 relative">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 uppercase">${escapeHTML(item.category)}</span>
+                            <h4 class="font-bold text-sm text-white mt-1">${escapeHTML(item.name)}</h4>
+                        </div>
+                        <button onclick="editCatalogItem('${item.id}')" class="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition"><i class="fa-solid fa-pen text-xs"></i></button>
+                    </div>
+                    <p class="text-xs text-slate-400 line-clamp-2">${escapeHTML(item.description || 'Sem descrição.')}</p>
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+                        <div>
+                            <span class="text-[10px] text-slate-500 block">Preço de Venda</span>
+                            <span class="font-extrabold text-sky-400 text-sm">${formatCurrency(item.price)}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-500 block">Duração</span>
+                            <span class="font-semibold text-slate-300">${escapeHTML(item.duration || 'N/I')}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveCatalogItem(e) {
+            e.preventDefault();
+            const id = document.getElementById('catalog-id').value || 's_' + Date.now();
+            const item = {
+                id,
+                name: document.getElementById('catalog-name').value,
+                category: document.getElementById('catalog-category').value,
+                service: document.getElementById('catalog-service').value,
+                unit: document.getElementById('catalog-unit').value,
+                price: parseFloat(document.getElementById('catalog-price').value) || 0,
+                cost: parseFloat(document.getElementById('catalog-cost').value) || 0,
+                duration: document.getElementById('catalog-duration').value,
+                description: document.getElementById('catalog-description').value,
+                active: document.getElementById('catalog-active').checked
+            };
+
+            const idx = appData.servicesCatalog.findIndex(s => s.id === id);
+            if (idx >= 0) appData.servicesCatalog[idx] = item;
+            else appData.servicesCatalog.push(item);
+
+            saveLocalData();
+            closeModal('modal-catalog-item');
+            renderCatalog();
+            populateSelects();
+            showToast("Sucesso", "Estofado salvo no catálogo!");
+        }
+
+        function editCatalogItem(id) {
+            const item = appData.servicesCatalog.find(s => s.id === id);
+            if (!item) return;
+
+            document.getElementById('catalog-id').value = item.id;
+            document.getElementById('catalog-name').value = item.name;
+            document.getElementById('catalog-category').value = item.category;
+            document.getElementById('catalog-service').value = item.service;
+            document.getElementById('catalog-unit').value = item.unit;
+            document.getElementById('catalog-price').value = item.price;
+            document.getElementById('catalog-cost').value = item.cost;
+            document.getElementById('catalog-duration').value = item.duration;
+            document.getElementById('catalog-description').value = item.description;
+            document.getElementById('catalog-active').checked = item.active;
+
+            openModal('modal-catalog-item');
+        }
+
+        /* ORÇAMENTOS */
         function renderBudgets() {
             const container = document.getElementById('budget-tab-content');
             if (!container) return;
 
             if (appData.budgets.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhum orçamento salvo no momento.</div>`;
+                container.innerHTML = `<div class="glass-card p-12 text-center text-slate-500 text-xs">Nenhum orçamento salvo até o momento.</div>`;
                 return;
             }
 
             container.innerHTML = appData.budgets.map(b => {
-                const client = appData.clients.find(c => c.id === b.clientId) || { name: 'Cliente Indefinido' };
+                const client = appData.clients.find(c => c.id === b.clientId) || { name: "Cliente Desconhecido" };
                 return `
-                    <div class="glass-card p-4 rounded-3xl flex items-center justify-between">
+                    <div class="glass-card p-4 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
-                            <h4 class="font-bold text-sm text-white">${client.name}</h4>
-                            <p class="text-xs text-slate-400">Total: R$ ${parseFloat(b.total || 0).toFixed(2)} • Validade: ${b.validity} dias</p>
+                            <h4 class="font-bold text-sm text-white">${escapeHTML(client.name)}</h4>
+                            <p class="text-xs text-slate-400">Total: <span class="text-sky-400 font-bold">${formatCurrency(b.total)}</span> • Validade: ${b.validity} dias</p>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="shareBudgetWhatsApp('${b.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition flex items-center gap-1.5"><i class="fa-brands fa-whatsapp"></i> Enviar</button>
-                            <button onclick="deleteBudget('${b.id}')" class="p-2 rounded-xl bg-slate-800 text-rose-400 hover:bg-rose-500/20 transition"><i class="fa-solid fa-trash"></i></button>
+                        <div class="flex items-center gap-2">
+                            <a href="https://wa.me/${client.whatsapp?.replace(/\D/g,'')}?text=${encodeURIComponent(buildBudgetMessage(b, client))}" target="_blank" class="px-3 py-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/25 transition flex items-center gap-1.5">
+                                <i class="fa-brands fa-whatsapp"></i> Enviar
+                            </a>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function calcBudgetTotal() {
-            const checkboxes = document.querySelectorAll('.bud-service-item:checked');
-            let total = 0;
-            checkboxes.forEach(cb => {
-                total += parseFloat(cb.getAttribute('data-price') || 0);
-            });
-            const discount = parseFloat(document.getElementById('bud-discount').value || 0);
-            const shipping = parseFloat(document.getElementById('bud-shipping').value || 0);
-            total = Math.max(0, total - discount + shipping);
-            document.getElementById('bud-total-display').innerText = 'R$ ' + total.toFixed(2);
-        }
-
         function saveBudget(e) {
             e.preventDefault();
             const clientId = document.getElementById('bud-client-id').value;
-            const discount = parseFloat(document.getElementById('bud-discount').value || 0);
-            const shipping = parseFloat(document.getElementById('bud-shipping').value || 0);
-            const validity = document.getElementById('bud-validity').value;
+            const discount = parseFloat(document.getElementById('bud-discount').value) || 0;
+            const shipping = parseFloat(document.getElementById('bud-shipping').value) || 0;
+            const validity = parseInt(document.getElementById('bud-validity').value) || 7;
             const notes = document.getElementById('bud-notes').value;
 
-            const selected = [];
-            document.querySelectorAll('.bud-service-item:checked').forEach(cb => {
-                selected.push(cb.value);
+            const selectedServices = [];
+            document.querySelectorAll('.bud-service-cb:checked').forEach(cb => {
+                selectedServices.push(cb.value);
             });
 
-            let total = selected.reduce((acc, name) => {
-                const item = appData.servicesCatalog.find(s => s.name === name);
-                return acc + (item ? item.price : 0);
-            }, 0);
+            if (selectedServices.length === 0) {
+                alert("Selecione ao menos um item do catálogo.");
+                return;
+            }
 
-            total = Math.max(0, total - discount + shipping);
+            let subtotal = 0;
+            selectedServices.forEach(sName => {
+                const item = appData.servicesCatalog.find(s => s.name === sName);
+                if (item) subtotal += item.price;
+            });
+
+            const total = subtotal - discount + shipping;
 
             const budget = {
                 id: 'b_' + Date.now(),
                 clientId,
-                items: selected,
+                services: selectedServices,
                 discount,
                 shipping,
                 validity,
                 notes,
-                total
+                total,
+                date: new Date().toISOString().substring(0,10)
             };
 
             appData.budgets.push(budget);
-            saveLocalStorage();
+            saveLocalData();
             closeModal('modal-budget-builder');
             renderBudgets();
-            showToast("Orçamento Criado", "Proposta comercial salva.");
+            showToast("Sucesso", "Orçamento salvo com sucesso!");
         }
 
-        function shareBudgetWhatsApp(id) {
-            const b = appData.budgets.find(x => x.id === id);
-            if (!b) return;
-            const c = appData.clients.find(x => x.id === b.clientId);
-            if (!c) return;
-
-            const msg = `Olá *${c.name}*!\n\nSegue o seu orçamento da *${appData.settings.companyName}*:\n` +
-                b.items.map(i => `• ${i}`).join('\n') +
-                `\n\n*Total:* R$ ${b.total.toFixed(2)}\n*Validade:* ${b.validity} dias.\n\nFicamos à disposição para agendar!`;
-
-            window.open(`https://wa.me/${c.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+        function buildBudgetMessage(budget, client) {
+            return `Olá ${client.name}! Segue sua cotação de higienização de estofados:\n\n*Serviços:*\n` + 
+                budget.services.map(s => `- ${s}`).join('\n') + 
+                `\n\n*Total:* ${formatCurrency(budget.total)}\n*Validade:* ${budget.validity} dias.\n\nFicamos à disposição!`;
         }
 
-        function deleteBudget(id) {
-            if (confirm("Remover este orçamento?")) {
-                appData.budgets = appData.budgets.filter(b => b.id !== id);
-                saveLocalStorage();
-                renderBudgets();
-                showToast("Removido", "Orçamento excluído.");
-            }
+        function calcBudgetTotal() {
+            const discount = parseFloat(document.getElementById('bud-discount').value) || 0;
+            const shipping = parseFloat(document.getElementById('bud-shipping').value) || 0;
+            
+            let subtotal = 0;
+            document.querySelectorAll('.bud-service-cb:checked').forEach(cb => {
+                const item = appData.servicesCatalog.find(s => s.name === cb.value);
+                if (item) subtotal += item.price;
+            });
+
+            const total = Math.max(0, subtotal - discount + shipping);
+            document.getElementById('bud-total-display').textContent = formatCurrency(total);
         }
 
-        function switchBudgetTab(tab) {
-            renderBudgets();
-        }
-
-        /* ----------------------------------------------------
-           FINANCEIRO
-        ---------------------------------------------------- */
+        /* FINANCEIRO */
         function renderFinancial() {
-            const currentMonth = new Date().toISOString().slice(0, 7);
-            const monthTrans = appData.transactions.filter(t => t.date && t.date.startsWith(currentMonth));
+            const currentMonth = new Date().toISOString().substring(0, 7);
+            
+            const rev = appData.transactions
+                .filter(t => t.type === 'revenue' && t.date.startsWith(currentMonth))
+                .reduce((acc, cur) => acc + (parseFloat(cur.value) || 0), 0);
 
-            const totalRev = monthTrans.filter(t => t.type === 'revenue').reduce((acc, t) => acc + parseFloat(t.value || 0), 0);
-            const totalExp = monthTrans.filter(t => t.type === 'expense').reduce((acc, t) => acc + parseFloat(t.value || 0), 0);
+            const exp = appData.transactions
+                .filter(t => t.type === 'expense' && t.date.startsWith(currentMonth))
+                .reduce((acc, cur) => acc + (parseFloat(cur.value) || 0), 0);
 
-            document.getElementById('fin-rev').innerText = 'R$ ' + totalRev.toFixed(2);
-            document.getElementById('fin-exp').innerText = 'R$ ' + totalExp.toFixed(2);
-            document.getElementById('fin-profit').innerText = 'R$ ' + (totalRev - totalExp).toFixed(2);
+            document.getElementById('fin-rev').textContent = formatCurrency(rev);
+            document.getElementById('fin-exp').textContent = formatCurrency(exp);
+            document.getElementById('fin-profit').textContent = formatCurrency(rev - exp);
 
-            renderFinancialChart(totalRev, totalExp);
+            renderTransactionsList();
+            renderFinancialChart(rev, exp);
+        }
 
-            const list = document.getElementById('transactions-list');
-            if (!list) return;
+        function renderTransactionsList() {
+            const container = document.getElementById('transactions-list');
+            if (!container) return;
 
-            if (appData.transactions.length === 0) {
-                list.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Nenhuma transação registrada.</p>`;
+            const sorted = [...appData.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            if (sorted.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-xs text-slate-500">Nenhuma transação registrada.</div>`;
                 return;
             }
 
-            list.innerHTML = appData.transactions.map(t => `
-                <div class="glass-card p-3 rounded-2xl flex items-center justify-between">
+            container.innerHTML = sorted.map(t => `
+                <div class="glass p-3 rounded-2xl flex items-center justify-between text-xs">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-xl ${t.type === 'revenue' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} flex items-center justify-center font-bold text-xs">
-                            <i class="fa-solid ${t.type === 'revenue' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
+                        <div class="w-8 h-8 rounded-xl ${t.type === 'revenue' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} flex items-center justify-center font-bold">
+                            <i class="fa-solid ${t.type === 'revenue' ? 'fa-arrow-down' : 'fa-arrow-up'} text-xs"></i>
                         </div>
                         <div>
-                            <h5 class="text-xs font-bold text-white">${t.description}</h5>
-                            <span class="text-[10px] text-slate-400">${t.date} • ${t.category}</span>
+                            <h5 class="font-bold text-white">${escapeHTML(t.description)}</h5>
+                            <p class="text-[10px] text-slate-400">${formatDateBR(t.date)} • ${escapeHTML(t.category)}</p>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <span class="text-xs font-extrabold ${t.type === 'revenue' ? 'text-emerald-400' : 'text-rose-400'}">
-                            ${t.type === 'revenue' ? '+' : '-'} R$ ${parseFloat(t.value || 0).toFixed(2)}
-                        </span>
-                    </div>
+                    <span class="font-extrabold ${t.type === 'revenue' ? 'text-emerald-400' : 'text-rose-400'}">${t.type === 'revenue' ? '+' : '-'} ${formatCurrency(t.value)}</span>
                 </div>
             `).join('');
         }
 
         function renderFinancialChart(rev, exp) {
-            const ctx = document.getElementById('chartFinancial');
-            if (!ctx) return;
+            const ctxFin = document.getElementById('chartFinancial');
+            if (!ctxFin) return;
             if (chartFinancialInstance) chartFinancialInstance.destroy();
-            chartFinancialInstance = new Chart(ctx, {
+
+            chartFinancialInstance = new Chart(ctxFin, {
                 type: 'bar',
                 data: {
-                    labels: ['Este Mês'],
-                    datasets: [
-                        { label: 'Receitas', data: [rev], backgroundColor: '#10b981', borderRadius: 8 },
-                        { label: 'Despesas', data: [exp], backgroundColor: '#f43f5e', borderRadius: 8 }
-                    ]
+                    labels: ['Entradas (Receitas)', 'Saídas (Despesas)'],
+                    datasets: [{
+                        data: [rev, exp],
+                        backgroundColor: ['#10b981', '#f43f5e']
+                    }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } } },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
@@ -1736,53 +1710,54 @@
                 id: 't_' + Date.now(),
                 type: document.getElementById('trans-type').value,
                 description: document.getElementById('trans-desc').value,
-                value: parseFloat(document.getElementById('trans-val').value || 0),
+                value: parseFloat(document.getElementById('trans-val').value) || 0,
                 date: document.getElementById('trans-date').value,
                 category: document.getElementById('trans-category').value,
                 payment: document.getElementById('trans-payment').value
             };
 
             appData.transactions.push(trans);
-            saveLocalStorage();
+            saveLocalData();
             closeModal('modal-transaction');
             renderFinancial();
-            updateDashboard();
-            showToast("Lançamento Salvo", "Transação gravada no caixa.");
+            renderDashboard();
+            showToast("Sucesso", "Transação gravada!");
         }
 
-        /* ----------------------------------------------------
-           GALERIA ANTES E DEPOIS
-        ---------------------------------------------------- */
+        /* GALERIA ANTES E DEPOIS */
         function renderGallery() {
             const grid = document.getElementById('gallery-grid');
             if (!grid) return;
 
             if (appData.gallery.length === 0) {
-                grid.innerHTML = `<div class="col-span-full p-8 text-center text-slate-500 glass-card rounded-3xl">Nenhuma foto adicionada à galeria.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-xs">Nenhuma imagem na galeria ainda.</div>`;
                 return;
             }
 
-            grid.innerHTML = appData.gallery.map(g => `
-                <div class="glass-card p-4 rounded-3xl space-y-3">
-                    <h4 class="font-bold text-xs text-white">${g.serviceName}</h4>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-900 border border-slate-800">
-                            <img src="${g.beforeUrl}" onerror="this.src='https://via.placeholder.com/300x200?text=Antes'" class="w-full h-full object-cover">
-                            <span class="absolute bottom-1 left-1 px-2 py-0.5 rounded-md bg-slate-950/80 text-[9px] font-bold text-rose-400">ANTES</span>
-                        </div>
-                        <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-900 border border-slate-800">
-                            <img src="${g.afterUrl}" onerror="this.src='https://via.placeholder.com/300x200?text=Depois'" class="w-full h-full object-cover">
-                            <span class="absolute bottom-1 left-1 px-2 py-0.5 rounded-md bg-slate-950/80 text-[9px] font-bold text-emerald-400">DEPOIS</span>
+            grid.innerHTML = appData.gallery.map(item => {
+                const client = appData.clients.find(c => c.id === item.clientId) || { name: "Cliente" };
+                return `
+                    <div class="glass-card p-4 rounded-3xl space-y-3">
+                        <h4 class="font-bold text-xs text-white">${escapeHTML(item.serviceName)} - ${escapeHTML(client.name)}</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-[10px] font-bold text-rose-400 block mb-1">ANTES</span>
+                                <img src="${item.beforeUrl}" class="w-full h-32 object-cover rounded-2xl border border-slate-800" alt="Antes">
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-emerald-400 block mb-1">DEPOIS</span>
+                                <img src="${item.afterUrl}" class="w-full h-32 object-cover rounded-2xl border border-slate-800" alt="Depois">
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function savePhoto(e) {
             e.preventDefault();
             const photo = {
-                id: 'p_' + Date.now(),
+                id: 'g_' + Date.now(),
                 clientId: document.getElementById('photo-client-id').value,
                 serviceName: document.getElementById('photo-service-name').value,
                 beforeUrl: document.getElementById('photo-before-url').value,
@@ -1790,165 +1765,270 @@
             };
 
             appData.gallery.push(photo);
-            saveLocalStorage();
+            saveLocalData();
             closeModal('modal-photo');
             renderGallery();
-            showToast("Foto Salva", "Adicionada à galeria.");
+            showToast("Sucesso", "Foto adicionada à galeria!");
         }
 
-        /* ----------------------------------------------------
-           CONFIGURAÇÕES & AUXILIARES
-        ---------------------------------------------------- */
+        /* CONFIGURAÇÕES E PIN */
+        function loadSettingsForm() {
+            document.getElementById('set-company-name').value = appData.settings.companyName || '';
+            document.getElementById('set-company-doc').value = appData.settings.companyDoc || '';
+            document.getElementById('set-company-phone').value = appData.settings.companyPhone || '';
+            document.getElementById('set-company-pix').value = appData.settings.companyPix || '';
+            document.getElementById('set-pin-input').value = appData.settings.pin || '';
+            document.getElementById('set-pin-active').checked = appData.settings.pinActive || false;
+        }
+
         function saveCompanySettings() {
             appData.settings.companyName = document.getElementById('set-company-name').value;
             appData.settings.companyDoc = document.getElementById('set-company-doc').value;
             appData.settings.companyPhone = document.getElementById('set-company-phone').value;
             appData.settings.companyPix = document.getElementById('set-company-pix').value;
-            saveLocalStorage();
-            showToast("Configurações Salvas", "Dados da empresa atualizados.");
+            saveLocalData();
+            showToast("Sucesso", "Configurações comerciais salvas.");
         }
 
         function savePinSettings() {
             appData.settings.pin = document.getElementById('set-pin-input').value;
             appData.settings.pinActive = document.getElementById('set-pin-active').checked;
-            saveLocalStorage();
-            showToast("Segurança Atualizada", "PIN salvo.");
+            saveLocalData();
+            showToast("Segurança", "Configurações de PIN atualizadas.");
         }
 
-        function exportBackupJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", `cleangestor_backup_${new Date().toISOString().slice(0,10)}.json`);
-            dlAnchorElem.click();
-        }
-
-        function importBackupJSON(event) {
-            const reader = new FileReader();
-            reader.onload = onReaderLoad;
-            reader.readAsText(event.target.files[0]);
-        }
-
-        function onReaderLoad(event) {
-            try {
-                const obj = JSON.parse(event.target.result);
-                appData = obj;
-                saveLocalStorage();
-                location.reload();
-            } catch (e) {
-                showToast("Erro", "Arquivo JSON inválido.", "error");
+        function checkPinProtection() {
+            if (appData.settings.pinActive) {
+                document.getElementById('pin-screen').classList.remove('hidden');
             }
         }
 
-        function exportClientsCSV() {
-            let csv = "Nome,Telefone,WhatsApp,Endereco\n";
-            appData.clients.forEach(c => {
-                csv += `"${c.name}","${c.phone}","${c.whatsapp}","${c.address || ''}"\n`;
-            });
-            downloadCSV(csv, "clientes_cleangestor.csv");
-        }
-
-        function exportFinancialCSV() {
-            let csv = "Tipo,Descricao,Valor,Data,Categoria\n";
-            appData.transactions.forEach(t => {
-                csv += `"${t.type}","${t.description}","${t.value}","${t.date}","${t.category}"\n`;
-            });
-            downloadCSV(csv, "financeiro_cleangestor.csv");
-        }
-
-        function downloadCSV(csv, filename) {
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", filename);
-            link.click();
-        }
-
-        function clearAllData() {
-            if (confirm("Atenção! Isso apagará todos os dados salvos localmente. Deseja continuar?")) {
-                localStorage.removeItem('cleangestor_data');
-                location.reload();
+        function pressPin(num) {
+            if (currentPinInput.length < 6) {
+                currentPinInput += num;
+                updatePinDots();
             }
         }
 
-        function populateSelects() {
-            const clientSelects = ['app-client-id', 'bud-client-id', 'photo-client-id'];
-            clientSelects.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.innerHTML = appData.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        function clearPin() {
+            currentPinInput = "";
+            updatePinDots();
+        }
+
+        function updatePinDots() {
+            const dots = document.querySelectorAll('#pin-dots div');
+            dots.forEach((dot, idx) => {
+                if (idx < currentPinInput.length) {
+                    dot.classList.add('bg-sky-500');
+                } else {
+                    dot.classList.remove('bg-sky-500');
                 }
             });
+        }
 
-            const serviceSelect = document.getElementById('app-service-name');
-            if (serviceSelect) {
-                serviceSelect.innerHTML = appData.servicesCatalog.filter(s => s.active).map(s => `<option value="${s.name}">${s.name} - R$ ${parseFloat(s.price).toFixed(2)}</option>`).join('');
-            }
-
-            const budCheckboxes = document.getElementById('bud-services-checkboxes');
-            if (budCheckboxes) {
-                budCheckboxes.innerHTML = appData.servicesCatalog.filter(s => s.active).map(s => `
-                    <label class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-800/60 cursor-pointer">
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" value="${s.name}" data-price="${s.price}" onchange="calcBudgetTotal()" class="bud-service-item w-4 h-4 text-sky-500 rounded">
-                            <span class="text-xs font-semibold text-slate-200">${s.name}</span>
-                        </div>
-                        <span class="text-xs font-bold text-emerald-400">R$ ${parseFloat(s.price).toFixed(2)}</span>
-                    </label>
-                `).join('');
+        function submitPin() {
+            if (currentPinInput === appData.settings.pin) {
+                document.getElementById('pin-screen').classList.add('hidden');
+                currentPinInput = "";
+                updatePinDots();
+            } else {
+                showToast("Acesso Negado", "PIN incorreto. Tente novamente.");
+                clearPin();
             }
         }
 
-        function openModal(modalId, param) {
-            if (modalId === 'modal-transaction' && param) {
-                document.getElementById('trans-type').value = param;
-                document.getElementById('modal-trans-title').innerText = param === 'revenue' ? 'Nova Receita' : 'Nova Despesa';
+        /* AUXILIARES DE MODAIS E POPULATES */
+        function openModal(modalId, extra) {
+            if (modalId === 'modal-transaction' && extra) {
+                document.getElementById('trans-type').value = extra;
+                document.getElementById('modal-trans-title').textContent = extra === 'revenue' ? 'Nova Receita' : 'Nova Despesa';
             }
-            document.getElementById(modalId).classList.remove('hidden');
+
+            if (modalId === 'modal-budget-builder') {
+                populateBudgetCheckboxes();
+            }
+
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove('hidden');
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function populateSelects() {
+            const clientOptions = appData.clients.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('');
+            
+            const appClientSelect = document.getElementById('app-client-id');
+            if (appClientSelect) appClientSelect.innerHTML = clientOptions;
+
+            const budClientSelect = document.getElementById('bud-client-id');
+            if (budClientSelect) budClientSelect.innerHTML = clientOptions;
+
+            const photoClientSelect = document.getElementById('photo-client-id');
+            if (photoClientSelect) photoClientSelect.innerHTML = clientOptions;
+
+            const serviceOptions = appData.servicesCatalog.map(s => `<option value="${escapeHTML(s.name)}">${escapeHTML(s.name)} - ${formatCurrency(s.price)}</option>`).join('');
+            const appServiceSelect = document.getElementById('app-service-name');
+            if (appServiceSelect) {
+                appServiceSelect.innerHTML = serviceOptions;
+                updateAppointmentPrice();
+            }
+        }
+
+        function populateBudgetCheckboxes() {
+            const container = document.getElementById('bud-services-checkboxes');
+            if (!container) return;
+
+            container.innerHTML = appData.servicesCatalog.map(s => `
+                <label class="flex items-center justify-between p-2 rounded-xl bg-slate-800/50 hover:bg-slate-800 text-xs text-slate-200 cursor-pointer">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" value="${escapeHTML(s.name)}" onchange="calcBudgetTotal()" class="bud-service-cb w-4 h-4 rounded text-sky-500">
+                        <span>${escapeHTML(s.name)}</span>
+                    </div>
+                    <span class="font-bold text-sky-400">${formatCurrency(s.price)}</span>
+                </label>
+            `).join('');
+            calcBudgetTotal();
+        }
+
+        function updateAppointmentPrice() {
+            const sName = document.getElementById('app-service-name')?.value;
+            const qty = parseInt(document.getElementById('app-quantity')?.value) || 1;
+            const item = appData.servicesCatalog.find(s => s.name === sName);
+            if (item) {
+                document.getElementById('app-price').value = (item.price * qty).toFixed(2);
+            }
         }
 
         function openQuickActionModal() {
             openModal('modal-quick-action');
         }
 
-        function handleGlobalSearch(query) {
-            const resContainer = document.getElementById('search-results');
-            if (!query.trim()) {
-                resContainer.classList.add('hidden');
-                return;
-            }
-            const q = query.toLowerCase();
-            const matchedClients = appData.clients.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q));
-            const matchedServices = appData.servicesCatalog.filter(s => s.name.toLowerCase().includes(q));
-
-            let html = '';
-            if (matchedClients.length > 0) {
-                html += `<div class="text-[10px] font-bold uppercase text-slate-500 px-2 py-1">Clientes</div>`;
-                html += matchedClients.map(c => `<div onclick="switchView('clients'); closeModal('search-results');" class="p-2 rounded-xl hover:bg-slate-800 cursor-pointer text-xs font-semibold text-white">${c.name} (${c.phone})</div>`).join('');
-            }
-            if (matchedServices.length > 0) {
-                html += `<div class="text-[10px] font-bold uppercase text-slate-500 px-2 py-1 mt-1">Serviços</div>`;
-                html += matchedServices.map(s => `<div onclick="switchView('services'); closeModal('search-results');" class="p-2 rounded-xl hover:bg-slate-800 cursor-pointer text-xs font-semibold text-sky-400">${s.name}</div>`).join('');
-            }
-
-            if (!html) html = `<div class="p-2 text-xs text-slate-500 text-center">Nenhum resultado encontrado.</div>`;
-
-            resContainer.innerHTML = html;
-            resContainer.classList.remove('hidden');
+        function toggleTheme() {
+            showToast("Modo Dark", "O aplicativo foi projetado e otimizado no modo dark.");
         }
 
-        function showToast(title, msg, type = 'success') {
+        /* BACKUP E EXPORTAÇÃO */
+        function exportBackupJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `cleangestor_backup_${new Date().toISOString().substring(0,10)}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function importBackupJSON(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.clients && parsed.servicesCatalog) {
+                        appData = parsed;
+                        saveLocalData();
+                        location.reload();
+                    } else {
+                        alert("Arquivo JSON inválido.");
+                    }
+                } catch(err) {
+                    alert("Erro ao ler o arquivo de backup.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportClientsCSV() {
+            let csv = "Nome,Telefone,WhatsApp,CPF,Cidade,Bairro\n";
+            appData.clients.forEach(c => {
+                csv += `"${c.name}","${c.phone}","${c.whatsapp}","${c.cpf||''}","${c.city||''}","${c.neighborhood||''}"\n`;
+            });
+            downloadCSV(csv, 'clientes.csv');
+        }
+
+        function exportFinancialCSV() {
+            let csv = "Data,Tipo,Descricao,Categoria,Valor\n";
+            appData.transactions.forEach(t => {
+                csv += `"${t.date}","${t.type}","${t.description}","${t.category}","${t.value}"\n`;
+            });
+            downloadCSV(csv, 'financeiro.csv');
+        }
+
+        function downloadCSV(csvContent, fileName) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+        }
+
+        function clearAllData() {
+            if (confirm("Deseja realmente apagar todos os dados registrados e restaurar os dados iniciais de teste?")) {
+                localStorage.removeItem('clean_gestor_pro_db');
+                location.reload();
+            }
+        }
+
+        /* UTILITÁRIOS */
+        function formatCurrency(val) {
+            return (parseFloat(val) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function formatDateBR(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length < 3) return dateStr;
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function formatDateBRFull(dateObj) {
+            return dateObj.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+
+        function showToast(title, msg) {
             const toast = document.getElementById('toast');
-            document.getElementById('toast-title').innerText = title;
-            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-msg').textContent = msg;
+
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0');
             }, 3000);
+        }
+
+        function handleGlobalSearch(val) {
+            const results = document.getElementById('search-results');
+            if (!val.trim()) {
+                results.classList.add('hidden');
+                return;
+            }
+
+            const q = val.toLowerCase();
+            const matchingClients = appData.clients.filter(c => c.name.toLowerCase().includes(q));
+            
+            if (matchingClients.length === 0) {
+                results.innerHTML = `<p class="text-xs text-slate-500 p-2">Nenhum resultado para "${escapeHTML(val)}".</p>`;
+            } else {
+                results.innerHTML = matchingClients.map(c => `
+                    <div onclick="openClientProfile('${c.id}'); document.getElementById('search-results').classList.add('hidden');" class="p-2 hover:bg-slate-800 rounded-xl cursor-pointer text-xs">
+                        <p class="font-bold text-white">${escapeHTML(c.name)}</p>
+                        <p class="text-[11px] text-slate-400">${escapeHTML(c.phone)}</p>
+                    </div>
+                `).join('');
+            }
+            results.classList.remove('hidden');
         }
     </script>
 </body>
