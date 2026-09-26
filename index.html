@@ -366,11 +366,48 @@
                     </div>
 
                     <!-- SUB-ABAS POR DIA PARA AGENDA -->
-                    <div class="flex items-center gap-2 glass p-1.5 rounded-2xl border border-slate-800 w-fit">
-                        <button onclick="setScheduleSubTab('today')" id="tab-sched-today" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition">Hoje</button>
-                        <button onclick="setScheduleSubTab('tomorrow')" id="tab-sched-tomorrow" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Amanhã</button>
-                        <button onclick="setScheduleSubTab('all')" id="tab-sched-all" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Todos / Navegar</button>
-                    </div>
+                    <div class="flex flex-wrap items-center gap-2 mb-4">
+
+    <button
+        type="button"
+        onclick="changeScheduleDate(-1)"
+        class="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <button
+        type="button"
+        onclick="goToTodaySchedule()"
+        class="px-4 py-2 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 font-semibold">
+        Hoje
+    </button>
+
+    <button
+        type="button"
+        onclick="changeScheduleDate(1)"
+        class="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700">
+        <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <input
+        type="date"
+        id="schedule-date-picker"
+        onchange="selectScheduleDate(this.value)"
+        class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"
+    >
+
+</div>
+
+<div class="mb-4">
+    <h3 id="schedule-current-date"
+        class="text-lg font-bold text-white">
+        Agenda
+    </h3>
+
+    <p id="schedule-current-date-subtitle"
+       class="text-xs text-slate-400">
+    </p>
+</div>
 
                     <div id="schedule-date-nav" class="flex items-center justify-between glass p-4 rounded-2xl border border-slate-800">
                         <button onclick="changeScheduleDate(-1)" class="p-2 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-sky-400 transition"><i class="fa-solid fa-chevron-left"></i></button>
@@ -390,16 +427,50 @@
                         </div>
                     </div>
 
-                    <!-- SUB-ABAS POR DIA PARA OS -->
-                    <div class="flex items-center gap-2 glass p-1.5 rounded-2xl border border-slate-800 w-fit">
-                        <button onclick="setOsSubTab('today')" id="tab-os-today" class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition">Hoje</button>
-                        <button onclick="setOsSubTab('tomorrow')" id="tab-os-tomorrow" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Amanhã</button>
-                        <button onclick="setOsSubTab('all')" id="tab-os-all" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">Todas</button>
-                    </div>
+          <!-- SUB-ABAS POR DIA PARA OS -->
+<div class="flex items-center gap-2 glass p-1.5 rounded-2xl border border-slate-800 w-fit">
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="os-list-grid"></div>
-                </section>
+    <button
+        onclick="setOsSubTab('today')"
+        id="tab-os-today"
+        class="px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition">
+        Hoje 26
+    </button>
 
+    <button
+        onclick="setOsSubTab('tomorrow')"
+        id="tab-os-tomorrow"
+        class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">
+        Amanhã 27
+    </button>
+
+    <button
+        onclick="setOsSubTab('day3')"
+        id="tab-os-day3"
+        class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">
+        Seg 28
+    </button>
+
+    <button
+        onclick="setOsSubTab('day4')"
+        id="tab-os-day4"
+        class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">
+        Ter 29
+    </button>
+
+    <button
+        onclick="setOsSubTab('all')"
+        id="tab-os-all"
+        class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">
+        Todas
+    </button>
+
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="os-list-grid"></div>
+
+</section>
+    
                 <!-- 4. SERVIÇOS VIEW (CATÁLOGO DE ESTOFADOS) -->
                 <section id="view-services" class="space-y-6 view-section hidden">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -700,9 +771,10 @@
                         <div class="glass p-6 rounded-3xl border border-rose-500/30 space-y-4 lg:col-span-2">
                             <h4 class="font-semibold text-sm text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Zona de Perigo</h4>
                             <p class="text-xs text-slate-400">Ação irreversível. Apaga permanentemente todos os clientes, agendamentos, serviços e histórico do sistema.</p>
-                            <button onclick="clearAllDataWithPassword()" class="bg-rose-500/20 text-rose-400 border border-rose-500/40 hover:bg-rose-500/30 px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2">
-                                <i class="fa-solid fa-trash-can"></i> Apagar Todos os Dados do Sistema (Requer Senha)
-                            </button>
+                            <button onclick="clearAllData()">
+    <i class="fa-solid fa-trash"></i>
+    Apagar todos os dados
+</button>
                         </div>
                     </div>
                 </section>
@@ -1057,15 +1129,55 @@
                     <label class="text-xs text-slate-400">Cliente *</label>
                     <select id="app-client-id" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
                 </div>
-                <div>
-                    <label class="text-xs text-slate-400">Estofado / Serviço *</label>
-                    <select id="app-service-name" required onchange="updateAppointmentPrice()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none"></select>
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400">Quantidade</label>
-                    <input type="number" id="app-quantity" min="1" value="1" oninput="updateAppointmentPrice()" class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
+             <!-- SERVIÇOS DO AGENDAMENTO -->
+<div>
+    <label class="text-xs text-slate-400">Serviço *</label>
+
+    <div class="flex gap-2 mt-1">
+        <select id="app-service-name"
+            class="flex-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+        </select>
+
+        <button type="button"
+            onclick="addServiceToAppointment()"
+            class="px-3 py-2 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-semibold whitespace-nowrap">
+            <i class="fa-solid fa-plus"></i>
+            Adicionar
+        </button>
+    </div>
+</div>
+
+<div>
+    <label class="text-xs text-slate-400">Quantidade</label>
+
+    <input type="number"
+        id="app-quantity"
+        min="1"
+        value="1"
+        class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
+</div>
+
+<!-- LISTA DE SERVIÇOS ADICIONADOS -->
+<div class="mt-3">
+    <div class="flex items-center justify-between mb-2">
+        <label class="text-xs text-slate-400">
+            Serviços selecionados
+        </label>
+
+        <span id="app-services-count"
+            class="text-[10px] text-slate-500">
+            0 serviços
+        </span>
+    </div>
+
+    <div id="app-services-list"
+        class="space-y-2">
+        <div class="text-center py-3 text-[11px] text-slate-500 border border-dashed border-slate-700 rounded-xl">
+            Nenhum serviço adicionado.
+        </div>
+    </div>
+</div>
+  <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="text-xs text-slate-400">Data *</label>
                         <input type="date" id="app-date" required class="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 focus:border-sky-500 focus:outline-none">
@@ -1531,6 +1643,24 @@
             return encodeURIComponent(fullAddr.trim());
         }
 
+function selectScheduleDate(date) {
+    if (!date) return;
+
+    currentScheduleDate = date;
+
+    // Volta para a visualização da data escolhida
+    currentScheduleSubTab = 'selected';
+
+    renderSchedule();
+}
+
+function goToTodaySchedule() {
+    currentScheduleDate = getLocalDateString();
+    currentScheduleSubTab = 'selected';
+
+    renderSchedule();
+}
+
         function getFullAddressText(client) {
             if (!client) return 'Endereço não informado';
             return `${client.address || ''}, Nº ${client.number || ''} - ${client.neighborhood || ''}, ${client.city || ''}`;
@@ -1776,153 +1906,955 @@ function getLocalDateString(date = new Date()) {
 
     return `${year}-${month}-${day}`;
 }
-        function renderSchedule() {
-            const container = document.getElementById('schedule-container');
-            const nav = document.getElementById('schedule-date-nav');
+     function prepareAppointmentForDate(date) {
 
-            let filtered = [...state.appointments];
-            const todayStr = new Date().toISOString().split('T')[0];
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    currentScheduleDate = date;
 
-            if (currentScheduleSubTab === 'today') {
-                nav.classList.add('hidden');
-                filtered = filtered.filter(a => a.date === todayStr);
-            } else if (currentScheduleSubTab === 'tomorrow') {
-                nav.classList.add('hidden');
-                filtered = filtered.filter(a => a.date === tomorrowStr);
-            } else {
-                nav.classList.remove('hidden');
-                document.getElementById('schedule-current-date-label').innerText = formatDate(currentScheduleDate);
-                filtered = filtered.filter(a => a.date === currentScheduleDate);
-            }
+    // Abre o modal usando a função existente
+    openQuickActionModal();
 
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-12 text-slate-500 text-xs">Nenhum agendamento para esta seleção.</div>`;
-                return;
-            }
+    // Pequeno atraso para garantir que o modal esteja aberto
+    setTimeout(() => {
 
-            container.innerHTML = filtered.map(app => {
-                const client = state.clients.find(c => c.id === app.clientId) || {};
-                const fullAddr = getFullAddressText(client);
+        const dateInput = document.getElementById('app-date');
 
-                return `
-                    <div class="glass p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-sm text-white">${client.name || 'Cliente sem nome'}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] bg-sky-500/20 text-sky-400 font-semibold">${app.status}</span>
-                            </div>
-                            <p class="text-xs text-sky-400 font-medium"><i class="fa-regular fa-clock mr-1"></i>${app.time} - ${app.serviceName} (R$ ${app.price})</p>
-                            <!-- REQUISITO: EXIBIR ENDEREÇO COMPLETO -->
-                            <p class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-location-dot text-rose-400"></i> ${fullAddr}</p>
-                        </div>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <button onclick="editAppointment('${app.id}')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-sky-500/20 text-sky-400 text-xs font-semibold transition">
-                                <i class="fa-solid fa-pen"></i> Editar
-                            </button>
-                            <button onclick="deleteAppointment('${app.id}')" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-semibold transition">
-                                <i class="fa-solid fa-trash"></i> Excluir
-                            </button>
-                        </div>
+        if (dateInput) {
+            dateInput.value = date;
+        }
+
+    }, 100);
+}
+
+    function renderSchedule() {
+    const container = document.getElementById('schedule-container');
+    const nav = document.getElementById('schedule-date-nav');
+
+    if (!container) return;
+
+    // ==========================================
+    // DATA SELECIONADA
+    // ==========================================
+
+    const todayStr = getLocalDateString();
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = getLocalDateString(tomorrow);
+
+    // ==========================================
+    // DATA QUE SERÁ EXIBIDA
+    // ==========================================
+
+    let selectedDate = currentScheduleDate;
+
+    if (currentScheduleSubTab === 'today') {
+        selectedDate = todayStr;
+    }
+
+    if (currentScheduleSubTab === 'tomorrow') {
+        selectedDate = tomorrowStr;
+    }
+
+    // ==========================================
+    // ATUALIZA O CAMPO DE DATA
+    // ==========================================
+
+    const datePicker = document.getElementById('schedule-date-picker');
+
+    if (datePicker) {
+        datePicker.value = selectedDate;
+    }
+
+    const dateLabel = document.getElementById(
+        'schedule-current-date-label'
+    );
+
+    if (dateLabel) {
+        dateLabel.innerText = formatDate(selectedDate);
+    }
+
+    const dateTitle = document.getElementById(
+        'schedule-current-date'
+    );
+
+    if (dateTitle) {
+        const [year, month, day] = selectedDate.split('-').map(Number);
+
+        const dateObj = new Date(year, month - 1, day);
+
+        const weekday = dateObj.toLocaleDateString('pt-BR', {
+            weekday: 'long'
+        });
+
+        dateTitle.innerText =
+            weekday.charAt(0).toUpperCase() +
+            weekday.slice(1) +
+            ' • ' +
+            formatDate(selectedDate);
+    }
+
+    const dateSubtitle = document.getElementById(
+        'schedule-current-date-subtitle'
+    );
+
+    if (dateSubtitle) {
+        if (selectedDate === todayStr) {
+            dateSubtitle.innerText = 'Hoje';
+        } else if (selectedDate === tomorrowStr) {
+            dateSubtitle.innerText = 'Amanhã';
+        } else {
+            dateSubtitle.innerText = 'Data selecionada';
+        }
+    }
+
+    // ==========================================
+    // NAVEGAÇÃO DA DATA
+    // ==========================================
+
+    if (nav) {
+        nav.classList.remove('hidden');
+    }
+
+    // ==========================================
+    // FILTRAR AGENDAMENTOS
+    // ==========================================
+
+    let filtered = state.appointments.filter(app => {
+
+        const relatedOS = state.osList.find(
+            os => os.appointmentId === app.id
+        );
+
+        // Não mostrar agendamento cuja OS já foi concluída
+        return !relatedOS || relatedOS.status !== 'Concluído';
+
+    });
+
+    filtered = filtered.filter(
+        app => app.date === selectedDate
+    );
+
+    // ==========================================
+    // ORDENAR POR HORÁRIO
+    // ==========================================
+
+    filtered.sort((a, b) => {
+
+        const timeA = a.time || '00:00';
+        const timeB = b.time || '00:00';
+
+        return timeA.localeCompare(timeB);
+
+    });
+
+    // ==========================================
+    // NENHUM AGENDAMENTO
+    // ==========================================
+
+    if (filtered.length === 0) {
+
+        container.innerHTML = `
+            <div class="glass p-8 rounded-3xl border border-slate-800 text-center">
+
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl
+                    bg-sky-500/10 border border-sky-500/20
+                    flex items-center justify-center">
+
+                    <i class="fa-regular fa-calendar-xmark
+                        text-2xl text-sky-400"></i>
+
+                </div>
+
+                <h3 class="text-sm font-bold text-white">
+                    Nenhum agendamento
+                </h3>
+
+                <p class="text-xs text-slate-500 mt-1">
+                    Não há serviços agendados para
+                    ${formatDate(selectedDate)}.
+                </p>
+
+                <button
+    type="button"
+    onclick="prepareAppointmentForDate('${selectedDate}')"
+    class="mt-5 px-4 py-2.5 rounded-xl
+    bg-sky-500 hover:bg-sky-400
+    text-white text-xs font-bold transition">
+
+    <i class="fa-solid fa-plus mr-1"></i>
+    Agendar neste dia
+
+</button>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    // ==========================================
+    // RENDERIZAR AGENDAMENTOS
+    // ==========================================
+
+    container.innerHTML = filtered.map(app => {
+
+        const client =
+            state.clients.find(c => c.id === app.clientId) || {};
+
+        const fullAddr = getFullAddressText(client);
+
+        // ==========================================
+        // SERVIÇOS
+        // ==========================================
+
+        let services = [];
+
+        if (
+            Array.isArray(app.services) &&
+            app.services.length > 0
+        ) {
+
+            services = app.services;
+
+        } else {
+
+            services = [{
+                name: app.serviceName || 'Serviço',
+                quantity: Number(app.quantity) || 1,
+                price:
+                    Number(app.price || 0) /
+                    (Number(app.quantity) || 1)
+            }];
+
+        }
+
+        // ==========================================
+        // HTML DOS SERVIÇOS
+        // ==========================================
+
+        const servicesHTML = services.map(service => {
+
+            const quantity =
+                Number(service.quantity) || 1;
+
+            const price =
+                Number(service.price) || 0;
+
+            const subtotal =
+                quantity * price;
+
+            return `
+                <div class="flex items-center justify-between
+                    gap-3 py-1.5">
+
+                    <div class="flex items-center gap-2 min-w-0">
+
+                        <i class="fa-solid fa-spray-can-sparkles
+                            text-sky-400 text-[10px]"></i>
+
+                        <span class="text-xs text-slate-300 truncate">
+                            ${service.name || 'Serviço'}
+                        </span>
+
+                        <span class="text-[10px] text-slate-500 shrink-0">
+                            ${quantity}x
+                        </span>
+
                     </div>
-                `;
-            }).join('');
+
+                    <span class="text-[10px] text-slate-400 shrink-0">
+                        R$ ${subtotal.toFixed(2)}
+                    </span>
+
+                </div>
+            `;
+
+        }).join('');
+
+        // ==========================================
+        // STATUS
+        // ==========================================
+
+        let statusClass =
+            'bg-sky-500/10 text-sky-400 border-sky-500/20';
+
+        if (app.status === 'Confirmado') {
+            statusClass =
+                'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
         }
 
-        // 3.5. ORDENS DE SERVIÇO (OS) COM TÉCNICO A CAMINHO & SUB-ABAS POR DIA
-        function setOsSubTab(tab) {
-            currentOsSubTab = tab;
-            ['today', 'tomorrow', 'all'].forEach(t => {
-                const btn = document.getElementById(`tab-os-${t}`);
-                if (t === tab) {
-                    btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition';
-                } else {
-                    btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition';
-                }
-            });
-            renderOSList();
+        if (app.status === 'Cancelado') {
+            statusClass =
+                'bg-rose-500/10 text-rose-400 border-rose-500/20';
         }
 
-        function renderOSList() {
-            const grid = document.getElementById('os-list-grid');
-            let filtered = [...state.osList];
+        // ==========================================
+        // CARD
+        // ==========================================
 
-            const todayStr = new Date().toISOString().split('T')[0];
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+        return `
+            <div class="glass rounded-3xl border border-slate-800
+                overflow-hidden hover:border-slate-700 transition">
 
-            if (currentOsSubTab === 'today') {
-                filtered = filtered.filter(os => os.date === todayStr);
-            } else if (currentOsSubTab === 'tomorrow') {
-                filtered = filtered.filter(os => os.date === tomorrowStr);
-            }
+                <div class="p-4">
 
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs">Nenhuma Ordem de Serviço nesta aba.</div>`;
-                return;
-            }
+                    <div class="flex flex-col sm:flex-row
+                        sm:items-start justify-between gap-4">
 
-            grid.innerHTML = filtered.map(os => {
-                const client = state.clients.find(c => c.id === os.clientId) || {};
-                const fullAddr = getFullAddressText(client);
-                const encodedAddr = getEncodedAddress(client);
+                        <!-- CLIENTE -->
+                        <div class="min-w-0 flex-1">
 
-                const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddr}`;
-                const wazeUrl = `https://waze.com/ul?q=${encodedAddr}&navigate=yes`;
+                            <div class="flex items-center gap-2 mb-2">
 
-                // REQUISITO: BOTÃO TÉCNICO A CAMINHO
-                const onWayMsg = encodeURIComponent(`Olá, ${client.name || 'Cliente'}! Nosso técnico já está a caminho do seu endereço (${fullAddr}). Chegaremos em breve! 🚚💨`);
-                const onWayWaUrl = `https://wa.me/${(client.whatsapp || client.phone || '').replace(/\D/g, '')}?text=${onWayMsg}`;
+                                <div class="w-10 h-10 rounded-xl
+                                    bg-sky-500/10
+                                    border border-sky-500/20
+                                    flex items-center justify-center
+                                    shrink-0">
 
-                return `
-                    <div class="glass p-5 rounded-3xl border border-slate-800 space-y-3 relative">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="text-xs font-mono text-sky-400 font-bold">OS #${os.id}</span>
-                                <h4 class="font-bold text-base text-white">${client.name || 'Cliente'}</h4>
+                                    <i class="fa-solid fa-user
+                                        text-sky-400"></i>
+
+                                </div>
+
+                                <div class="min-w-0">
+
+                                    <h3 class="font-bold text-sm
+                                        text-white truncate">
+
+                                        ${client.name || 'Cliente sem nome'}
+
+                                    </h3>
+
+                                    <p class="text-[10px] text-slate-500">
+                                        Agendamento
+                                    </p>
+
+                                </div>
+
                             </div>
-                            <span class="px-2.5 py-1 rounded-xl text-[10px] bg-amber-500/20 text-amber-400 font-bold">${os.status}</span>
+
+                            <div class="flex flex-wrap items-center gap-2">
+
+                                <span class="px-2.5 py-1 rounded-full
+                                    text-[10px] font-semibold
+                                    ${statusClass} border">
+
+                                    ${app.status || 'Agendado'}
+
+                                </span>
+
+                                <span class="px-2.5 py-1 rounded-full
+                                    text-[10px] font-semibold
+                                    bg-slate-800 text-slate-300">
+
+                                    <i class="fa-regular fa-clock mr-1"></i>
+                                    ${app.time || '--:--'}
+
+                                </span>
+
+                            </div>
+
                         </div>
 
-                        <!-- REQUISITO: EXIBIR ENDEREÇO COMPLETO NAS OS -->
-                        <p class="text-xs text-slate-300 flex items-start gap-1"><i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i> ${fullAddr}</p>
-                        <p class="text-xs text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>Data: ${formatDate(os.date)} às ${os.time || '14:00'}</p>
+                        <!-- VALOR -->
+                        <div class="text-left sm:text-right">
 
-                        <!-- ITEM 11: NAVEGAÇÃO GPS NA OS -->
-                        <div class="flex gap-2">
-                            <a href="${gmapsUrl}" target="_blank" class="flex-1 py-1 rounded-xl bg-sky-500/15 text-sky-400 border border-sky-500/30 text-[10px] font-semibold text-center">
-                                <i class="fa-solid fa-map-location-dot"></i> Maps
-                            </a>
-                            <a href="${wazeUrl}" target="_blank" class="flex-1 py-1 rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 text-[10px] font-semibold text-center">
-                                <i class="fa-solid fa-location-arrow"></i> Waze
-                            </a>
+                            <p class="text-[10px] text-slate-500 uppercase">
+                                Total
+                            </p>
+
+                            <p class="text-lg font-black text-emerald-400">
+                                R$ ${Number(app.price || 0).toFixed(2)}
+                            </p>
+
                         </div>
 
-                        <!-- REQUISITO: BOTÃO TÉCNICO A CAMINHO -->
-                        <a href="${onWayWaUrl}" target="_blank" class="w-full py-2 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/30 text-xs font-semibold text-center flex items-center justify-center gap-2 transition">
-                            <i class="fa-solid fa-truck-fast"></i> 🚚 Técnico a Caminho
-                        </a>
-
-                        <div class="flex gap-2 pt-2 border-t border-slate-800">
-                            <button onclick="openOSWizard('${os.id}')" class="flex-1 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold text-xs transition">
-                                <i class="fa-solid fa-folder-open mr-1"></i> Abrir / Executar OS
-                            </button>
-                            <button onclick="deleteOS('${os.id}')" class="p-2 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs transition">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
                     </div>
-                `;
-            }).join('');
+
+                    <!-- SERVIÇOS -->
+                    <div class="mt-4 p-3 rounded-2xl
+                        bg-slate-950/50 border border-slate-800">
+
+                        <p class="text-[10px] uppercase
+                            tracking-wider text-slate-500 mb-2">
+
+                            Serviços
+
+                        </p>
+
+                        <div class="space-y-0.5">
+
+                            ${servicesHTML}
+
+                        </div>
+
+                    </div>
+
+                    <!-- ENDEREÇO -->
+                    <div class="mt-3 flex items-start gap-2">
+
+                        <i class="fa-solid fa-location-dot
+                            text-rose-400 mt-0.5"></i>
+
+                        <p class="text-xs text-slate-400">
+                            ${fullAddr || 'Endereço não informado'}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- AÇÕES -->
+                <div class="px-4 py-3 border-t border-slate-800
+                    bg-slate-950/30 flex flex-wrap gap-2">
+
+                    <button
+                        type="button"
+                        onclick="editAppointment('${app.id}')"
+                        class="flex-1 min-w-[90px] px-3 py-2
+                        rounded-xl bg-slate-800
+                        hover:bg-sky-500/20
+                        text-sky-400 text-xs font-semibold transition">
+
+                        <i class="fa-solid fa-pen mr-1"></i>
+                        Editar
+
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="deleteAppointment('${app.id}')"
+                        class="flex-1 min-w-[90px] px-3 py-2
+                        rounded-xl bg-rose-500/10
+                        hover:bg-rose-500/20
+                        text-rose-400 text-xs font-semibold transition">
+
+                        <i class="fa-solid fa-trash mr-1"></i>
+                        Excluir
+
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join('');
+}
+   
+function selectScheduleDate(date) {
+
+    if (!date) return;
+
+    currentScheduleDate = date;
+    currentScheduleSubTab = 'selected';
+
+    renderSchedule();
+}
+
+function goToTodaySchedule() {
+
+    currentScheduleDate = getLocalDateString();
+    currentScheduleSubTab = 'selected';
+
+    renderSchedule();
+}
+
+function openAppointmentForDate(date) {
+
+    currentScheduleDate = date;
+
+    const modal = document.getElementById('modal-appointment');
+
+    if (modal) {
+        openModal('modal-appointment');
+    }
+
+    const dateInput =
+        document.getElementById('app-date');
+
+    if (dateInput) {
+        dateInput.value = date;
+    }
+
+    currentScheduleSubTab = 'selected';
+
+    renderSchedule();
+}
+
+function updateOSDateTabs() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const dates = [
+        { id: 'tab-os-today', label: 'Hoje' },
+        { id: 'tab-os-tomorrow', label: 'Amanhã' },
+        { id: 'tab-os-day3', label: null },
+        { id: 'tab-os-day4', label: null }
+    ];
+
+    dates.forEach((item, index) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() + index);
+
+        const btn = document.getElementById(item.id);
+        if (!btn) return;
+
+        const dayNumber = date.getDate();
+
+        if (index < 2) {
+            btn.textContent = `${item.label} ${dayNumber}`;
+        } else {
+            const weekdays = [
+                'Dom',
+                'Seg',
+                'Ter',
+                'Qua',
+                'Qui',
+                'Sex',
+                'Sáb'
+            ];
+
+            btn.textContent = `${weekdays[date.getDay()]} ${dayNumber}`;
+        }
+    });
+}
+
+ function setOsSubTab(tab) {
+    currentOsSubTab = tab;
+
+    [
+        'today',
+        'tomorrow',
+        'day3',
+        'day4',
+        'all'
+    ].forEach(t => {
+
+        const btn = document.getElementById(`tab-os-${t}`);
+
+        if (!btn) return;
+
+        if (t === tab) {
+            btn.className =
+                'px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white transition';
+        } else {
+            btn.className =
+                'px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition';
+        }
+    });
+
+    renderOSList();
+}
+      
+function renderOSList() {
+    updateOSDateTabs();
+
+    const container = document.getElementById('os-list-grid');
+    if (!container) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    function getDateString(date) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    const todayStr = getDateString(today);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const tomorrowStr = getDateString(tomorrow);
+
+    const day3 = new Date(today);
+    day3.setDate(today.getDate() + 2);
+    const day3Str = getDateString(day3);
+
+    const day4 = new Date(today);
+    day4.setDate(today.getDate() + 3);
+    const day4Str = getDateString(day4);
+
+    let filtered = [...state.osList];
+
+    // Não mostrar OS concluídas na lista principal
+    filtered = filtered.filter(os => os.status !== 'Concluído');
+
+    if (currentOsSubTab === 'today') {
+        filtered = filtered.filter(os => os.date === todayStr);
+    } else if (currentOsSubTab === 'tomorrow') {
+        filtered = filtered.filter(os => os.date === tomorrowStr);
+    } else if (currentOsSubTab === 'day3') {
+        filtered = filtered.filter(os => os.date === day3Str);
+    } else if (currentOsSubTab === 'day4') {
+        filtered = filtered.filter(os => os.date === day4Str);
+    }
+
+    filtered.sort((a, b) => {
+        const dateA = `${a.date || '9999-12-31'} ${a.time || '23:59'}`;
+        const dateB = `${b.date || '9999-12-31'} ${b.time || '23:59'}`;
+        return dateA.localeCompare(dateB);
+    });
+
+    document.querySelectorAll('[data-os-tab]').forEach(tab => {
+        tab.classList.remove(
+            'bg-sky-500',
+            'text-white',
+            'shadow-lg'
+        );
+
+        tab.classList.add(
+            'bg-slate-800',
+            'text-slate-300'
+        );
+
+        if (tab.dataset.osTab === currentOsSubTab) {
+            tab.classList.remove(
+                'bg-slate-800',
+                'text-slate-300'
+            );
+
+            tab.classList.add(
+                'bg-sky-500',
+                'text-white',
+                'shadow-lg'
+            );
+        }
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="col-span-full text-center py-12">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-800 flex items-center justify-center">
+                    <i class="fa-solid fa-clipboard-list text-slate-500 text-xl"></i>
+                </div>
+
+                <p class="text-sm font-semibold text-slate-400">
+                    Nenhuma Ordem de Serviço encontrada
+                </p>
+
+                <p class="text-xs text-slate-600 mt-1">
+                    Não há atendimentos para este período.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = filtered.map(os => {
+
+        const client = state.clients.find(
+            c => String(c.id) === String(os.clientId)
+        );
+
+        const clientName =
+            client?.name || 'Cliente não encontrado';
+
+        const clientPhone =
+            client?.phone || '';
+
+        const clientWhatsapp =
+            client?.whatsapp || client?.phone || '';
+
+        const fullAddress =
+            getFullAddressText(client);
+
+        const encodedAddress =
+            getEncodedAddress(client);
+
+        const googleMapsUrl =
+            encodedAddress
+                ? `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`
+                : '';
+
+        const services =
+            Array.isArray(os.services)
+                ? os.services
+                : [];
+
+        const servicesText =
+            services.length
+                ? services.map(service =>
+                    `${Number(service.quantity || 1)}x ${service.name}`
+                ).join(', ')
+                : (os.serviceName || 'Serviço não informado');
+
+        const total =
+            Number(os.totalAmount || 0);
+
+        let statusClass =
+            'bg-slate-700 text-slate-300';
+
+        let statusIcon =
+            'fa-calendar-check';
+
+        if (os.status === 'Em andamento') {
+            statusClass =
+                'bg-amber-500/20 text-amber-400';
+
+            statusIcon =
+                'fa-spinner';
+        } else if (os.status === 'Agendado') {
+            statusClass =
+                'bg-sky-500/20 text-sky-400';
+
+            statusIcon =
+                'fa-calendar-check';
+        } else if (os.status === 'Pendente') {
+            statusClass =
+                'bg-orange-500/20 text-orange-400';
+
+            statusIcon =
+                'fa-clock';
         }
 
+        // ==========================================
+        // WHATSAPP — TÉCNICO A CAMINHO
+        // ==========================================
+
+        let whatsappButton = '';
+
+        if (clientWhatsapp) {
+
+            const technicianMessage = encodeURIComponent(
+                `Olá, ${clientName}! 🚗
+
+O técnico da CleanGestor está a caminho para realizar o seu atendimento.
+
+📅 Data: ${formatDate(os.date)}
+🕐 Horário: ${os.time || '--:--'}
+📍 Endereço: ${fullAddress}
+
+Em breve estaremos aí.`
+            );
+
+            const whatsappUrl =
+                `https://wa.me/${clientWhatsapp.replace(/\D/g, '')}?text=${technicianMessage}`;
+
+            whatsappButton = `
+                <a
+                    href="${whatsappUrl}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex-1 px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"
+                >
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    Técnico a caminho
+                </a>
+            `;
+        }
+
+        // ==========================================
+        // GOOGLE MAPS
+        // ==========================================
+
+        const mapsButton = encodedAddress
+            ? `
+                <a
+                    href="${googleMapsUrl}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="px-3 py-2 rounded-xl bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 border border-sky-500/20 text-xs font-semibold transition flex items-center justify-center gap-2"
+                >
+                    <i class="fa-solid fa-location-dot"></i>
+                    Google Maps
+                </a>
+            `
+            : `
+                <span class="px-3 py-2 rounded-xl bg-slate-800 text-slate-500 text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Sem endereço
+                </span>
+            `;
+
+        return `
+            <div class="glass p-5 rounded-3xl border border-slate-800/80">
+
+                <!-- CABEÇALHO -->
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+
+                    <div class="min-w-0">
+
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2.5 py-1 rounded-full ${statusClass} text-[10px] font-bold flex items-center gap-1.5">
+                                <i class="fa-solid ${statusIcon}"></i>
+                                ${escapeHTML(os.status || 'Agendado')}
+                            </span>
+
+                            <span class="text-[10px] text-slate-500">
+                                OS #${escapeHTML(os.id)}
+                            </span>
+                        </div>
+
+                        <h3 class="font-bold text-base text-white">
+                            ${escapeHTML(clientName)}
+                        </h3>
+
+                        ${
+                            clientPhone
+                                ? `
+                                    <p class="text-xs text-slate-500 mt-1">
+                                        <i class="fa-solid fa-phone mr-1"></i>
+                                        ${escapeHTML(clientPhone)}
+                                    </p>
+                                `
+                                : ''
+                        }
+
+                    </div>
+
+                    <div class="text-left sm:text-right">
+
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider">
+                            Atendimento
+                        </p>
+
+                        <p class="text-sm font-bold text-white">
+                            ${formatDate(os.date)}
+                        </p>
+
+                        <p class="text-xs text-sky-400 font-semibold">
+                            ${escapeHTML(os.time || '--:--')}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ENDEREÇO -->
+                <div class="mt-4 p-3 rounded-2xl bg-slate-900/60 border border-slate-800">
+
+                    <div class="flex items-start gap-3">
+
+                        <div class="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <p class="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                                Endereço do atendimento
+                            </p>
+
+                            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                                ${escapeHTML(fullAddress)}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SERVIÇOS -->
+                <div class="mt-4">
+
+                    <p class="text-[10px] text-slate-500 uppercase tracking-wider font-bold">
+                        Serviços
+                    </p>
+
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                        ${escapeHTML(servicesText)}
+                    </p>
+
+                </div>
+
+
+                <!-- VALOR -->
+                <div class="mt-4 flex items-center justify-between">
+
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider">
+                            Valor
+                        </p>
+
+                        <p class="text-lg font-bold text-emerald-400">
+                            ${formatMoney(total)}
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- AÇÕES -->
+                <div class="mt-4 flex flex-col sm:flex-row gap-2">
+
+                    ${mapsButton}
+
+                    ${whatsappButton}
+
+                    <button
+                        type="button"
+                        onclick="openOSWizard('${os.id}')"
+                        class="flex-1 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition flex items-center justify-center gap-2"
+                    >
+                        <i class="fa-solid fa-folder-open"></i>
+                        Abrir OS
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    }).join('');
+}
+      
         // 4. CHECKLIST & ORDEM DE SERVIÇO WIZARD PASSO A PASSO
         function openOSWizard(osId) {
             const os = state.osList.find(item => item.id === osId);
             if (!os) return;
+            // Garantir que a OS tenha os dados do agendamento
+if (os.appointmentId) {
+
+    const appointment =
+        state.appointments.find(
+            app => app.id === os.appointmentId
+        );
+
+    if (appointment) {
+
+        // Só sincroniza automaticamente
+        // enquanto a OS ainda não foi iniciada.
+
+        if (
+            os.status === 'Agendado' ||
+            os.status === 'Pendente'
+        ) {
+
+            os.clientId =
+                appointment.clientId;
+
+            os.date =
+                appointment.date;
+
+            os.time =
+                appointment.time;
+
+            os.serviceName =
+                appointment.serviceName;
+
+            os.services =
+                appointment.services || [];
+
+            os.totalAmount =
+                Number(appointment.price) || 0;
+
+            os.paymentMethod =
+                appointment.paymentMethod;
+
+            os.notes =
+                appointment.notes || '';
+
+            saveState();
+
+        }
+
+    }
+
+}
 
             document.getElementById('active-os-id').value = os.id;
             document.getElementById('os-wizard-id').innerText = os.id;
@@ -1958,8 +2890,112 @@ function getLocalDateString(date = new Date()) {
             if (activeOSWizardStep > 8) activeOSWizardStep = 8;
             updateOSWizardUI();
         }
+        
+// ==========================================
+// APLICAR CUPOM NO AGENDAMENTO
+// ==========================================
+function applyCouponToAppointment() {
 
-        function updateOSWizardUI() {
+    const codeInput = document.getElementById('app-coupon-code');
+    const priceInput = document.getElementById('app-price');
+    const feedback = document.getElementById('app-coupon-feedback');
+
+    if (!codeInput || !priceInput || !feedback) return;
+
+    const code = codeInput.value.trim().toUpperCase();
+
+    if (!code) {
+        feedback.className = 'text-[11px] mt-1 text-rose-400';
+        feedback.innerText = 'Digite um código de cupom.';
+        return;
+    }
+
+    if (!Array.isArray(appointmentServices) || appointmentServices.length === 0) {
+        feedback.className = 'text-[11px] mt-1 text-rose-400';
+        feedback.innerText = 'Adicione pelo menos um serviço primeiro.';
+        return;
+    }
+
+    // ==========================================
+    // TOTAL ORIGINAL DOS SERVIÇOS
+    // ==========================================
+
+    const originalTotal = appointmentServices.reduce(
+        (total, service) => {
+            const quantity = Number(service.quantity) || 1;
+            const price = Number(service.price) || 0;
+
+            return total + (quantity * price);
+        },
+        0
+    );
+
+    // ==========================================
+    // VALIDAR CUPOM
+    // ==========================================
+
+    const result = validateCouponCode(
+        code,
+        originalTotal
+    );
+
+    if (!result.valid) {
+
+        priceInput.value = originalTotal.toFixed(2);
+
+        delete priceInput.dataset.originalTotal;
+        delete priceInput.dataset.discount;
+        delete priceInput.dataset.coupon;
+
+        feedback.className =
+            'text-[11px] mt-1 text-rose-400';
+
+        feedback.innerText = result.msg;
+
+        return;
+    }
+
+    // ==========================================
+    // DESCONTO
+    // ==========================================
+
+    const discount = Math.min(
+        Number(result.discount) || 0,
+        originalTotal
+    );
+
+    const finalTotal = Math.max(
+        0,
+        originalTotal - discount
+    );
+
+    // ==========================================
+    // SALVAR INFORMAÇÕES TEMPORÁRIAS
+    // ==========================================
+
+    priceInput.dataset.originalTotal =
+        originalTotal.toFixed(2);
+
+    priceInput.dataset.discount =
+        discount.toFixed(2);
+
+    priceInput.dataset.coupon =
+        code;
+
+    // ==========================================
+    // MOSTRAR TOTAL COM DESCONTO
+    // ==========================================
+
+    priceInput.value =
+        finalTotal.toFixed(2);
+
+    feedback.className =
+        'text-[11px] mt-1 text-emerald-400 font-semibold';
+
+    feedback.innerText =
+        `${result.msg} | Total: R$ ${finalTotal.toFixed(2)}`;
+}   
+  function updateOSWizardUI() {
             for (let i = 1; i <= 8; i++) {
                 const pane = document.getElementById(`os-step-${i}`);
                 if (pane) {
@@ -2257,6 +3293,49 @@ function getLocalDateString(date = new Date()) {
             renderCoupons();
         }
         
+        function deleteCoupon(id) {
+
+    try {
+
+        const coupon = state.coupons.find(
+            cp => String(cp.id) === String(id)
+        );
+
+        if (!coupon) {
+            showToast('Cupom não encontrado.', 'error');
+            return;
+        }
+
+        const confirmed = confirm(
+            `Deseja realmente excluir o cupom "${coupon.code}"?`
+        );
+
+        if (!confirmed) return;
+
+        state.coupons = state.coupons.filter(
+            cp => String(cp.id) !== String(id)
+        );
+
+        saveState();
+
+        showToast('Cupom excluído com sucesso!');
+
+        renderCoupons();
+
+    } catch (error) {
+
+        console.error(
+            'Erro ao excluir cupom:',
+            error
+        );
+
+        showToast(
+            'Erro ao excluir o cupom.',
+            'error'
+        );
+    }
+}
+
 function actionStartOS() {
     try {
         const osIdElement = document.getElementById('active-os-id');
@@ -2605,72 +3684,449 @@ function applyCouponToBudget() {
             }
         }
 
-        // CADASTRO DE AGENDAMENTOS
-        function saveAppointment(e) {
-            e.preventDefault();
-            const id = document.getElementById('service-app-id').value;
+     function saveAppointment(e) {
+    e.preventDefault();
 
-            const data = {
-                id: id || 'a_' + Date.now(),
-                clientId: document.getElementById('app-client-id').value,
-                serviceName: document.getElementById('app-service-name').value,
-                quantity: parseInt(document.getElementById('app-quantity').value) || 1,
-                date: document.getElementById('app-date').value,
-                time: document.getElementById('app-time').value,
-                price: parseFloat(document.getElementById('app-price').value) || 0,
-                paymentMethod: document.getElementById('app-payment').value,
-                status: document.getElementById('app-status').value,
-                notes: document.getElementById('app-notes').value
+    const id = document.getElementById('service-app-id').value;
+
+    // ==========================================
+    // VALIDAR SERVIÇOS
+    // ==========================================
+
+    if (!appointmentServices || appointmentServices.length === 0) {
+        showToast('Adicione pelo menos um serviço.', 'warning');
+        return;
+    }
+
+    // ==========================================
+    // DADOS BÁSICOS
+    // ==========================================
+
+    const clientId =
+        document.getElementById('app-client-id').value;
+
+    const date =
+        document.getElementById('app-date').value;
+
+    const time =
+        document.getElementById('app-time').value;
+
+    const paymentMethod =
+    document.getElementById('app-payment')?.value || '';
+
+const status =
+    document.getElementById('app-status')?.value || 'Agendado';
+
+const notes =
+    document.getElementById('app-notes')?.value || '';
+
+    // ==========================================
+    // CALCULAR TOTAL PELOS SERVIÇOS
+    // ==========================================
+
+    const totalPrice = appointmentServices.reduce(
+        (total, service) => {
+
+            const quantity =
+                Number(service.quantity) || 1;
+
+            const price =
+                Number(service.price) || 0;
+
+            return total + (quantity * price);
+
+        },
+        0
+    );
+
+    // ==========================================
+    // DADOS DO AGENDAMENTO
+    // ==========================================
+
+    const data = {
+
+        id: id || 'a_' + Date.now(),
+
+        clientId: clientId,
+
+        serviceName:
+            appointmentServices
+                .map(service => service.name)
+                .join(', '),
+
+        quantity:
+            appointmentServices.reduce(
+                (sum, service) =>
+                    sum + (Number(service.quantity) || 1),
+                0
+            ),
+
+        services:
+            appointmentServices.map(service => ({
+                id: service.id,
+                name: service.name,
+                quantity: Number(service.quantity) || 1,
+                price: Number(service.price) || 0
+            })),
+
+        date: date,
+
+        time: time,
+
+        // O valor vem automaticamente do catálogo
+        price: totalPrice,
+
+        paymentMethod: paymentMethod,
+
+        status: status,
+
+        notes: notes
+    };
+
+    // ==========================================
+    // NOVO AGENDAMENTO
+    // ==========================================
+
+    if (!id) {
+
+        state.appointments.push(data);
+
+        // Criar OS automaticamente
+        const osId = 'os_' + Date.now();
+
+        state.osList.push({
+
+            id: osId,
+
+            appointmentId: data.id,
+
+            clientId: data.clientId,
+
+            status: 'Agendado',
+
+            date: data.date,
+
+            time: data.time,
+
+            serviceName: data.serviceName,
+
+            services: data.services,
+
+            totalAmount: data.price,
+
+            paymentMethod: data.paymentMethod,
+
+            installmentsCount: 1,
+
+            paymentStatus: 'Pendente',
+
+            checklist: {
+
+                fading: false,
+
+                tears: false,
+
+                stains: false,
+
+                pet: false,
+
+                structure: false,
+
+                riskNotes: '',
+
+                clientConfirmed: false
+
+            },
+
+            beforePhotos: [],
+
+            afterPhotos: [],
+
+            signature: '',
+
+            notes: data.notes || '',
+
+            createdAt: new Date().toISOString()
+
+        });
+
+    }
+
+    // ==========================================
+    // EDITAR AGENDAMENTO
+    // ==========================================
+
+    else {
+
+        const appointmentIndex =
+            state.appointments.findIndex(
+                app => app.id === id
+            );
+
+        if (appointmentIndex !== -1) {
+
+            state.appointments[appointmentIndex] = data;
+
+        }
+
+        // ======================================
+        // LOCALIZAR OS VINCULADA
+        // ======================================
+
+        let relatedOS =
+            state.osList.find(
+                os => os.appointmentId === id
+            );
+
+        // ======================================
+        // SE NÃO EXISTIR OS, CRIAR
+        // ======================================
+
+        if (!relatedOS) {
+
+            const osId = 'os_' + Date.now();
+
+            relatedOS = {
+
+                id: osId,
+
+                appointmentId: data.id,
+
+                clientId: data.clientId,
+
+                status: 'Agendado',
+
+                date: data.date,
+
+                time: data.time,
+
+                serviceName: data.serviceName,
+
+                services: data.services,
+
+                totalAmount: data.price,
+
+                paymentMethod: data.paymentMethod,
+
+                installmentsCount: 1,
+
+                paymentStatus: 'Pendente',
+
+                checklist: {
+
+                    fading: false,
+                    tears: false,
+                    stains: false,
+                    pet: false,
+                    structure: false,
+                    riskNotes: '',
+                    clientConfirmed: false
+
+                },
+
+                beforePhotos: [],
+
+                afterPhotos: [],
+
+                signature: '',
+
+                notes: data.notes || '',
+
+                createdAt: new Date().toISOString()
+
             };
 
-            if (id) {
-                const idx = state.appointments.findIndex(a => a.id === id);
-                if (idx !== -1) state.appointments[idx] = data;
-            } else {
-                state.appointments.push(data);
-                
-                // Gerar automaticamente a OS correspondente
-                const osId = 'os' + Math.floor(100 + Math.random() * 900);
-                state.osList.push({
-                    id: osId,
-                    appointmentId: data.id,
-                    clientId: data.clientId,
-                    status: 'Agendado',
-                    date: data.date,
-                    time: data.time,
-                    totalAmount: data.price,
-                    paymentMethod: data.paymentMethod,
-                    installmentsCount: 1,
-                    paymentStatus: 'Pendente',
-                    checklist: { fading: false, tears: false, stains: false, pet: false, structure: false, riskNotes: '', clientConfirmed: false },
-                    beforePhotos: [], afterPhotos: [], signature: ''
-                });
+            state.osList.push(relatedOS);
+
+        }
+
+        // ======================================
+        // ATUALIZAR OS EXISTENTE
+        // ======================================
+
+        else {
+
+            // Só atualiza os dados do agendamento.
+            // Não altera uma OS que já esteja em andamento
+            // ou concluída.
+
+            if (
+                relatedOS.status === 'Agendado' ||
+                relatedOS.status === 'Pendente'
+            ) {
+
+                relatedOS.clientId =
+                    data.clientId;
+
+                relatedOS.date =
+                    data.date;
+
+                relatedOS.time =
+                    data.time;
+
+                relatedOS.serviceName =
+                    data.serviceName;
+
+                relatedOS.services =
+                    data.services;
+
+                relatedOS.totalAmount =
+                    data.price;
+
+                relatedOS.paymentMethod =
+                    data.paymentMethod;
+
+                relatedOS.notes =
+                    data.notes || '';
+
             }
 
-            saveState();
-            showToast('Agendamento salvo com sucesso!');
-            closeModal('modal-service');
-            renderAll();
         }
 
-        function editAppointment(id) {
-            const a = state.appointments.find(item => item.id === id);
-            if (!a) return;
+    }
 
-            document.getElementById('service-app-id').value = a.id;
-            document.getElementById('app-client-id').value = a.clientId;
-            document.getElementById('app-service-name').value = a.serviceName;
-            document.getElementById('app-quantity').value = a.quantity || 1;
-            document.getElementById('app-date').value = a.date;
-            document.getElementById('app-time').value = a.time;
-            document.getElementById('app-price').value = a.price;
-            document.getElementById('app-payment').value = a.paymentMethod;
-            document.getElementById('app-status').value = a.status;
-            document.getElementById('app-notes').value = a.notes || '';
+    // ==========================================
+    // SALVAR
+    // ==========================================
 
-            openModal('modal-service');
-        }
+    saveState();
 
+    showToast(
+        id
+            ? 'Agendamento e OS atualizados com sucesso!'
+            : 'Agendamento e OS criados com sucesso!'
+    );
+
+    // ==========================================
+    // LIMPAR
+    // ==========================================
+
+    appointmentServices = [];
+
+    // ==========================================
+    // FECHAR MODAL
+    // ==========================================
+
+    closeModal('modal-appointment');
+
+    // ==========================================
+    // ATUALIZAR SISTEMA
+    // ==========================================
+
+    renderAll();
+
+    // Garantir atualização da Agenda
+    renderSchedule();
+
+    // Garantir atualização das OS
+    renderOSList();
+}
+       function editAppointment(id) {
+    const a = state.appointments.find(item => item.id === id);
+    if (!a) return;
+
+    document.getElementById('service-app-id').value = a.id;
+    document.getElementById('app-client-id').value = a.clientId;
+
+    // ==========================================
+    // CARREGAR SERVIÇOS
+    // ==========================================
+
+    appointmentServices = [];
+
+    // NOVO FORMATO: vários serviços
+    if (Array.isArray(a.services) && a.services.length > 0) {
+
+        appointmentServices = a.services.map(service => ({
+            id: service.id,
+            name: service.name,
+            quantity: Number(service.quantity) || 1,
+            price: Number(service.price) || 0
+        }));
+
+    } else {
+
+        // ==========================================
+        // COMPATIBILIDADE COM AGENDAMENTOS ANTIGOS
+        // ==========================================
+
+       const oldServiceName = a.serviceName || '';
+
+const catalogMatch = state.catalog.find(service =>
+    String(service.name).trim().toLowerCase() ===
+    String(oldServiceName).trim().toLowerCase()
+);
+
+const oldServiceId =
+    catalogMatch?.id || 'legacy_' + Date.now();
+
+        const oldQuantity = Number(a.quantity) || 1;
+
+        const oldPrice =
+            oldQuantity > 0
+                ? (Number(a.price) || 0) / oldQuantity
+                : Number(a.price) || 0;
+
+        appointmentServices.push({
+            id: oldServiceId || 'legacy_' + Date.now(),
+            name: oldServiceName,
+            quantity: oldQuantity,
+            price: oldPrice
+        });
+    }
+
+    // ==========================================
+    // ATUALIZAR SELECT
+    // ==========================================
+
+    const serviceSelect =
+        document.getElementById('app-service-name');
+
+    if (serviceSelect && appointmentServices.length > 0) {
+        serviceSelect.value = appointmentServices[0].id;
+    }
+
+    // ==========================================
+    // QUANTIDADE
+    // ==========================================
+
+    document.getElementById('app-quantity').value =
+        appointmentServices.length > 0
+            ? appointmentServices[0].quantity
+            : 1;
+
+    // ==========================================
+    // DATA / HORÁRIO
+    // ==========================================
+
+    document.getElementById('app-date').value = a.date;
+    document.getElementById('app-time').value = a.time;
+
+    // ==========================================
+    // PAGAMENTO / STATUS / OBSERVAÇÕES
+    // ==========================================
+
+    document.getElementById('app-payment').value =
+        a.paymentMethod;
+
+    document.getElementById('app-status').value =
+        a.status;
+
+    document.getElementById('app-notes').value =
+        a.notes || '';
+
+    // ==========================================
+    // RENDERIZAR SERVIÇOS
+    // ==========================================
+
+    renderAppointmentServices();
+
+    // ==========================================
+    // ABRIR MODAL
+    // ==========================================
+
+    openModal('modal-service');
+}
         function deleteAppointment(id) {
             if (confirm('Deseja cancelar/excluir este agendamento?')) {
                 state.appointments = state.appointments.filter(a => a.id !== id);
@@ -2784,24 +4240,65 @@ function applyCouponToBudget() {
                 }
             });
 
-            const catSelects = ['app-service-name', 'budget-service-name'];
-            catSelects.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.innerHTML = state.catalog.map(cat => `<option value="${cat.name}">${cat.name} - R$ ${cat.price}</option>`).join('');
-                }
-            });
-        }
+           // SELECT DE SERVIÇOS DO AGENDAMENTO
+const appointmentServiceSelect = document.getElementById('app-service-name');
 
-        function updateAppointmentPrice() {
-            const serviceName = document.getElementById('app-service-name').value;
-            const qty = parseInt(document.getElementById('app-quantity').value) || 1;
-            const item = state.catalog.find(c => c.name === serviceName);
-            if (item) {
-                document.getElementById('app-price').value = (item.price * qty).toFixed(2);
-            }
-        }
+if (appointmentServiceSelect) {
+    appointmentServiceSelect.innerHTML = state.catalog
+        .filter(cat => cat.active !== false)
+        .map(cat => `
+            <option value="${cat.id}">
+                ${cat.name} - R$ ${Number(cat.price || 0).toFixed(2)}
+            </option>
+        `)
+        .join('');
+}
 
+// SELECT DE SERVIÇOS DO ORÇAMENTO
+    const budgetServiceSelect = document.getElementById('budget-service-name');
+
+    if (budgetServiceSelect) {
+        budgetServiceSelect.innerHTML = state.catalog
+            .filter(cat => cat.active !== false)
+            .map(cat => `<option value="${cat.name}">${cat.name} - R$ ${Number(cat.price || 0).toFixed(2)}</option>`)
+            .join('');
+    }
+}
+
+function updateAppointmentPrice() 
+ {
+
+    renderAppointmentServices();
+
+    const priceInput =
+        document.getElementById('app-price');
+
+    if (!priceInput) return;
+
+    // Se não existe cupom aplicado,
+    // o renderAppointmentServices já colocou o total.
+    if (!priceInput.dataset.coupon) {
+        return;
+    }
+
+    // O valor dos serviços mudou.
+    // O cupom antigo deixa de ser válido
+    // até ser aplicado novamente.
+    delete priceInput.dataset.originalTotal;
+    delete priceInput.dataset.discount;
+    delete priceInput.dataset.coupon;
+
+    const feedback =
+        document.getElementById('app-coupon-feedback');
+
+    if (feedback) {
+        feedback.className =
+            'text-[11px] mt-1 text-slate-500';
+
+        feedback.innerText =
+            'O total mudou. Aplique o cupom novamente.';
+    }
+}
         function calculateBudgetTotal() {
             const name = document.getElementById('budget-service-name').value;
             const qty = parseInt(document.getElementById('budget-qty').value) || 1;
@@ -3105,7 +4602,207 @@ function deleteTransaction(id) {
             saveState();
             showToast('Dados da empresa salvos!');
         }
+function generateNFDocumentPDF() {
+    try {
+        const clientName = document.getElementById('nf-client-name')?.value?.trim() || 'Cliente';
+        const clientDoc = document.getElementById('nf-client-doc')?.value?.trim() || '';
+        const description = document.getElementById('nf-description')?.value?.trim() || 'Serviço de limpeza de estofados';
+        const value = Number(
+            document.getElementById('nf-value')?.value || 0
+        );
+        const date = document.getElementById('nf-date')?.value || getLocalDateString();
 
+        const companyName = state.company?.name || 'CleanGestor';
+        const companyDoc = state.company?.doc || '';
+        const companyPhone = state.company?.phone || '';
+        const companyPix = state.company?.pix || '';
+
+        if (value <= 0) {
+            showToast('Informe um valor válido para gerar o documento.');
+            return;
+        }
+
+        // Área que será transformada em PDF
+        const element = document.createElement('div');
+
+        element.style.width = '794px';
+        element.style.padding = '40px';
+        element.style.background = '#ffffff';
+        element.style.color = '#111827';
+        element.style.fontFamily = 'Arial, sans-serif';
+        element.style.boxSizing = 'border-box';
+
+        element.innerHTML = `
+            <div style="border:1px solid #d1d5db; padding:30px;">
+
+                <div style="text-align:center; margin-bottom:30px;">
+                    <h1 style="margin:0; font-size:24px;">
+                        ${escapeHTML(companyName)}
+                    </h1>
+
+                    <p style="margin:6px 0; color:#4b5563;">
+                        ${companyDoc ? 'CNPJ/CPF: ' + escapeHTML(companyDoc) : ''}
+                    </p>
+
+                    <p style="margin:6px 0; color:#4b5563;">
+                        ${companyPhone ? 'Telefone: ' + escapeHTML(companyPhone) : ''}
+                    </p>
+                </div>
+
+                <div style="
+                    text-align:center;
+                    background:#f3f4f6;
+                    padding:15px;
+                    margin-bottom:25px;
+                ">
+                    <h2 style="margin:0; font-size:20px;">
+                        DOCUMENTO DE SERVIÇO
+                    </h2>
+                </div>
+
+                <table style="
+                    width:100%;
+                    border-collapse:collapse;
+                    margin-bottom:25px;
+                ">
+                    <tr>
+                        <td style="border:1px solid #d1d5db; padding:10px;">
+                            <strong>Cliente</strong>
+                        </td>
+                        <td style="border:1px solid #d1d5db; padding:10px;">
+                            ${escapeHTML(clientName)}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #d1d5db; padding:10px;">
+                            <strong>CPF/CNPJ</strong>
+                        </td>
+                        <td style="border:1px solid #d1d5db; padding:10px;">
+                            ${escapeHTML(clientDoc || '-')}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #d1d5db; padding:10px;">
+                            <strong>Data</strong>
+                        </td>
+                        <td style="border:1px solid #d1d5db; padding:10px;">
+                            ${escapeHTML(formatDate(date))}
+                        </td>
+                    </tr>
+                </table>
+
+                <h3 style="margin-bottom:10px;">
+                    Descrição do serviço
+                </h3>
+
+                <div style="
+                    border:1px solid #d1d5db;
+                    padding:15px;
+                    min-height:80px;
+                    margin-bottom:25px;
+                ">
+                    ${escapeHTML(description)}
+                </div>
+
+                <div style="
+                    text-align:right;
+                    border-top:2px solid #111827;
+                    padding-top:15px;
+                ">
+                    <strong style="font-size:20px;">
+                        Valor: R$ ${value.toFixed(2).replace('.', ',')}
+                    </strong>
+                </div>
+
+                ${
+                    companyPix
+                    ? `
+                    <div style="
+                        margin-top:25px;
+                        padding:15px;
+                        background:#f9fafb;
+                    ">
+                        <strong>PIX:</strong>
+                        ${escapeHTML(companyPix)}
+                    </div>
+                    `
+                    : ''
+                }
+
+                <div style="
+                    margin-top:60px;
+                    text-align:center;
+                    color:#6b7280;
+                    font-size:11px;
+                ">
+                    Documento gerado pelo CleanGestor
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(element);
+
+        const options = {
+            margin: 10,
+            filename: `documento-${clientName.replace(/[^a-zA-Z0-9À-ÿ ]/g, '').replace(/\s+/g, '-')}.pdf`,
+            image: {
+                type: 'jpeg',
+                quality: 0.98
+            },
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            },
+            jsPDF: {
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
+
+        if (typeof html2pdf === 'undefined') {
+            document.body.removeChild(element);
+            showToast('Biblioteca de PDF não carregada.');
+            console.error('html2pdf não está disponível.');
+            return;
+        }
+
+        html2pdf()
+            .set(options)
+            .from(element)
+            .save()
+            .then(() => {
+                document.body.removeChild(element);
+                showToast('Documento PDF gerado com sucesso!');
+            })
+            .catch(error => {
+                console.error('Erro ao gerar PDF:', error);
+
+                if (element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+
+                showToast('Erro ao gerar o PDF.');
+            });
+
+    } catch (error) {
+        console.error('Erro no gerador de documento:', error);
+        showToast('Erro ao gerar o documento.');
+    }
+}
+
+function escapeHTML(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
         function savePinSettings() {
             const code = document.getElementById('set-pin-input').value;
             const active = document.getElementById('set-pin-active').checked;
@@ -3144,14 +4841,253 @@ function deleteTransaction(id) {
                 reader.readAsText(file);
             }
         }
+// ==========================================
+// SERVIÇOS MÚLTIPLOS NO AGENDAMENTO
+// ==========================================
 
-        function clearAllDataWithPassword() {
-            const pass = prompt("Para confirmar a exclusão de TODOS os dados, digite 'DELETAR':");
-            if (pass === 'DELETAR') {
-                localStorage.removeItem('cleangestor_db_v2');
-                location.reload();
-            }
+let appointmentServices = [];
+
+// Adicionar serviço ao agendamento
+function addServiceToAppointment() {
+    const serviceSelect = document.getElementById('app-service-name');
+    const quantityInput = document.getElementById('app-quantity');
+
+    if (!serviceSelect || !quantityInput) return;
+
+    const serviceId = serviceSelect.value;
+    const quantity = parseInt(quantityInput.value) || 1;
+
+    if (!serviceId) {
+        showToast('Selecione um serviço primeiro.');
+        return;
+    }
+
+    const catalogItem = state.catalog.find(
+        item => String(item.id) === String(serviceId)
+    );
+
+    if (!catalogItem) {
+        showToast('Serviço não encontrado no catálogo.');
+        return;
+    }
+
+    const price = Number(
+        catalogItem.price ??
+        catalogItem.value ??
+        catalogItem.valor ??
+        0
+    );
+
+    // Verifica se o serviço já foi adicionado
+    const existing = appointmentServices.find(
+        service => String(service.id) === String(serviceId)
+    );
+
+    if (existing) {
+        existing.quantity += quantity;
+    } else {
+        appointmentServices.push({
+            id: catalogItem.id,
+            name: catalogItem.name,
+            quantity: quantity,
+            price: price
+        });
+    }
+
+    renderAppointmentServices();
+
+    // Volta quantidade para 1
+    quantityInput.value = 1;
+
+    showToast('Serviço adicionado!');
+}
+
+
+// Renderizar serviços selecionados
+function renderAppointmentServices() {
+    const container = document.getElementById('app-services-list');
+    const countElement = document.getElementById('app-services-count');
+    const priceInput = document.getElementById('app-price');
+
+    if (!container) return;
+
+    if (appointmentServices.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-3 text-[11px] text-slate-500 border border-dashed border-slate-700 rounded-xl">
+                Nenhum serviço adicionado.
+            </div>
+        `;
+
+        if (countElement) {
+            countElement.innerText = '0 serviços';
         }
+
+        if (priceInput) {
+            priceInput.value = '0.00';
+        }
+
+        return;
+    }
+
+    let totalQuantity = 0;
+    let total = 0;
+
+    container.innerHTML = appointmentServices.map((service, index) => {
+
+        const quantity = Number(service.quantity) || 1;
+        const price = Number(service.price) || 0;
+        const subtotal = quantity * price;
+
+        totalQuantity += quantity;
+        total += subtotal;
+
+        return `
+            <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-900/70 border border-slate-700">
+
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-white truncate">
+                        ${service.name}
+                    </p>
+
+                    <p class="text-[10px] text-slate-400 mt-1">
+                        ${quantity}x R$ ${price.toFixed(2)}
+                    </p>
+                </div>
+
+                <div class="text-right">
+                    <p class="text-xs font-bold text-sky-400">
+                        R$ ${subtotal.toFixed(2)}
+                    </p>
+
+                    <button type="button"
+                        onclick="removeServiceFromAppointment(${index})"
+                        class="text-[10px] text-rose-400 hover:text-rose-300 mt-1">
+                        <i class="fa-solid fa-trash"></i>
+                        Remover
+                    </button>
+                </div>
+
+            </div>
+        `;
+    }).join('');
+
+    if (countElement) {
+        countElement.innerText =
+            `${totalQuantity} ${totalQuantity === 1 ? 'serviço' : 'serviços'}`;
+    }
+
+    if (priceInput) {
+        priceInput.value = total.toFixed(2);
+    }
+}
+
+
+// Remover serviço
+function removeServiceFromAppointment(index) {
+
+    if (
+        index < 0 ||
+        index >= appointmentServices.length
+    ) {
+        return;
+    }
+
+    appointmentServices.splice(index, 1);
+
+    renderAppointmentServices();
+
+    showToast('Serviço removido.');
+}
+
+function clearAllData() {
+    const confirmed = confirm(
+        '⚠️ ATENÇÃO!\n\n' +
+        'Isso irá apagar TODOS os dados do CleanGestor, incluindo:\n\n' +
+        '• Clientes\n' +
+        '• Agendamentos\n' +
+        '• Ordens de Serviço\n' +
+        '• Catálogo\n' +
+        '• Orçamentos\n' +
+        '• Financeiro\n' +
+        '• Cupons\n' +
+        '• Galeria\n\n' +
+        'Essa ação não poderá ser desfeita.\n\n' +
+        'Deseja realmente continuar?'
+    );
+
+    if (!confirmed) return;
+
+    const confirmed2 = confirm(
+        'CONFIRMAÇÃO FINAL\n\n' +
+        'Todos os dados do sistema serão apagados permanentemente.\n\n' +
+        'Clique em OK para apagar tudo.'
+    );
+
+    if (!confirmed2) return;
+
+    try {
+        // Remove o banco principal do CleanGestor
+        localStorage.removeItem('cleangestor_db_v2');
+
+        // Remove possíveis versões antigas, caso existam
+        localStorage.removeItem('cleangestor_db');
+        
+        // Limpa também qualquer estado atual em memória
+        state = {
+            company: {
+                name: 'CleanGestor Higienização',
+                doc: '00.000.000/0001-00',
+                phone: '11999999999',
+                pix: 'financeiro@cleangestor.com'
+            },
+
+            pin: {
+                active: false,
+                code: '1234'
+            },
+
+            clients: [],
+            catalog: [],
+            appointments: [],
+            osList: [],
+            budgets: [],
+            coupons: [],
+            financial: [],
+            gallery: []
+        };
+
+        // Salva o estado completamente vazio
+        saveState();
+
+        // Reinicia variáveis temporárias
+        currentView = 'dashboard';
+        currentScheduleDate = getLocalDateString();
+        currentScheduleSubTab = 'today';
+        currentOsSubTab = 'today';
+        activeOSWizardStep = 1;
+        enteredPin = '';
+
+        // Atualiza toda a interface
+        renderAll();
+
+        // Atualiza gráficos
+        if (typeof updateDashboardCharts === 'function') {
+            updateDashboardCharts();
+        }
+
+        // Volta para o Dashboard
+        if (typeof switchView === 'function') {
+            switchView('dashboard');
+        }
+
+        showToast('Todos os dados foram apagados com sucesso!');
+
+    } catch (error) {
+        console.error('Erro ao apagar todos os dados:', error);
+        showToast('Erro ao apagar os dados.', 'error');
+    }
+}
+       
 
         // UTILITÁRIOS
         function formatMoney(val) {
@@ -3169,53 +5105,349 @@ function deleteTransaction(id) {
         function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
         function openQuickActionModal() { openModal('modal-quick-action'); }
 
-        function changeScheduleDate(days) {
-            const current = new Date(currentScheduleDate);
-            current.setDate(current.getDate() + days);
-            currentScheduleDate = current.toISOString().split('T')[0];
-            renderSchedule();
-        }
+       function changeScheduleDate(days) {
+
+    const [year, month, day] =
+        currentScheduleDate.split('-').map(Number);
+
+    const current =
+        new Date(year, month - 1, day);
+
+    current.setDate(current.getDate() + days);
+
+    currentScheduleDate =
+        `${current.getFullYear()}-${String(
+            current.getMonth() + 1
+        ).padStart(2, '0')}-${String(
+            current.getDate()
+        ).padStart(2, '0')}`;
+
+    currentScheduleSubTab = 'selected';
+
+    renderSchedule();
+}
 
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
         }
 
-        // GRÁFICOS CHART.JS
-        function setupCharts() {
-            const ctxMonth = document.getElementById('chartMonth')?.getContext('2d');
-            if (ctxMonth) {
-                new Chart(ctxMonth, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                        datasets: [{
-                            label: 'Faturamento (R$)',
-                            data: [],
-                            borderColor: '#0ea5e9',
-                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
+function deleteCoupon(id) {
+
+    try {
+
+        const coupon = state.coupons.find(
+            cp => String(cp.id) === String(id)
+        );
+
+        if (!coupon) {
+            showToast('Cupom não encontrado.', 'error');
+            return;
+        }
+
+        const confirmed = confirm(
+            `Deseja realmente excluir o cupom "${coupon.code}"?`
+        );
+
+        if (!confirmed) return;
+
+        state.coupons = state.coupons.filter(
+            cp => String(cp.id) !== String(id)
+        );
+
+        saveState();
+
+        showToast('Cupom excluído com sucesso!');
+
+        renderCoupons();
+
+    } catch (error) {
+
+        console.error(
+            'Erro ao excluir cupom:',
+            error
+        );
+
+        showToast(
+            'Erro ao excluir o cupom.',
+            'error'
+        );
+    }
+}
+function updateDashboardCharts() {
+
+    // ==========================================
+    // 1. FATURAMENTO POR MÊS
+    // ==========================================
+
+    if (chartMonthInstance) {
+
+        const monthlyRevenue =
+            Array(12).fill(0);
+
+        state.financial.forEach(transaction => {
+
+            if (transaction.type !== 'revenue') {
+                return;
             }
 
-            const ctxServ = document.getElementById('chartServices')?.getContext('2d');
-            if (ctxServ) {
-                new Chart(ctxServ, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Sofás', 'Poltronas', 'Colchões', 'Cadeiras', 'Outros'],
-                        datasets: [{
-                            data: [],
-                            backgroundColor: ['#0ea5e9', '#6366f1', '#10b981', '#f59e0b', '#ec4899']
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
+            const amount =
+                Number(transaction.amount) || 0;
+
+            if (!transaction.date || amount <= 0) {
+                return;
             }
+
+            const parts =
+                transaction.date.split('-');
+
+            if (parts.length !== 3) {
+                return;
+            }
+
+            const year =
+                Number(parts[0]);
+
+            const month =
+                Number(parts[1]) - 1;
+
+            if (
+                year === new Date().getFullYear() &&
+                month >= 0 &&
+                month <= 11
+            ) {
+                monthlyRevenue[month] += amount;
+            }
+        });
+
+        chartMonthInstance.data.datasets[0].data =
+            monthlyRevenue;
+
+        chartMonthInstance.update();
+    }
+
+
+    // ==========================================
+    // 2. TIPOS DE SERVIÇOS REALIZADOS
+    // ==========================================
+
+    if (chartServicesInstance) {
+
+        const serviceCounter = {};
+
+        state.osList
+            .filter(os => os.status === 'Concluído')
+            .forEach(os => {
+
+                // OS com múltiplos serviços
+                if (
+                    Array.isArray(os.services) &&
+                    os.services.length > 0
+                ) {
+
+                    os.services.forEach(service => {
+
+                        const name =
+                            String(
+                                service.name ||
+                                'Outros'
+                            ).trim();
+
+                        const quantity =
+                            Number(
+                                service.quantity || 1
+                            );
+
+                        if (!serviceCounter[name]) {
+                            serviceCounter[name] = 0;
+                        }
+
+                        serviceCounter[name] +=
+                            quantity;
+                    });
+
+                }
+
+                // Compatibilidade com OS antigas
+                else {
+
+                    const name =
+                        String(
+                            os.serviceName ||
+                            'Outros'
+                        ).trim();
+
+                    if (!serviceCounter[name]) {
+                        serviceCounter[name] = 0;
+                    }
+
+                    serviceCounter[name] += 1;
+                }
+            });
+
+
+        const entries =
+            Object.entries(serviceCounter)
+                .sort((a, b) => b[1] - a[1]);
+
+
+        const labels =
+            entries.map(item => item[0]);
+
+        const values =
+            entries.map(item => item[1]);
+
+
+        chartServicesInstance.data.labels =
+            labels;
+
+        chartServicesInstance.data.datasets[0].data =
+            values;
+
+        chartServicesInstance.update();
+    }
+}
+let chartMonthInstance = null;
+let chartServicesInstance = null;
+
+function setupCharts() {
+
+    // ==========================================
+    // GRÁFICO DE FATURAMENTO
+    // ==========================================
+
+    const ctxMonth =
+        document.getElementById('chartMonth')?.getContext('2d');
+
+    if (ctxMonth) {
+
+        if (chartMonthInstance) {
+            chartMonthInstance.destroy();
         }
-    </script>
+
+        chartMonthInstance = new Chart(ctxMonth, {
+            type: 'line',
+
+            data: {
+                labels: [
+                    'Jan',
+                    'Fev',
+                    'Mar',
+                    'Abr',
+                    'Mai',
+                    'Jun',
+                    'Jul',
+                    'Ago',
+                    'Set',
+                    'Out',
+                    'Nov',
+                    'Dez'
+                ],
+
+                datasets: [{
+                    label: 'Faturamento (R$)',
+
+                    data: Array(12).fill(0),
+
+                    borderColor: '#0ea5e9',
+
+                    backgroundColor:
+                        'rgba(14, 165, 233, 0.1)',
+
+                    fill: true,
+
+                    tension: 0.4
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' +
+                                    Number(value).toLocaleString(
+                                        'pt-BR',
+                                        {
+                                            minimumFractionDigits: 0
+                                        }
+                                    );
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+    // ==========================================
+    // GRÁFICO DE SERVIÇOS
+    // ==========================================
+
+    const ctxServ =
+        document.getElementById('chartServices')?.getContext('2d');
+
+    if (ctxServ) {
+
+        if (chartServicesInstance) {
+            chartServicesInstance.destroy();
+        }
+
+        chartServicesInstance = new Chart(ctxServ, {
+
+            type: 'doughnut',
+
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [
+                        '#0ea5e9',
+                        '#6366f1',
+                        '#10b981',
+                        '#f59e0b',
+                        '#ec4899',
+                        '#8b5cf6',
+                        '#14b8a6',
+                        '#f43f5e',
+                        '#eab308',
+                        '#64748b'
+                    ]
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+
+                        labels: {
+                            color: '#cbd5e1',
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    updateDashboardCharts();
+}
+          </script>
 </body>
 </html>
